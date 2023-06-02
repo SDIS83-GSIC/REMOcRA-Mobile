@@ -1,0 +1,70 @@
+package fr.sdis83.remocra.mobile.viewmodels
+
+import android.app.Application
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import fr.sdis83.remocra.mobile.workers.LoginWorker
+
+class LoginViewModel(application: Application) : AndroidViewModel(application) {
+
+    companion object {
+        private const val TAG = "LoginViewModel"
+
+        enum class JobStatus {
+            WAITING,
+            SUCCESS,
+            LOADING,
+            ERROR,
+        }
+    }
+
+    private var loginStatus = mutableStateOf(JobStatus.WAITING)
+    var info = mutableStateOf("")
+        private set
+
+    val isBusy: Boolean
+        get() = loginStatus.value == JobStatus.LOADING
+
+    val goToMainActivity = MutableLiveData(false)
+
+    fun login(username: String, password: String) {
+        val loginWorker = OneTimeWorkRequestBuilder<LoginWorker>().setInputData(
+            Data.Builder()
+                .putString("username", username)
+                .putString("password", password)
+                .build()
+        ).build()
+
+        WorkManager.getInstance(getApplication()).let { workManager ->
+            workManager
+                .beginWith(loginWorker)
+                .enqueue()
+            workManager.getWorkInfoByIdLiveData(loginWorker.id).observeForever {
+                when (it.state) {
+                    WorkInfo.State.RUNNING -> {
+                        info.value = "Connexion en cours"
+                        loginStatus.value = JobStatus.LOADING
+                    }
+
+                    WorkInfo.State.SUCCEEDED -> {
+                        info.value = "Connexion réussie"
+                        loginStatus.value = JobStatus.SUCCESS
+                        goToMainActivity.postValue(true)
+                    }
+
+                    WorkInfo.State.FAILED -> {
+                        info.value = "Erreur de connexion"
+                        loginStatus.value = JobStatus.ERROR
+                    }
+
+                    else -> loginStatus.value = JobStatus.WAITING
+                }
+            }
+        }
+    }
+}

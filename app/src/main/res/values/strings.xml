@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">REMOcRA Mobile</string>
+    <string name="login">Connexion</string>
+    <string name="username">Utilisateur</string>
+    <string name="password">Mot de passe</string>
+    <string name="url_api">http://127.0.0.1:8881/</string>
 </resources>

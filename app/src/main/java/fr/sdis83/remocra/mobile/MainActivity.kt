@@ -15,6 +15,7 @@ import fr.sdis83.remocra.mobile.ui.theme.REMOcRAMobileTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             REMOcRAMobileTheme {
                 // A surface container using the 'background' color from the theme
