@@ -87,4 +87,5 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.work:work-runtime-ktx:2.8.1")
     implementation("org.osmdroid:osmdroid-android:6.1.16")
+    implementation("androidx.navigation:navigation-compose:2.6.0")
 }
