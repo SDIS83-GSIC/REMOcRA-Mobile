@@ -28,6 +28,8 @@ abstract class RemocraDatabase : RoomDatabase() {
                 .fallbackToDestructiveMigration()
                 .build()
     }
+
+    abstract fun referentielDao(): ReferentielDao
 }
 
 class Converters {

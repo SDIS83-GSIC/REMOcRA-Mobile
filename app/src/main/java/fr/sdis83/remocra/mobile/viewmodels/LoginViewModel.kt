@@ -8,7 +8,9 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import fr.sdis83.remocra.mobile.authn.SessionManager
 import fr.sdis83.remocra.mobile.workers.LoginWorker
+import fr.sdis83.remocra.mobile.workers.ReferentielWorker
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -22,13 +24,17 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             ERROR,
         }
     }
+    val sessionManager = SessionManager(application)
+
 
     private var loginStatus = mutableStateOf(JobStatus.WAITING)
+    private var referentielStatus = mutableStateOf(JobStatus.WAITING)
+
     var info = mutableStateOf("")
         private set
 
     val isBusy: Boolean
-        get() = loginStatus.value == JobStatus.LOADING
+        get() = loginStatus.value == JobStatus.LOADING || referentielStatus.value == JobStatus.LOADING
 
     val goToMainActivity = MutableLiveData(false)
 
@@ -39,10 +45,12 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 .putString("password", password)
                 .build()
         ).build()
+        val referentielWorker = OneTimeWorkRequestBuilder<ReferentielWorker>().build()
 
         WorkManager.getInstance(getApplication()).let { workManager ->
             workManager
                 .beginWith(loginWorker)
+                .then(referentielWorker)
                 .enqueue()
             workManager.getWorkInfoByIdLiveData(loginWorker.id).observeForever {
                 when (it.state) {
@@ -54,7 +62,6 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     WorkInfo.State.SUCCEEDED -> {
                         info.value = "Connexion réussie"
                         loginStatus.value = JobStatus.SUCCESS
-                        goToMainActivity.postValue(true)
                     }
 
                     WorkInfo.State.FAILED -> {
@@ -63,6 +70,22 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     }
 
                     else -> loginStatus.value = JobStatus.WAITING
+                }
+            }
+            workManager.getWorkInfoByIdLiveData(referentielWorker.id).observeForever {
+                when (it.state) {
+                    WorkInfo.State.RUNNING -> {
+                        info.value = "Récupération du référentiel"
+                        referentielStatus.value = JobStatus.LOADING
+                    }
+
+                    WorkInfo.State.SUCCEEDED -> goToMainActivity.postValue(true)
+                    WorkInfo.State.FAILED -> {
+                        info.value = "Erreur lors de la récupération du référentiel"
+                        referentielStatus.value = JobStatus.ERROR
+                    }
+
+                    else -> referentielStatus.value = JobStatus.WAITING
                 }
             }
         }
