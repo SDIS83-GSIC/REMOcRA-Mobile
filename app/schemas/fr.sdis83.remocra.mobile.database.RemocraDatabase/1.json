@@ -1,0 +1,305 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "9892c3b0e20978ee7b77cbd4e88df231",
+    "entities": [
+      {
+        "tableName": "hydrant",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrant` BLOB NOT NULL, `idRemocra` INTEGER, `x` REAL NOT NULL, `y` REAL NOT NULL, `lon` REAL NOT NULL, `lat` REAL NOT NULL, `numero` TEXT, `code` TEXT, `commune` TEXT, `voie` TEXT, `voie2` TEXT, `lieuDit` TEXT, PRIMARY KEY(`idHydrant`))",
+        "fields": [
+          {
+            "fieldPath": "idHydrant",
+            "columnName": "idHydrant",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "x",
+            "columnName": "x",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "y",
+            "columnName": "y",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lon",
+            "columnName": "lon",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lat",
+            "columnName": "lat",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numero",
+            "columnName": "numero",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "commune",
+            "columnName": "commune",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "voie",
+            "columnName": "voie",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "voie2",
+            "columnName": "voie2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lieuDit",
+            "columnName": "lieuDit",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idHydrant"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_hydrant_idHydrant",
+            "unique": false,
+            "columnNames": [
+              "idHydrant"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrant_idHydrant` ON `${TABLE_NAME}` (`idHydrant`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "gestionnaire",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idGestionnaire` BLOB NOT NULL, `idRemocra` INTEGER, `nom` TEXT, `code` TEXT, PRIMARY KEY(`idGestionnaire`))",
+        "fields": [
+          {
+            "fieldPath": "idGestionnaire",
+            "columnName": "idGestionnaire",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idGestionnaire"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_gestionnaire_idGestionnaire",
+            "unique": false,
+            "columnNames": [
+              "idGestionnaire"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_gestionnaire_idGestionnaire` ON `${TABLE_NAME}` (`idGestionnaire`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "contact",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idContact` BLOB NOT NULL, `idRemocra` INTEGER, `idGestionnaire` BLOB, `idRemocraGestionnaire` INTEGER, `fonction` TEXT, `civilite` TEXT, `nom` TEXT, `prenom` TEXT, `numero_voie` TEXT, `suffixe_voie` TEXT, `voie` TEXT, `lieu_dit` TEXT, `code_postal` TEXT, `ville` TEXT, `pays` TEXT, `telephone` TEXT, `email` TEXT, PRIMARY KEY(`idContact`), FOREIGN KEY(`idGestionnaire`) REFERENCES `gestionnaire`(`idGestionnaire`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "idContact",
+            "columnName": "idContact",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "idGestionnaire",
+            "columnName": "idGestionnaire",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "idRemocraGestionnaire",
+            "columnName": "idRemocraGestionnaire",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "fonction",
+            "columnName": "fonction",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "civilite",
+            "columnName": "civilite",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "prenom",
+            "columnName": "prenom",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "numero_voie",
+            "columnName": "numero_voie",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "suffixe_voie",
+            "columnName": "suffixe_voie",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "voie",
+            "columnName": "voie",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lieu_dit",
+            "columnName": "lieu_dit",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "code_postal",
+            "columnName": "code_postal",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ville",
+            "columnName": "ville",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pays",
+            "columnName": "pays",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "telephone",
+            "columnName": "telephone",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "email",
+            "columnName": "email",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idContact"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_contact_idContact",
+            "unique": false,
+            "columnNames": [
+              "idContact"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contact_idContact` ON `${TABLE_NAME}` (`idContact`)"
+          },
+          {
+            "name": "index_contact_idGestionnaire",
+            "unique": false,
+            "columnNames": [
+              "idGestionnaire"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contact_idGestionnaire` ON `${TABLE_NAME}` (`idGestionnaire`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "gestionnaire",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idGestionnaire"
+            ],
+            "referencedColumns": [
+              "idGestionnaire"
+            ]
+          }
+        ]
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9892c3b0e20978ee7b77cbd4e88df231')"
+    ]
+  }
+}
