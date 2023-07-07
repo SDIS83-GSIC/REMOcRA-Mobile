@@ -1,9 +1,18 @@
 package fr.sdis83.remocra.mobile.services
 
 import android.content.Context
+import fr.sdis83.remocra.mobile.database.Commune
 import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.Hydrant
+import fr.sdis83.remocra.mobile.database.Role
+import fr.sdis83.remocra.mobile.database.Tournee
+import fr.sdis83.remocra.mobile.database.TypeHydrant
+import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalie
+import fr.sdis83.remocra.mobile.database.TypeHydrantCritere
+import fr.sdis83.remocra.mobile.database.TypeHydrantNature
+import fr.sdis83.remocra.mobile.database.TypeHydrantNatureDeci
+import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
 import fr.sdis83.remocra.mobile.network.RetrofitBuilder
 import retrofit2.Call
 import retrofit2.http.GET
@@ -18,8 +27,28 @@ interface ReferentielService {
     fun getReferentiel(): Call<ReferentielResponse>
 
     data class ReferentielResponse(
-        var hydrants: List<Hydrant>,
-        var gestionnaires: List<Gestionnaire>,
-        var contacts: List<Contact>
+        val communes: List<Commune>,
+        val hydrants: List<Hydrant>,
+        val hydrantsAnomalies: List<HydrantAnomalieInput>,
+        val gestionnaires: List<Gestionnaire>,
+        val contacts: List<Contact>,
+        val roles: List<Role>,
+        val contactsRoles: List<ContactRoleInput>,
+        val typesHydrant: List<TypeHydrant>,
+        val typesHydrantNature: List<TypeHydrantNature>,
+        val typesHydrantNatureDeci: List<TypeHydrantNatureDeci>,
+        val typesHydrantAnomalie: List<TypeHydrantAnomalie>,
+        val typesHydrantCritere: List<TypeHydrantCritere>,
+        val typesHydrantSaisie: List<TypeHydrantSaisie>,
+    )
+
+    data class ContactRoleInput(
+        val idContact: Long,
+        val idRole: Long,
+    )
+
+    data class HydrantAnomalieInput(
+        val idHydrant: Long,
+        val idAnomalie: Long,
     )
 }

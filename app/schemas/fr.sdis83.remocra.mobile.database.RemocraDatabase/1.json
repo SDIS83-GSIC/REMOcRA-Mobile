@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9892c3b0e20978ee7b77cbd4e88df231",
+    "identityHash": "965095e8ff378c691f1adcb69acd97d6",
     "entities": [
       {
         "tableName": "hydrant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrant` BLOB NOT NULL, `idRemocra` INTEGER, `x` REAL NOT NULL, `y` REAL NOT NULL, `lon` REAL NOT NULL, `lat` REAL NOT NULL, `numero` TEXT, `code` TEXT, `commune` TEXT, `voie` TEXT, `voie2` TEXT, `lieuDit` TEXT, PRIMARY KEY(`idHydrant`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrant` BLOB NOT NULL, `idRemocra` INTEGER, `idNature` INTEGER, `idNatureDeci` INTEGER, `dispoHbe` TEXT, `dispoTerrestre` TEXT, `x` REAL NOT NULL, `y` REAL NOT NULL, `lon` REAL NOT NULL, `lat` REAL NOT NULL, `numero` TEXT, `code` TEXT, `idCommune` INTEGER, `complement` TEXT, `voie` TEXT, `voie2` TEXT, `suffixeVoie` TEXT, `lieuDit` TEXT, `observation` TEXT, `idGestionnaire` BLOB, `idRemocraGestionnaire` INTEGER, PRIMARY KEY(`idHydrant`), FOREIGN KEY(`idCommune`) REFERENCES `commune`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idNature`) REFERENCES `typeHydrantNature`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idNatureDeci`) REFERENCES `typeHydrantNatureDeci`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idGestionnaire`) REFERENCES `gestionnaire`(`idGestionnaire`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "idHydrant",
@@ -18,6 +18,30 @@
             "fieldPath": "idRemocra",
             "columnName": "idRemocra",
             "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "idNature",
+            "columnName": "idNature",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "idNatureDeci",
+            "columnName": "idNatureDeci",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dispoHbe",
+            "columnName": "dispoHbe",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dispoTerrestre",
+            "columnName": "dispoTerrestre",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
@@ -57,8 +81,14 @@
             "notNull": false
           },
           {
-            "fieldPath": "commune",
-            "columnName": "commune",
+            "fieldPath": "idCommune",
+            "columnName": "idCommune",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "complement",
+            "columnName": "complement",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -75,9 +105,33 @@
             "notNull": false
           },
           {
+            "fieldPath": "suffixeVoie",
+            "columnName": "suffixeVoie",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
             "fieldPath": "lieuDit",
             "columnName": "lieuDit",
             "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "observation",
+            "columnName": "observation",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "idGestionnaire",
+            "columnName": "idGestionnaire",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "idRemocraGestionnaire",
+            "columnName": "idRemocraGestionnaire",
+            "affinity": "INTEGER",
             "notNull": false
           }
         ],
@@ -96,13 +150,157 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrant_idHydrant` ON `${TABLE_NAME}` (`idHydrant`)"
+          },
+          {
+            "name": "index_hydrant_idCommune",
+            "unique": false,
+            "columnNames": [
+              "idCommune"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrant_idCommune` ON `${TABLE_NAME}` (`idCommune`)"
+          },
+          {
+            "name": "index_hydrant_idNature",
+            "unique": false,
+            "columnNames": [
+              "idNature"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrant_idNature` ON `${TABLE_NAME}` (`idNature`)"
+          },
+          {
+            "name": "index_hydrant_idNatureDeci",
+            "unique": false,
+            "columnNames": [
+              "idNatureDeci"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrant_idNatureDeci` ON `${TABLE_NAME}` (`idNatureDeci`)"
+          },
+          {
+            "name": "index_hydrant_idGestionnaire",
+            "unique": false,
+            "columnNames": [
+              "idGestionnaire"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrant_idGestionnaire` ON `${TABLE_NAME}` (`idGestionnaire`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "commune",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idCommune"
+            ],
+            "referencedColumns": [
+              "idRemocra"
+            ]
+          },
+          {
+            "table": "typeHydrantNature",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idNature"
+            ],
+            "referencedColumns": [
+              "idRemocra"
+            ]
+          },
+          {
+            "table": "typeHydrantNatureDeci",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idNatureDeci"
+            ],
+            "referencedColumns": [
+              "idRemocra"
+            ]
+          },
+          {
+            "table": "gestionnaire",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idGestionnaire"
+            ],
+            "referencedColumns": [
+              "idGestionnaire"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "commune",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idCommune` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `code` TEXT, `nom` TEXT NOT NULL, `insee` TEXT NOT NULL, PRIMARY KEY(`idCommune`))",
+        "fields": [
+          {
+            "fieldPath": "idCommune",
+            "columnName": "idCommune",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "insee",
+            "columnName": "insee",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idCommune"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_commune_idCommune",
+            "unique": false,
+            "columnNames": [
+              "idCommune"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_commune_idCommune` ON `${TABLE_NAME}` (`idCommune`)"
+          },
+          {
+            "name": "index_commune_idRemocra",
+            "unique": true,
+            "columnNames": [
+              "idRemocra"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_commune_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
           }
         ],
         "foreignKeys": []
       },
       {
         "tableName": "gestionnaire",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idGestionnaire` BLOB NOT NULL, `idRemocra` INTEGER, `nom` TEXT, `code` TEXT, PRIMARY KEY(`idGestionnaire`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idGestionnaire` BLOB NOT NULL, `idRemocra` INTEGER, `nom` TEXT, `code` TEXT, `actif` INTEGER NOT NULL, PRIMARY KEY(`idGestionnaire`))",
         "fields": [
           {
             "fieldPath": "idGestionnaire",
@@ -127,6 +325,12 @@
             "columnName": "code",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "actif",
+            "columnName": "actif",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -149,8 +353,140 @@
         "foreignKeys": []
       },
       {
+        "tableName": "role",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idRole` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `nom` TEXT, `code` TEXT NOT NULL, `actif` INTEGER NOT NULL, PRIMARY KEY(`idRole`))",
+        "fields": [
+          {
+            "fieldPath": "idRole",
+            "columnName": "idRole",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actif",
+            "columnName": "actif",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idRole"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_role_idRole",
+            "unique": false,
+            "columnNames": [
+              "idRole"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_role_idRole` ON `${TABLE_NAME}` (`idRole`)"
+          },
+          {
+            "name": "index_role_idRemocra",
+            "unique": true,
+            "columnNames": [
+              "idRemocra"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_role_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "contactRole",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idContact` BLOB NOT NULL, `idRole` INTEGER NOT NULL, PRIMARY KEY(`idContact`, `idRole`), FOREIGN KEY(`idContact`) REFERENCES `contact`(`idContact`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idRole`) REFERENCES `role`(`idRemocra`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idContact",
+            "columnName": "idContact",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRole",
+            "columnName": "idRole",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idContact",
+            "idRole"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_contactRole_idContact",
+            "unique": false,
+            "columnNames": [
+              "idContact"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contactRole_idContact` ON `${TABLE_NAME}` (`idContact`)"
+          },
+          {
+            "name": "index_contactRole_idRole",
+            "unique": false,
+            "columnNames": [
+              "idRole"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contactRole_idRole` ON `${TABLE_NAME}` (`idRole`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "contact",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idContact"
+            ],
+            "referencedColumns": [
+              "idContact"
+            ]
+          },
+          {
+            "table": "role",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idRole"
+            ],
+            "referencedColumns": [
+              "idRemocra"
+            ]
+          }
+        ]
+      },
+      {
         "tableName": "contact",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idContact` BLOB NOT NULL, `idRemocra` INTEGER, `idGestionnaire` BLOB, `idRemocraGestionnaire` INTEGER, `fonction` TEXT, `civilite` TEXT, `nom` TEXT, `prenom` TEXT, `numero_voie` TEXT, `suffixe_voie` TEXT, `voie` TEXT, `lieu_dit` TEXT, `code_postal` TEXT, `ville` TEXT, `pays` TEXT, `telephone` TEXT, `email` TEXT, PRIMARY KEY(`idContact`), FOREIGN KEY(`idGestionnaire`) REFERENCES `gestionnaire`(`idGestionnaire`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idContact` BLOB NOT NULL, `idRemocra` INTEGER, `idGestionnaire` BLOB, `idRemocraGestionnaire` INTEGER, `fonction` TEXT, `civilite` TEXT, `nom` TEXT, `prenom` TEXT, `numeroVoie` TEXT, `voie` TEXT, `suffixeVoie` TEXT, `lieuDit` TEXT, `codePostal` TEXT, `ville` TEXT, `pays` TEXT, `telephone` TEXT, `email` TEXT, PRIMARY KEY(`idContact`), FOREIGN KEY(`idGestionnaire`) REFERENCES `gestionnaire`(`idGestionnaire`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "idContact",
@@ -201,14 +537,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "numero_voie",
-            "columnName": "numero_voie",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "suffixe_voie",
-            "columnName": "suffixe_voie",
+            "fieldPath": "numeroVoie",
+            "columnName": "numeroVoie",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -219,14 +549,20 @@
             "notNull": false
           },
           {
-            "fieldPath": "lieu_dit",
-            "columnName": "lieu_dit",
+            "fieldPath": "suffixeVoie",
+            "columnName": "suffixeVoie",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "code_postal",
-            "columnName": "code_postal",
+            "fieldPath": "lieuDit",
+            "columnName": "lieuDit",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "codePostal",
+            "columnName": "codePostal",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -294,12 +630,897 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "tournee",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idTournee` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `hydrantCount` INTEGER NOT NULL, `nom` TEXT NOT NULL, PRIMARY KEY(`idTournee`))",
+        "fields": [
+          {
+            "fieldPath": "idTournee",
+            "columnName": "idTournee",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hydrantCount",
+            "columnName": "hydrantCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idTournee"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_tournee_idTournee",
+            "unique": false,
+            "columnNames": [
+              "idTournee"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_tournee_idTournee` ON `${TABLE_NAME}` (`idTournee`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "hydrantTournee",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrantTournee` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `idHydrant` BLOB NOT NULL, `idTournee` BLOB NOT NULL, PRIMARY KEY(`idHydrantTournee`), FOREIGN KEY(`idHydrant`) REFERENCES `hydrant`(`idHydrant`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idTournee`) REFERENCES `tournee`(`idTournee`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idHydrantTournee",
+            "columnName": "idHydrantTournee",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idHydrant",
+            "columnName": "idHydrant",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idTournee",
+            "columnName": "idTournee",
+            "affinity": "BLOB",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idHydrantTournee"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_hydrantTournee_idHydrantTournee",
+            "unique": false,
+            "columnNames": [
+              "idHydrantTournee"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantTournee_idHydrantTournee` ON `${TABLE_NAME}` (`idHydrantTournee`)"
+          },
+          {
+            "name": "index_hydrantTournee_idRemocra",
+            "unique": true,
+            "columnNames": [
+              "idRemocra"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_hydrantTournee_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
+          },
+          {
+            "name": "index_hydrantTournee_idHydrant",
+            "unique": false,
+            "columnNames": [
+              "idHydrant"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantTournee_idHydrant` ON `${TABLE_NAME}` (`idHydrant`)"
+          },
+          {
+            "name": "index_hydrantTournee_idTournee",
+            "unique": false,
+            "columnNames": [
+              "idTournee"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantTournee_idTournee` ON `${TABLE_NAME}` (`idTournee`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "hydrant",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idHydrant"
+            ],
+            "referencedColumns": [
+              "idHydrant"
+            ]
+          },
+          {
+            "table": "tournee",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idTournee"
+            ],
+            "referencedColumns": [
+              "idTournee"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "hydrantVisite",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrantVisite` BLOB NOT NULL, `idHydrant` BLOB NOT NULL, `idTournee` BLOB NOT NULL, `dateTime` INTEGER NOT NULL, `statut` TEXT NOT NULL, `idTypeHydrantSaisie` BLOB, `agent1` TEXT, `agent2` TEXT, `ctrlDebitPression` INTEGER NOT NULL, `Débit à 1 bar (㎥/h)` INTEGER, `Pression dynamique à 60 ㎥ (bar)` REAL, `Pression statique (bar)` REAL, `hasAnomalieChanges` INTEGER NOT NULL, `observations` TEXT, PRIMARY KEY(`idHydrantVisite`), FOREIGN KEY(`idHydrant`) REFERENCES `hydrant`(`idHydrant`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idTournee`) REFERENCES `tournee`(`idTournee`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idTypeHydrantSaisie`) REFERENCES `typeHydrantSaisie`(`idTypeHydrantSaisie`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idHydrantVisite",
+            "columnName": "idHydrantVisite",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idHydrant",
+            "columnName": "idHydrant",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idTournee",
+            "columnName": "idTournee",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateTime",
+            "columnName": "dateTime",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "statut",
+            "columnName": "statut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idTypeHydrantSaisie",
+            "columnName": "idTypeHydrantSaisie",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agent1",
+            "columnName": "agent1",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agent2",
+            "columnName": "agent2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ctrlDebitPression",
+            "columnName": "ctrlDebitPression",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "debit",
+            "columnName": "Débit à 1 bar (㎥/h)",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pressionDyn",
+            "columnName": "Pression dynamique à 60 ㎥ (bar)",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pression",
+            "columnName": "Pression statique (bar)",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hasAnomalieChanges",
+            "columnName": "hasAnomalieChanges",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observations",
+            "columnName": "observations",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idHydrantVisite"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_hydrantVisite_idHydrantVisite",
+            "unique": true,
+            "columnNames": [
+              "idHydrantVisite"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_hydrantVisite_idHydrantVisite` ON `${TABLE_NAME}` (`idHydrantVisite`)"
+          },
+          {
+            "name": "index_hydrantVisite_idHydrant",
+            "unique": false,
+            "columnNames": [
+              "idHydrant"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantVisite_idHydrant` ON `${TABLE_NAME}` (`idHydrant`)"
+          },
+          {
+            "name": "index_hydrantVisite_idTournee",
+            "unique": false,
+            "columnNames": [
+              "idTournee"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantVisite_idTournee` ON `${TABLE_NAME}` (`idTournee`)"
+          },
+          {
+            "name": "index_hydrantVisite_idTypeHydrantSaisie",
+            "unique": false,
+            "columnNames": [
+              "idTypeHydrantSaisie"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantVisite_idTypeHydrantSaisie` ON `${TABLE_NAME}` (`idTypeHydrantSaisie`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "hydrant",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idHydrant"
+            ],
+            "referencedColumns": [
+              "idHydrant"
+            ]
+          },
+          {
+            "table": "tournee",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idTournee"
+            ],
+            "referencedColumns": [
+              "idTournee"
+            ]
+          },
+          {
+            "table": "typeHydrantSaisie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idTypeHydrantSaisie"
+            ],
+            "referencedColumns": [
+              "idTypeHydrantSaisie"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "typeHydrant",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idTypeHydrant` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `code` TEXT NOT NULL, `nom` TEXT NOT NULL, `actif` INTEGER NOT NULL, PRIMARY KEY(`idTypeHydrant`))",
+        "fields": [
+          {
+            "fieldPath": "idTypeHydrant",
+            "columnName": "idTypeHydrant",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actif",
+            "columnName": "actif",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idTypeHydrant"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_typeHydrant_idTypeHydrant",
+            "unique": false,
+            "columnNames": [
+              "idTypeHydrant"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typeHydrant_idTypeHydrant` ON `${TABLE_NAME}` (`idTypeHydrant`)"
+          },
+          {
+            "name": "index_typeHydrant_idRemocra",
+            "unique": true,
+            "columnNames": [
+              "idRemocra"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_typeHydrant_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "typeHydrantAnomalie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idTypeHydrantAnomalie` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `idCritere` INTEGER NOT NULL, `code` TEXT NOT NULL, `nom` TEXT NOT NULL, `actif` INTEGER NOT NULL, PRIMARY KEY(`idTypeHydrantAnomalie`), FOREIGN KEY(`idCritere`) REFERENCES `typeHydrantCritere`(`idRemocra`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idTypeHydrantAnomalie",
+            "columnName": "idTypeHydrantAnomalie",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idCritere",
+            "columnName": "idCritere",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actif",
+            "columnName": "actif",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idTypeHydrantAnomalie"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_typeHydrantAnomalie_idTypeHydrantAnomalie",
+            "unique": false,
+            "columnNames": [
+              "idTypeHydrantAnomalie"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typeHydrantAnomalie_idTypeHydrantAnomalie` ON `${TABLE_NAME}` (`idTypeHydrantAnomalie`)"
+          },
+          {
+            "name": "index_typeHydrantAnomalie_idRemocra",
+            "unique": true,
+            "columnNames": [
+              "idRemocra"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_typeHydrantAnomalie_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
+          },
+          {
+            "name": "index_typeHydrantAnomalie_idCritere",
+            "unique": false,
+            "columnNames": [
+              "idCritere"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typeHydrantAnomalie_idCritere` ON `${TABLE_NAME}` (`idCritere`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "typeHydrantCritere",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idCritere"
+            ],
+            "referencedColumns": [
+              "idRemocra"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "typeHydrantCritere",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idTypeHydrantCritere` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `code` TEXT NOT NULL, `nom` TEXT NOT NULL, `actif` INTEGER NOT NULL, PRIMARY KEY(`idTypeHydrantCritere`))",
+        "fields": [
+          {
+            "fieldPath": "idTypeHydrantCritere",
+            "columnName": "idTypeHydrantCritere",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actif",
+            "columnName": "actif",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idTypeHydrantCritere"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_typeHydrantCritere_idTypeHydrantCritere",
+            "unique": false,
+            "columnNames": [
+              "idTypeHydrantCritere"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typeHydrantCritere_idTypeHydrantCritere` ON `${TABLE_NAME}` (`idTypeHydrantCritere`)"
+          },
+          {
+            "name": "index_typeHydrantCritere_idRemocra",
+            "unique": true,
+            "columnNames": [
+              "idRemocra"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_typeHydrantCritere_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "typeHydrantNature",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idTypeHydrantNature` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `code` TEXT NOT NULL, `nom` TEXT NOT NULL, `idTypeHydrant` INTEGER, `actif` INTEGER NOT NULL, PRIMARY KEY(`idTypeHydrantNature`), FOREIGN KEY(`idTypeHydrant`) REFERENCES `typeHydrant`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "idTypeHydrantNature",
+            "columnName": "idTypeHydrantNature",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idTypeHydrant",
+            "columnName": "idTypeHydrant",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actif",
+            "columnName": "actif",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idTypeHydrantNature"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_typeHydrantNature_idTypeHydrantNature",
+            "unique": false,
+            "columnNames": [
+              "idTypeHydrantNature"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typeHydrantNature_idTypeHydrantNature` ON `${TABLE_NAME}` (`idTypeHydrantNature`)"
+          },
+          {
+            "name": "index_typeHydrantNature_idRemocra",
+            "unique": true,
+            "columnNames": [
+              "idRemocra"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_typeHydrantNature_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
+          },
+          {
+            "name": "index_typeHydrantNature_idTypeHydrant",
+            "unique": false,
+            "columnNames": [
+              "idTypeHydrant"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typeHydrantNature_idTypeHydrant` ON `${TABLE_NAME}` (`idTypeHydrant`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "typeHydrant",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idTypeHydrant"
+            ],
+            "referencedColumns": [
+              "idRemocra"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "typeHydrantNatureDeci",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idTypeHydrantNatureDeci` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `code` TEXT NOT NULL, `nom` TEXT NOT NULL, `actif` INTEGER NOT NULL, PRIMARY KEY(`idTypeHydrantNatureDeci`))",
+        "fields": [
+          {
+            "fieldPath": "idTypeHydrantNatureDeci",
+            "columnName": "idTypeHydrantNatureDeci",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actif",
+            "columnName": "actif",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idTypeHydrantNatureDeci"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_typeHydrantNatureDeci_idTypeHydrantNatureDeci",
+            "unique": false,
+            "columnNames": [
+              "idTypeHydrantNatureDeci"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typeHydrantNatureDeci_idTypeHydrantNatureDeci` ON `${TABLE_NAME}` (`idTypeHydrantNatureDeci`)"
+          },
+          {
+            "name": "index_typeHydrantNatureDeci_idRemocra",
+            "unique": true,
+            "columnNames": [
+              "idRemocra"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_typeHydrantNatureDeci_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "typeHydrantSaisie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idTypeHydrantSaisie` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `code` TEXT NOT NULL, `nom` TEXT NOT NULL, `actif` INTEGER NOT NULL, PRIMARY KEY(`idTypeHydrantSaisie`))",
+        "fields": [
+          {
+            "fieldPath": "idTypeHydrantSaisie",
+            "columnName": "idTypeHydrantSaisie",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "actif",
+            "columnName": "actif",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idTypeHydrantSaisie"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_typeHydrantSaisie_idTypeHydrantSaisie",
+            "unique": false,
+            "columnNames": [
+              "idTypeHydrantSaisie"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typeHydrantSaisie_idTypeHydrantSaisie` ON `${TABLE_NAME}` (`idTypeHydrantSaisie`)"
+          },
+          {
+            "name": "index_typeHydrantSaisie_idRemocra",
+            "unique": true,
+            "columnNames": [
+              "idRemocra"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_typeHydrantSaisie_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "hydrantVisiteAnomalie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrantVisite` BLOB NOT NULL, `idAnomalie` INTEGER NOT NULL, PRIMARY KEY(`idHydrantVisite`, `idAnomalie`), FOREIGN KEY(`idHydrantVisite`) REFERENCES `hydrantVisite`(`idHydrantVisite`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idAnomalie`) REFERENCES `typeHydrantAnomalie`(`idRemocra`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idHydrantVisite",
+            "columnName": "idHydrantVisite",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idAnomalie",
+            "columnName": "idAnomalie",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idHydrantVisite",
+            "idAnomalie"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_hydrantVisiteAnomalie_idHydrantVisite",
+            "unique": false,
+            "columnNames": [
+              "idHydrantVisite"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantVisiteAnomalie_idHydrantVisite` ON `${TABLE_NAME}` (`idHydrantVisite`)"
+          },
+          {
+            "name": "index_hydrantVisiteAnomalie_idAnomalie",
+            "unique": false,
+            "columnNames": [
+              "idAnomalie"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantVisiteAnomalie_idAnomalie` ON `${TABLE_NAME}` (`idAnomalie`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "hydrantVisite",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idHydrantVisite"
+            ],
+            "referencedColumns": [
+              "idHydrantVisite"
+            ]
+          },
+          {
+            "table": "typeHydrantAnomalie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idAnomalie"
+            ],
+            "referencedColumns": [
+              "idRemocra"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "hydrantAnomalie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrant` BLOB NOT NULL, `idAnomalie` INTEGER NOT NULL, PRIMARY KEY(`idHydrant`, `idAnomalie`), FOREIGN KEY(`idHydrant`) REFERENCES `hydrant`(`idHydrant`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idAnomalie`) REFERENCES `typeHydrantAnomalie`(`idRemocra`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idHydrant",
+            "columnName": "idHydrant",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idAnomalie",
+            "columnName": "idAnomalie",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idHydrant",
+            "idAnomalie"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_hydrantAnomalie_idHydrant",
+            "unique": false,
+            "columnNames": [
+              "idHydrant"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantAnomalie_idHydrant` ON `${TABLE_NAME}` (`idHydrant`)"
+          },
+          {
+            "name": "index_hydrantAnomalie_idAnomalie",
+            "unique": false,
+            "columnNames": [
+              "idAnomalie"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantAnomalie_idAnomalie` ON `${TABLE_NAME}` (`idAnomalie`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "hydrant",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idHydrant"
+            ],
+            "referencedColumns": [
+              "idHydrant"
+            ]
+          },
+          {
+            "table": "typeHydrantAnomalie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idAnomalie"
+            ],
+            "referencedColumns": [
+              "idRemocra"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9892c3b0e20978ee7b77cbd4e88df231')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '965095e8ff378c691f1adcb69acd97d6')"
     ]
   }
 }

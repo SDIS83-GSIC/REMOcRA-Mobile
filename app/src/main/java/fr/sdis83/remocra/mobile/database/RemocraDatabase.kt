@@ -17,7 +17,26 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
 
-@Database(version = 1, entities = [Hydrant::class, Gestionnaire::class, Contact::class])
+@Database(
+    version = 1,
+    entities = [Hydrant::class,
+        Commune::class,
+        Gestionnaire::class,
+        Role::class,
+        ContactRole::class,
+        Contact::class,
+        Tournee::class,
+        HydrantTournee::class,
+        HydrantVisite::class,
+        TypeHydrant::class,
+        TypeHydrantAnomalie::class,
+        TypeHydrantCritere::class,
+        TypeHydrantNature::class,
+        TypeHydrantNatureDeci::class,
+        TypeHydrantSaisie::class,
+        HydrantVisiteAnomalie::class,
+        HydrantAnomalie::class]
+)
 @TypeConverters(Converters::class)
 abstract class RemocraDatabase : RoomDatabase() {
     companion object : SingletonHolder<RemocraDatabase>() {
