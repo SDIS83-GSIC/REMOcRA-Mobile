@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "965095e8ff378c691f1adcb69acd97d6",
+    "identityHash": "204be5fb91eea40db928d4e46457cf31",
     "entities": [
       {
         "tableName": "hydrant",
@@ -1515,12 +1515,60 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "tourneeDispo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idTourneeDispo` BLOB NOT NULL, `idRemocra` INTEGER, `nom` TEXT, `choisie` INTEGER NOT NULL, PRIMARY KEY(`idTourneeDispo`))",
+        "fields": [
+          {
+            "fieldPath": "idTourneeDispo",
+            "columnName": "idTourneeDispo",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idRemocra",
+            "columnName": "idRemocra",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "choisie",
+            "columnName": "choisie",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idTourneeDispo"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_tourneeDispo_idTourneeDispo",
+            "unique": false,
+            "columnNames": [
+              "idTourneeDispo"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_tourneeDispo_idTourneeDispo` ON `${TABLE_NAME}` (`idTourneeDispo`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '965095e8ff378c691f1adcb69acd97d6')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '204be5fb91eea40db928d4e46457cf31')"
     ]
   }
 }

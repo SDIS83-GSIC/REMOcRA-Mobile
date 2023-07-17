@@ -419,3 +419,15 @@ data class Role(
     val code: String,
     val actif: Boolean,
 )
+
+
+@Entity(
+    tableName = "tourneeDispo",
+    indices = [Index("idTourneeDispo")],
+)
+data class TourneeDispo(
+    @PrimaryKey val idTourneeDispo: UUID = UUID.randomUUID(),
+    val idRemocra: Long?,
+    val nom: String?,
+    var choisie: Boolean = false
+)

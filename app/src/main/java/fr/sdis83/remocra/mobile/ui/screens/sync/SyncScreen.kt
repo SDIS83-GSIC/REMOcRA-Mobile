@@ -1,36 +1,156 @@
 package fr.sdis83.remocra.mobile.ui.screens.sync
 
-import androidx.compose.foundation.background
+import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.viewmodels.TourneeViewModel
+
 
 @Composable
 fun SyncScreen() {
+    val context = LocalContext.current
+
+    val tourneeViewModel = TourneeViewModel(context.applicationContext as Application)
+
+    var showCustomDialog by remember {
+        mutableStateOf(false)
+    }
+
+
     Column(
         modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
+            .fillMaxWidth()
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(30.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = stringResource(R.string.synchronisation),
+                fontWeight = FontWeight.Bold,
+                fontSize = 30.sp,
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp),
-            horizontalArrangement = Arrangement.Center
+                .fillMaxHeight()
+                .padding(30.dp),
+            horizontalArrangement = Arrangement.Start
         ) {
-            Text(text = "Synchronisation")
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(0.5f)
+                    .fillMaxHeight(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
+            ) {
+                // TODO : implémenter les strings
+                Text(
+                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp),
+                    text = stringResource(R.string.derniere_synchro),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+                Text(
+                    text = stringResource(R.string.visites_finies),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 18.sp
+                )
+                Text(
+                    text = stringResource(R.string.tournees_finies),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 18.sp
+                )
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    // Bouton pour récupération des tournées
+                    Button(
+                        modifier = Modifier.padding(0.dp, 20.dp, 10.dp, 20.dp),
+                        onClick = {
+                            showCustomDialog = !showCustomDialog
+                        },
+                        shape = RoundedCornerShape(50.dp),
+                        contentPadding = PaddingValues(10.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 10.dp),
+                            text = stringResource(R.string.choix_tournees),
+                            fontSize = 20.sp
+                        )
+                    }
+
+                    // Bouton pour synchroniser les tournées
+                    Button(
+                        modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 20.dp),
+                        onClick = {
+
+                          },
+                        shape = RoundedCornerShape(50.dp),
+                        contentPadding = PaddingValues(10.dp)
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 10.dp),
+                            text = stringResource(R.string.synchro_tournees),
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
+            ) {
+
+                Text(
+                    text = stringResource(R.string.historique_synchro),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+            }
+        }
+    }
+
+    if (showCustomDialog) {
+        ChoixTourneeDialog(tourneeViewModel) {
+            showCustomDialog = !showCustomDialog
         }
     }
 }

@@ -3,5 +3,16 @@
     <string name="login">Connexion</string>
     <string name="username">Utilisateur</string>
     <string name="password">Mot de passe</string>
-    <string name="url_api">http://127.0.0.1:8881/</string>
+    <string name="url_api">http://172.16.129.165:8881/</string>
+
+    <string name="aucune_tournee_a_reserver">Aucune tournée à réserver</string>
+    <string name="annuler">Annuler</string>
+    <string name="tournees_a_embarquer">Tournées à embarquer</string>
+    <string name="synchronisation">Synchronisation</string>
+    <string name="derniere_synchro">Dernière synchronisation le XX/XX/XXXX à XXhXX</string>
+    <string name="visites_finies">X / X visites de points d\'eau validées</string>
+    <string name="tournees_finies">X / X tournées non terminées</string>
+    <string name="choix_tournees">Choix des tournées</string>
+    <string name="synchro_tournees">Synchroniser les tournées</string>
+    <string name="historique_synchro">Historique des synchronisations</string>
 </resources>

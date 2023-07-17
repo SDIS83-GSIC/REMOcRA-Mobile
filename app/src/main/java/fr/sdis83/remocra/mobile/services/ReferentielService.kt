@@ -13,10 +13,13 @@ import fr.sdis83.remocra.mobile.database.TypeHydrantCritere
 import fr.sdis83.remocra.mobile.database.TypeHydrantNature
 import fr.sdis83.remocra.mobile.database.TypeHydrantNatureDeci
 import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
+import fr.sdis83.remocra.mobile.database.TourneeDispo
 import fr.sdis83.remocra.mobile.network.RetrofitBuilder
 import retrofit2.Call
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
-
+import retrofit2.http.POST
 interface ReferentielService {
     companion object {
         fun getRetroFitInstance(context: Context): ReferentielService =
@@ -25,6 +28,15 @@ interface ReferentielService {
 
     @GET("referentiel")
     fun getReferentiel(): Call<ReferentielResponse>
+
+    @GET("synchro/tourneesdispos")
+    fun getTourneesDisponibles(): Call<List<TourneeDispo>>
+
+    @FormUrlEncoded
+    @POST("synchro/reservertournees")
+    fun reserveTourneesDisponibles(
+        @Field("listIdTournees") listIdTournees: Array<String>
+    ): Call<ReservationTourneesResponse>
 
     data class ReferentielResponse(
         val communes: List<Commune>,
@@ -50,5 +62,16 @@ interface ReferentielService {
     data class HydrantAnomalieInput(
         val idHydrant: Long,
         val idAnomalie: Long,
+    )
+
+    data class ReservationTourneesResponse(
+        var tourneesReservees: List<TourneeWithHydrant>,
+        var tourneesNonReservees: List<Tournee>
+    )
+
+    data class TourneeWithHydrant(
+        val idRemocra: Long,
+        val nom: String,
+        val listeHydrant: List<Long>
     )
 }

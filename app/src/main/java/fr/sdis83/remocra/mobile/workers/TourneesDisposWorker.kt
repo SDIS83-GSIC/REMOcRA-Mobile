@@ -1,0 +1,39 @@
+package fr.sdis83.remocra.mobile.workers
+
+import android.content.Context
+import android.util.Log
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import fr.sdis83.remocra.mobile.database.RemocraDatabase
+import fr.sdis83.remocra.mobile.services.ReferentielService
+import java.util.UUID
+
+class TourneesDisposWorker constructor(
+    context: Context,
+    workerParams: WorkerParameters
+) : Worker(context, workerParams) {
+
+    companion object {
+        private const val TAG: String = "TourneesDisposWorker"
+    }
+
+    override fun doWork(): Result {
+        val retrofitBuilder = ReferentielService.getRetroFitInstance(applicationContext)
+        val tourneeDao = RemocraDatabase.getInstance(applicationContext).tourneeDao()
+
+        // On récupère les tournées disponibles de l'organisme
+        val tourneesDisponiblesResponse = retrofitBuilder.getTourneesDisponibles().execute()
+
+        if (!tourneesDisponiblesResponse.isSuccessful) {
+            Log.e(TAG, "Error executing work: " + tourneesDisponiblesResponse.errorBody().toString())
+            return Result.failure()
+        }
+
+        tourneeDao.truncateTourneesDispos()
+        tourneesDisponiblesResponse.body()?.forEach {
+            tourneeDao.insertTourneeDispo(it.copy(idTourneeDispo = UUID.randomUUID()))
+        }
+
+        return Result.success()
+    }
+}

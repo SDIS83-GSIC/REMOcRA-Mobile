@@ -35,7 +35,8 @@ import java.util.UUID
         TypeHydrantNatureDeci::class,
         TypeHydrantSaisie::class,
         HydrantVisiteAnomalie::class,
-        HydrantAnomalie::class]
+        HydrantAnomalie::class,
+        TourneeDispo::class]
 )
 @TypeConverters(Converters::class)
 abstract class RemocraDatabase : RoomDatabase() {
@@ -49,6 +50,7 @@ abstract class RemocraDatabase : RoomDatabase() {
     }
 
     abstract fun referentielDao(): ReferentielDao
+    abstract fun tourneeDao(): TourneesDao
 }
 
 class Converters {

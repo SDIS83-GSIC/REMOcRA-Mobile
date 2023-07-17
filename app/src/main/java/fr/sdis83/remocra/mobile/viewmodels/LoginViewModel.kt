@@ -45,12 +45,12 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 .putString("password", password)
                 .build()
         ).build()
-        val referentielWorker = OneTimeWorkRequestBuilder<ReferentielWorker>().build()
+        //val referentielWorker = OneTimeWorkRequestBuilder<ReferentielWorker>().build()
 
         WorkManager.getInstance(getApplication()).let { workManager ->
             workManager
                 .beginWith(loginWorker)
-                .then(referentielWorker)
+               // .then(referentielWorker)
                 .enqueue()
             workManager.getWorkInfoByIdLiveData(loginWorker.id).observeForever {
                 when (it.state) {
@@ -62,6 +62,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     WorkInfo.State.SUCCEEDED -> {
                         info.value = "Connexion réussie"
                         loginStatus.value = JobStatus.SUCCESS
+                        goToMainActivity.postValue(true)
                     }
 
                     WorkInfo.State.FAILED -> {
@@ -72,6 +73,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     else -> loginStatus.value = JobStatus.WAITING
                 }
             }
+            /*
             workManager.getWorkInfoByIdLiveData(referentielWorker.id).observeForever {
                 when (it.state) {
                     WorkInfo.State.RUNNING -> {
@@ -87,7 +89,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
                     else -> referentielStatus.value = JobStatus.WAITING
                 }
-            }
+            }*/
         }
     }
 }
