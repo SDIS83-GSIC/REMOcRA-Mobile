@@ -21,6 +21,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             WAITING,
             SUCCESS,
             LOADING,
+            ERROR_VERSION,
             ERROR,
         }
     }
@@ -64,27 +65,35 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     }
 
                     WorkInfo.State.FAILED -> {
-                        info.value = "Erreur de connexion"
-                        loginStatus.value = JobStatus.ERROR
+                        info.value = if(!it.outputData.getString("VERSION_INCOMPATIBLE").isNullOrEmpty()) {
+
+                            loginStatus.value = JobStatus.ERROR_VERSION
+                            "La version de la tablette n'est pas à jour, veuillez contacter votre SDIS."
+                        } else {
+                            loginStatus.value = JobStatus.ERROR
+                            "Erreur de connexion"
+                        }
                     }
 
                     else -> loginStatus.value = JobStatus.WAITING
                 }
             }
             workManager.getWorkInfoByIdLiveData(referentielWorker.id).observeForever {
-                when (it.state) {
-                    WorkInfo.State.RUNNING -> {
-                        info.value = "Récupération du référentiel"
-                        referentielStatus.value = JobStatus.LOADING
-                    }
+                if(loginStatus.value != JobStatus.ERROR_VERSION) {
+                    when (it.state) {
+                        WorkInfo.State.RUNNING -> {
+                            info.value = "Récupération du référentiel"
+                            referentielStatus.value = JobStatus.LOADING
+                        }
 
-                    WorkInfo.State.SUCCEEDED -> goToMainActivity.postValue(true)
-                    WorkInfo.State.FAILED -> {
-                        info.value = "Erreur lors de la récupération du référentiel"
-                        referentielStatus.value = JobStatus.ERROR
-                    }
+                        WorkInfo.State.SUCCEEDED -> goToMainActivity.postValue(true)
+                        WorkInfo.State.FAILED -> {
+                            info.value = "Erreur lors de la récupération du référentiel"
+                            referentielStatus.value = JobStatus.ERROR
+                        }
 
-                    else -> referentielStatus.value = JobStatus.WAITING
+                        else -> referentielStatus.value = JobStatus.WAITING
+                    }
                 }
             }
         }

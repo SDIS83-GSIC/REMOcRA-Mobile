@@ -3,8 +3,11 @@ package fr.sdis83.remocra.mobile.workers
 import android.content.Context
 import android.content.pm.PackageManager
 import android.util.Log
+import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import fr.sdis83.remocra.mobile.authn.SessionManager
 import fr.sdis83.remocra.mobile.services.AuthService
 
@@ -42,7 +45,20 @@ class LoginWorker constructor(
         ).execute()
 
         if (!loginResponse.isSuccessful) {
-            Log.e(TAG, "Error executing work: " + loginResponse.errorBody().toString())
+            // Si la version n'est pas compatible, on met un message
+            val json = JsonParser()
+            val errorMessage : JsonObject? = json.parse(loginResponse.errorBody()?.string()).asJsonObject
+            if(errorMessage != null && errorMessage.get("message").toString().contains("version", ignoreCase = true)) {
+                // On renvoie le message à logger !
+                val outputData = Data.Builder()
+                    .putString("VERSION_INCOMPATIBLE", errorMessage.get("message").toString())
+                    .build()
+
+                return Result.failure(outputData)
+            } else {
+
+                Log.e(TAG, "Error executing work: " + loginResponse.errorBody().toString())
+            }
             return Result.failure()
         }
 
