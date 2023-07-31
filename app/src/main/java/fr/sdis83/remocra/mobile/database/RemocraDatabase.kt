@@ -54,7 +54,6 @@ abstract class RemocraDatabase : RoomDatabase() {
     }
 
     abstract fun referentielDao(): ReferentielDao
-
     abstract fun hydrantDao(): HydrantDao
 
     abstract fun tourneeDao(): TourneeDao
@@ -66,6 +65,8 @@ abstract class RemocraDatabase : RoomDatabase() {
     abstract fun gestionnairesDao(): GestionnairesDao
 
     abstract fun contactsDao(): ContactsDao
+
+    abstract fun synchronisationDao(): SynchronisationDao
 }
 
 class Converters {
