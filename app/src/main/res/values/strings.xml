@@ -3,7 +3,7 @@
     <string name="login">Connexion</string>
     <string name="username">Utilisateur</string>
     <string name="password">Mot de passe</string>
-    <string name="url_api">http://172.16.129.165:8881/</string>
+    <string name="url_api">http://127.0.0.1:8881/</string>
 
     <string name="aucune_tournee_a_reserver">Aucune tournée à réserver</string>
     <string name="annuler">Annuler</string>

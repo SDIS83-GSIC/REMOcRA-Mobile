@@ -3,7 +3,6 @@ package fr.sdis83.remocra.mobile.viewmodels
 import android.app.Application
 import android.content.Context
 import android.widget.Toast
-import androidx.annotation.WorkerThread
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.work.OneTimeWorkRequestBuilder
@@ -14,7 +13,7 @@ import fr.sdis83.remocra.mobile.database.TourneeDispo
 import fr.sdis83.remocra.mobile.workers.ReserveTourneesWorker
 import fr.sdis83.remocra.mobile.workers.TourneesDisposWorker
 
-class TourneeViewModel(application: Application) :  AndroidViewModel(application) {
+class ChoixTourneeViewModel(application: Application) :  AndroidViewModel(application) {
     companion object {
         private const val TAG = "TourneeViewModel"
 
@@ -25,10 +24,10 @@ class TourneeViewModel(application: Application) :  AndroidViewModel(application
             ERROR,
         }
     }
-    private val dao = RemocraDatabase.getInstance(getApplication()).tourneeDao()
-    val tourneesDisponibles = dao.getTourneesDisponiblesLiveData()
+    private val tourneesDao = RemocraDatabase.getInstance(getApplication()).tourneesDao()
+    val tourneesDisponibles = tourneesDao.getTourneesDisponiblesLiveData()
 
-    suspend fun updateTourneeDispo(tourneeDispo : TourneeDispo) = dao.updateTourneeDispo(tourneeDispo)
+    suspend fun updateTourneeDispo(tourneeDispo : TourneeDispo) = tourneesDao.updateTourneeDispo(tourneeDispo)
 
     private var tourneesDisponiblesStatus = mutableStateOf(JobStatus.WAITING)
     private var tourneesReserveesStatus = mutableStateOf(JobStatus.WAITING)
@@ -114,8 +113,6 @@ class TourneeViewModel(application: Application) :  AndroidViewModel(application
                     }
                 }
             }
-
         }
     }
-
 }

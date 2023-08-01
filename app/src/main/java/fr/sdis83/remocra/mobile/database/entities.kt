@@ -10,9 +10,8 @@ import java.util.UUID
 
 @Entity(
     tableName = "hydrant",
-    indices = [Index("idHydrant"), Index("idCommune"), Index("idNature"), Index("idNatureDeci"), Index(
-        "idGestionnaire"
-    )],
+    indices = [Index("idHydrant"), Index("idRemocra", unique = true), Index("idCommune"), Index("idNature"),
+        Index("idNatureDeci"), Index("idGestionnaire")],
     foreignKeys = [
         ForeignKey(
             entity = Commune::class,
@@ -77,7 +76,7 @@ data class Hydrant(
 
 @Entity(
     tableName = "tournee",
-    indices = [Index("idTournee")],
+    indices = [Index("idTournee"), Index("idRemocra", unique = true)],
 )
 data class Tournee(
     @PrimaryKey val idTournee: UUID = UUID.randomUUID(),
@@ -88,30 +87,26 @@ data class Tournee(
 
 @Entity(
     tableName = "hydrantTournee",
-    indices = [Index("idHydrantTournee"), Index(
-        "idRemocra",
-        unique = true
-    ), Index("idHydrant"), Index("idTournee")],
+    indices = [Index("idHydrantTournee"), Index("idRemocraHydrant"), Index("idRemocraTournee")],
     foreignKeys = [
         ForeignKey(
             entity = Hydrant::class,
-            parentColumns = ["idHydrant"],
-            childColumns = ["idHydrant"],
+            parentColumns = ["idRemocra"],
+            childColumns = ["idRemocraHydrant"],
             onDelete = ForeignKey.CASCADE
         ),
         ForeignKey(
             entity = Tournee::class,
-            parentColumns = ["idTournee"],
-            childColumns = ["idTournee"],
+            parentColumns = ["idRemocra"],
+            childColumns = ["idRemocraTournee"],
             onDelete = ForeignKey.CASCADE
         ),
     ],
 )
 data class HydrantTournee(
     @PrimaryKey val idHydrantTournee: UUID = UUID.randomUUID(),
-    val idRemocra: Long,
-    val idHydrant: UUID,
-    val idTournee: UUID,
+    val idRemocraHydrant: Long,
+    val idRemocraTournee: Long,
 )
 
 @Entity(

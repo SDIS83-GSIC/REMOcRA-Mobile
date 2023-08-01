@@ -19,7 +19,7 @@ class TourneesDisposWorker constructor(
 
     override fun doWork(): Result {
         val retrofitBuilder = ReferentielService.getRetroFitInstance(applicationContext)
-        val tourneeDao = RemocraDatabase.getInstance(applicationContext).tourneeDao()
+        val tourneesDao = RemocraDatabase.getInstance(applicationContext).tourneesDao()
 
         // On récupère les tournées disponibles de l'organisme
         val tourneesDisponiblesResponse = retrofitBuilder.getTourneesDisponibles().execute()
@@ -29,9 +29,9 @@ class TourneesDisposWorker constructor(
             return Result.failure()
         }
 
-        tourneeDao.truncateTourneesDispos()
+        tourneesDao.truncateTourneesDispos()
         tourneesDisponiblesResponse.body()?.forEach {
-            tourneeDao.insertTourneeDispo(it.copy(idTourneeDispo = UUID.randomUUID()))
+            tourneesDao.insertTourneeDispo(it.copy(idTourneeDispo = UUID.randomUUID()))
         }
 
         return Result.success()

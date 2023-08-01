@@ -22,12 +22,19 @@ class ReferentielWorker constructor(
     override fun doWork(): Result {
         val retrofitBuilder = ReferentielService.getRetroFitInstance(applicationContext)
         val referentielDao = RemocraDatabase.getInstance(applicationContext).referentielDao()
+        val tourneesDao = RemocraDatabase.getInstance(applicationContext).tourneesDao()
 
         val referentielResponse = retrofitBuilder.getReferentiel().execute()
 
         if (!referentielResponse.isSuccessful) {
             Log.e(TAG, "Error executing work: " + referentielResponse.errorBody().toString())
             return Result.failure()
+        }
+
+        tourneesDao.apply {
+            truncateTourneesDispos()
+            truncateHydrantTournee()
+            truncateTournee()
         }
 
         referentielDao.apply {

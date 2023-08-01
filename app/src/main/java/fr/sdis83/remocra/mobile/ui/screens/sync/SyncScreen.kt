@@ -26,19 +26,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import fr.sdis83.remocra.mobile.R
-import fr.sdis83.remocra.mobile.viewmodels.TourneeViewModel
+import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 
 
 @Composable
 fun SyncScreen() {
     val context = LocalContext.current
 
-    val tourneeViewModel = TourneeViewModel(context.applicationContext as Application)
+    val choixTourneeViewModel = ChoixTourneeViewModel(context.applicationContext as Application)
 
     var showCustomDialog by remember {
         mutableStateOf(false)
     }
-
 
     Column(
         modifier = Modifier
@@ -119,7 +118,7 @@ fun SyncScreen() {
                         modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 20.dp),
                         onClick = {
 
-                          },
+                        },
                         shape = RoundedCornerShape(50.dp),
                         contentPadding = PaddingValues(10.dp)
                     ) {
@@ -149,7 +148,7 @@ fun SyncScreen() {
     }
 
     if (showCustomDialog) {
-        ChoixTourneeDialog(tourneeViewModel) {
+        ChoixTourneeDialog(choixTourneeViewModel) {
             showCustomDialog = !showCustomDialog
         }
     }

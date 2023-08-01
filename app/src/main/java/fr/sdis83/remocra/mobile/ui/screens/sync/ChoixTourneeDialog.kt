@@ -19,40 +19,40 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
-import fr.sdis83.remocra.mobile.viewmodels.TourneeViewModel
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import fr.sdis83.remocra.mobile.database.TourneeDispo
-import kotlin.concurrent.thread
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.database.TourneeDispo
+import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 import kotlinx.coroutines.launch
 
+
 @Composable
-fun ChoixTourneeDialog(tourneeViewModel: TourneeViewModel, onDismiss: () -> Unit) {
+fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, onDismiss: () -> Unit) {
     val context = LocalContext.current
 
-    val listeTourneesDispo = tourneeViewModel.tourneesDisponibles.observeAsState(listOf())
-
+    val listeTourneesDispo = choixTourneeViewModel.tourneesDisponibles.observeAsState(listOf())
 
     LaunchedEffect(key1 = Unit) {
-            tourneeViewModel.getTourneesDisponibles()
+        choixTourneeViewModel.getTourneesDisponibles()
     }
 
-
-    Dialog(onDismissRequest = { onDismiss() }, properties = DialogProperties(
-        dismissOnBackPress = true, dismissOnClickOutside = true
-    )) {
+    Dialog(
+        onDismissRequest = { onDismiss() }, properties = DialogProperties(
+            dismissOnBackPress = true, dismissOnClickOutside = true
+        )
+    ) {
         Card(
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier.size(1600.dp, 300.dp)
@@ -72,10 +72,11 @@ fun ChoixTourneeDialog(tourneeViewModel: TourneeViewModel, onDismiss: () -> Unit
 
                 if (!listeTourneesDispo.value.isNullOrEmpty()) {
                     LazyVerticalGrid(
-                        columns = GridCells.Adaptive(minSize = 225.dp)
+                        columns = GridCells.Adaptive(minSize = 225.dp),
+                        modifier = Modifier.weight(1f, fill = false)
                     ) {
                         items(listeTourneesDispo.value) {
-                            TourneeRow(tourneeDispo = it, tourneeViewModel)
+                            TourneeRow(tourneeDispo = it, choixTourneeViewModel)
                         }
                     }
 
@@ -90,11 +91,10 @@ fun ChoixTourneeDialog(tourneeViewModel: TourneeViewModel, onDismiss: () -> Unit
                             Text(text = stringResource(R.string.annuler))
                         }
 
-
                         Button(
                             onClick = {
                                 // Fait un appel pour réserver les tournées selectionnées
-                                tourneeViewModel.reserveTournees(context)
+                                choixTourneeViewModel.reserveTournees(context)
                                 onDismiss()
                             },
                             Modifier
@@ -115,7 +115,7 @@ fun ChoixTourneeDialog(tourneeViewModel: TourneeViewModel, onDismiss: () -> Unit
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text =  stringResource(R.string.aucune_tournee_a_reserver)
+                            text = stringResource(R.string.aucune_tournee_a_reserver)
                         )
 
                         Button(
@@ -124,7 +124,7 @@ fun ChoixTourneeDialog(tourneeViewModel: TourneeViewModel, onDismiss: () -> Unit
                             },
                             Modifier
                                 .padding(10.dp)
-                            ) {
+                        ) {
                             Text(
                                 text = "Retour"
                             )
@@ -138,12 +138,14 @@ fun ChoixTourneeDialog(tourneeViewModel: TourneeViewModel, onDismiss: () -> Unit
 }
 
 @Composable
-fun TourneeRow(tourneeDispo: TourneeDispo, tourneeViewModel: TourneeViewModel) {
+fun TourneeRow(tourneeDispo: TourneeDispo, choixTourneeViewModel: ChoixTourneeViewModel) {
     val checkedState = remember { mutableStateOf(tourneeDispo.choisie) }
     val coroutine = rememberCoroutineScope()
-    Card(modifier = Modifier
-        .padding(all = 10.dp)
-        .fillMaxWidth()) {
+    Card(
+        modifier = Modifier
+            .padding(all = 10.dp)
+            .fillMaxWidth()
+    ) {
         Row {
             Checkbox(
                 checked = checkedState.value,
@@ -152,9 +154,9 @@ fun TourneeRow(tourneeDispo: TourneeDispo, tourneeViewModel: TourneeViewModel) {
                     checkedState.value = it
                     tourneeDispo.choisie = it
                     coroutine.launch {
-                        tourneeViewModel.updateTourneeDispo(tourneeDispo)
+                        choixTourneeViewModel.updateTourneeDispo(tourneeDispo)
                     }
-              },
+                },
             )
             Text(tourneeDispo.nom.toString(), fontSize = 15.sp, modifier = Modifier.padding(10.dp))
         }

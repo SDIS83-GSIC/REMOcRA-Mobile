@@ -16,6 +16,12 @@ abstract class TourneesDao {
     @Query("DELETE FROM tourneeDispo")
     abstract fun truncateTourneesDispos()
 
+    @Query("DELETE FROM tournee")
+    abstract fun truncateTournee()
+
+    @Query("DELETE FROM hydrantTournee")
+    abstract fun truncateHydrantTournee()
+
     @Query("SELECT * FROM tourneeDispo")
     abstract fun getTourneesDisponiblesLiveData() : LiveData<List<TourneeDispo>>
 

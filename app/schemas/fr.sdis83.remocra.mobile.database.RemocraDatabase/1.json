@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "204be5fb91eea40db928d4e46457cf31",
+    "identityHash": "96f88bebb21a8e17b4297a4e78302a14",
     "entities": [
       {
         "tableName": "hydrant",
@@ -150,6 +150,15 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrant_idHydrant` ON `${TABLE_NAME}` (`idHydrant`)"
+          },
+          {
+            "name": "index_hydrant_idRemocra",
+            "unique": true,
+            "columnNames": [
+              "idRemocra"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_hydrant_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
           },
           {
             "name": "index_hydrant_idCommune",
@@ -675,13 +684,22 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_tournee_idTournee` ON `${TABLE_NAME}` (`idTournee`)"
+          },
+          {
+            "name": "index_tournee_idRemocra",
+            "unique": true,
+            "columnNames": [
+              "idRemocra"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_tournee_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
           }
         ],
         "foreignKeys": []
       },
       {
         "tableName": "hydrantTournee",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrantTournee` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `idHydrant` BLOB NOT NULL, `idTournee` BLOB NOT NULL, PRIMARY KEY(`idHydrantTournee`), FOREIGN KEY(`idHydrant`) REFERENCES `hydrant`(`idHydrant`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idTournee`) REFERENCES `tournee`(`idTournee`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrantTournee` BLOB NOT NULL, `idRemocraHydrant` INTEGER NOT NULL, `idRemocraTournee` INTEGER NOT NULL, PRIMARY KEY(`idHydrantTournee`), FOREIGN KEY(`idRemocraHydrant`) REFERENCES `hydrant`(`idRemocra`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idRemocraTournee`) REFERENCES `tournee`(`idRemocra`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "idHydrantTournee",
@@ -690,21 +708,15 @@
             "notNull": true
           },
           {
-            "fieldPath": "idRemocra",
-            "columnName": "idRemocra",
+            "fieldPath": "idRemocraHydrant",
+            "columnName": "idRemocraHydrant",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
-            "fieldPath": "idHydrant",
-            "columnName": "idHydrant",
-            "affinity": "BLOB",
-            "notNull": true
-          },
-          {
-            "fieldPath": "idTournee",
-            "columnName": "idTournee",
-            "affinity": "BLOB",
+            "fieldPath": "idRemocraTournee",
+            "columnName": "idRemocraTournee",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -725,31 +737,22 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantTournee_idHydrantTournee` ON `${TABLE_NAME}` (`idHydrantTournee`)"
           },
           {
-            "name": "index_hydrantTournee_idRemocra",
-            "unique": true,
-            "columnNames": [
-              "idRemocra"
-            ],
-            "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_hydrantTournee_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
-          },
-          {
-            "name": "index_hydrantTournee_idHydrant",
+            "name": "index_hydrantTournee_idRemocraHydrant",
             "unique": false,
             "columnNames": [
-              "idHydrant"
+              "idRemocraHydrant"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantTournee_idHydrant` ON `${TABLE_NAME}` (`idHydrant`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantTournee_idRemocraHydrant` ON `${TABLE_NAME}` (`idRemocraHydrant`)"
           },
           {
-            "name": "index_hydrantTournee_idTournee",
+            "name": "index_hydrantTournee_idRemocraTournee",
             "unique": false,
             "columnNames": [
-              "idTournee"
+              "idRemocraTournee"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantTournee_idTournee` ON `${TABLE_NAME}` (`idTournee`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantTournee_idRemocraTournee` ON `${TABLE_NAME}` (`idRemocraTournee`)"
           }
         ],
         "foreignKeys": [
@@ -758,10 +761,10 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "idHydrant"
+              "idRemocraHydrant"
             ],
             "referencedColumns": [
-              "idHydrant"
+              "idRemocra"
             ]
           },
           {
@@ -769,10 +772,10 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "idTournee"
+              "idRemocraTournee"
             ],
             "referencedColumns": [
-              "idTournee"
+              "idRemocra"
             ]
           }
         ]
@@ -1568,7 +1571,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '204be5fb91eea40db928d4e46457cf31')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '96f88bebb21a8e17b4297a4e78302a14')"
     ]
   }
 }
