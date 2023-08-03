@@ -343,6 +343,7 @@ data class Gestionnaire(
     val nom: String?,
     val code: String?,
     val actif: Boolean,
+    val edited: Boolean = false
 )
 
 @Entity(
@@ -374,7 +375,8 @@ data class Contact(
     val ville: String?,
     val pays: String?,
     val telephone: String?,
-    val email: String?
+    val email: String?,
+    val edited: Boolean = false
 ) {
     enum class Civilite {
         M,

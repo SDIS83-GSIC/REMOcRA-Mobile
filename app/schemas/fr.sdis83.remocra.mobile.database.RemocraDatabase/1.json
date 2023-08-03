@@ -2,7 +2,6 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "13585b7de27802586e86fffa800b8f22",
     "entities": [
       {
         "tableName": "hydrant",
@@ -309,7 +308,7 @@
       },
       {
         "tableName": "gestionnaire",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idGestionnaire` BLOB NOT NULL, `idRemocra` INTEGER, `nom` TEXT, `code` TEXT, `actif` INTEGER NOT NULL, PRIMARY KEY(`idGestionnaire`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idGestionnaire` BLOB NOT NULL, `idRemocra` INTEGER, `nom` TEXT, `code` TEXT, `actif` INTEGER NOT NULL, `edited` INTEGER NOT NULL, PRIMARY KEY(`idGestionnaire`))",
         "fields": [
           {
             "fieldPath": "idGestionnaire",
@@ -338,6 +337,12 @@
           {
             "fieldPath": "actif",
             "columnName": "actif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "edited",
+            "columnName": "edited",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -495,7 +500,7 @@
       },
       {
         "tableName": "contact",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idContact` BLOB NOT NULL, `idRemocra` INTEGER, `idGestionnaire` BLOB, `idRemocraGestionnaire` INTEGER, `fonction` TEXT, `civilite` TEXT, `nom` TEXT, `prenom` TEXT, `numeroVoie` TEXT, `voie` TEXT, `suffixeVoie` TEXT, `lieuDit` TEXT, `codePostal` TEXT, `ville` TEXT, `pays` TEXT, `telephone` TEXT, `email` TEXT, PRIMARY KEY(`idContact`), FOREIGN KEY(`idGestionnaire`) REFERENCES `gestionnaire`(`idGestionnaire`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idContact` BLOB NOT NULL, `idRemocra` INTEGER, `idGestionnaire` BLOB, `idRemocraGestionnaire` INTEGER, `fonction` TEXT, `civilite` TEXT, `nom` TEXT, `prenom` TEXT, `numeroVoie` TEXT, `voie` TEXT, `suffixeVoie` TEXT, `lieuDit` TEXT, `codePostal` TEXT, `ville` TEXT, `pays` TEXT, `telephone` TEXT, `email` TEXT, `edited` INTEGER NOT NULL, PRIMARY KEY(`idContact`), FOREIGN KEY(`idGestionnaire`) REFERENCES `gestionnaire`(`idGestionnaire`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "idContact",
@@ -598,6 +603,12 @@
             "columnName": "email",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "edited",
+            "columnName": "edited",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -1571,7 +1582,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '13585b7de27802586e86fffa800b8f22')"
+
     ]
   }
 }

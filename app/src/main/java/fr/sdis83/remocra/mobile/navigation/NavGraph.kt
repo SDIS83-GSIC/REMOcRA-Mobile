@@ -9,6 +9,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import fr.sdis83.remocra.mobile.MapViewState
 import fr.sdis83.remocra.mobile.ui.screens.hydrants.HydrantVisiteScreen
+import fr.sdis83.remocra.mobile.ui.screens.settings.ContactFormScreen
+import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireFormScreen
+import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireListingScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.SettingScreen
 import fr.sdis83.remocra.mobile.ui.screens.sync.SyncScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneeScreen
@@ -30,7 +33,7 @@ fun NavGraph(
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
             }
-            SettingScreen()
+            SettingScreen(navController)
         }
 
         composable(route = Screens.Sync.route) {
@@ -39,6 +42,7 @@ fun NavGraph(
             }
             SyncScreen()
         }
+
         composable(route = Screens.Tournees.route) {
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
@@ -58,6 +62,7 @@ fun NavGraph(
                 TourneeScreen(navController, idTournee)
             }
         }
+
         composable(
             route = Screens.Hydrant.route,
             arguments = listOf(navArgument("idTournee") {}, navArgument("idHydrant") {})
@@ -73,6 +78,72 @@ fun NavGraph(
                     mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
                 }
                 HydrantVisiteScreen(navController, idTournee, idHydrant, mapViewModel)
+            }
+        }
+
+        composable(route = Screens.ListGestionnaire.route) {
+            LaunchedEffect(Unit) {
+                mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
+            }
+            GestionnaireListingScreen(navController)
+        }
+
+        composable(route = Screens.CreateGestionnaire.route) {
+            LaunchedEffect(Unit) {
+                mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
+            }
+            GestionnaireFormScreen(navController, null)
+        }
+
+        composable(
+            route = Screens.EditGestionnaire.route,
+            arguments = listOf(navArgument("idGestionnaire") { nullable = true })
+        ) {
+            if (!it.arguments?.getString("idGestionnaire").isNullOrEmpty()) {
+                val idGestionnaire = UUID.fromString(it.arguments?.getString("idGestionnaire"))
+                    ?: throw Exception("wrong idGestionnaire")
+                LaunchedEffect(Unit) {
+                    mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
+                }
+                GestionnaireFormScreen(navController, idGestionnaire)
+            }
+        }
+
+        composable(
+            route = Screens.CreateContact.route,
+            arguments = listOf(
+                navArgument("idGestionnaire") { nullable = true }
+            )
+        ) {
+            if (!it.arguments?.getString("idGestionnaire").isNullOrEmpty()) {
+                val idGestionnaire = UUID.fromString(it.arguments?.getString("idGestionnaire"))
+                    ?: throw Exception("wrong idGestionnaire")
+                LaunchedEffect(Unit) {
+                    mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
+                }
+                ContactFormScreen(navController, null, idGestionnaire)
+            }
+        }
+
+        composable(
+            route = Screens.EditContact.route,
+            arguments = listOf(
+                navArgument("idGestionnaire") { nullable = false },
+                navArgument("idContact") { nullable = true })
+        ) {
+            if (!it.arguments?.getString("idContact").isNullOrEmpty()) {
+                val idContact = UUID.fromString(it.arguments?.getString("idContact"))
+                    ?: throw Exception("wrong idContact")
+                if (!it.arguments?.getString("idGestionnaire").isNullOrEmpty()) {
+                    val idGestionnaire =
+                        UUID.fromString(it.arguments?.getString("idGestionnaire"))
+                            ?: throw Exception("wrong idGestionnaire")
+                    LaunchedEffect(Unit) {
+                        mapViewState.value =
+                            MapViewState(showMapView = false, isFullscreen = false)
+                    }
+                    ContactFormScreen(navController, idContact, idGestionnaire)
+                }
             }
         }
     }

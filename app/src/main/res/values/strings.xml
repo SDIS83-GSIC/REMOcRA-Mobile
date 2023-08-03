@@ -15,4 +15,58 @@
     <string name="choix_tournees">Choix des tournées</string>
     <string name="synchro_tournees">Synchroniser les tournées</string>
     <string name="historique_synchro">Historique des synchronisations</string>
+<!-- SettingsScreen -->
+    <string name="parametrage">Paramétrage</string>
+    <string name="gestionnaireST">Gestionnaire et contact</string> <!-- ST pour Section Title -->
+    <string name="gestionnaireSubST">Vous pouvez administrer vos gestionnaires et leurs contacts associés</string>
+    <string name="createGestionnaireBTN">Créer un gestionnaire</string>
+    <string name="manageGestionnaireBTN">Liste des gestionnaires</string>
+    <string name="editContactBTN">Modifier un contact</string>
+    <string name="createPeiST">Point d\'eau Incendie</string>
+    <string name="createPeiSubST">Vous pouvez ajouter un point d\'eau</string>
+    <string name="createPeiBTN">Créer un PEI</string>
+    <string name="listingPeiBTN">Liste des PEI créés</string>
+<!-- GestionnaireFormScreen -->
+    <string name="addGestionnaireST">Ajout d\'un gestionnaire</string> <!-- ST pour Section Title -->
+    <string name="editGestionnaireST">"Modification du gestionnaire : "</string>
+    <string name="formGestionnaireName">Nom *</string>
+    <string name="formGestionnaireNamePH">Nom du gestionnaire</string> <!-- PH pour Place Holder -->
+    <string name="formGestionnaireSiren">N° Siren</string>
+    <string name="formGestionnaireSirenPH">351624761</string>
+    <string name="associatedContactSubST">Contact(s) associé(s)</string>
+    <string name="addContactClickText">Ajouter un contact</string>
+    <string name="noContact">Aucun contact associé</string>
+    <string name="saveGestionnaireBTN">Enregistrer ce gestionnaire</string>
+<!-- GestionnaireFormScreen -->
+    <string name="addContactST">Ajout d\'un contact pour </string>
+    <string name="editContactST">Modification du contact : </string>
+    <string name="persoInfoSubST">Informations personnelles</string>
+    <string name="formContactFonction">Fonction</string>
+    <string name="formContactFonctionPH">Fonction</string>
+    <string name="formContactFirstName">Prénom</string>
+    <string name="formContactFirstNamePH">Prénom</string>
+    <string name="formContactName">Nom</string>
+    <string name="formContactNamePH">Nom</string>
+    <string name="addressSubST">Adresse</string>
+    <string name="formContactNum">N°</string>
+    <string name="formContactNumPH">335</string>
+    <string name="formContactSuffixe">Suffixe</string>
+    <string name="formContactSuffixePH">BIS, TER, ...</string>
+    <string name="formContactVoie">Voie</string>
+    <string name="formContactVoiePH">Carnot (Bvd), Libération (Rue de la), ...</string>
+    <string name="formContactCP">Code postal</string>
+    <string name="formContactCPPH">21220</string>
+    <string name="formContactPays">Pays</string>
+    <string name="formContactPaysPH">France</string>
+    <string name="formContactVille">Ville</string>
+    <string name="formContactVillePH">Gevrey-Chambertin</string>
+    <string name="contactInfoSubST">Contact</string>
+    <string name="formContactTel">Téléphone</string>
+    <string name="formContactTelPH">Téléphone</string>
+    <string name="formContactEmail">E-mail</string>
+    <string name="formContactEmailPH">Email</string>
+    <string name="roleSubST">A contacter pour</string>
+    <string name="saveContactBTN">Enregistrer ce contact</string>
+<!-- Listing Screen -->
+    <string name="listingGestionnaireST">Liste des gestionnaires</string>
 </resources>

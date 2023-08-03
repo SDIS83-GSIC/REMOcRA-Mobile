@@ -12,4 +12,9 @@ sealed class Screens(val route: String, val title: String? = null, val icon: Ima
     object Tournees : Screens("tournees", "Tournées", Icons.Filled.Checklist)
     object TourneeHydrants : Screens("tournees/{idTournee}/hydrants")
     object Hydrant : Screens("tournees/{idTournee}/hydrants/{idHydrant}")
+    object ListGestionnaire : Screens("listing_gest_screen")
+    object CreateGestionnaire : Screens("gestionnaire_screen")
+    object EditGestionnaire : Screens("gestionnaire_screen/{idGestionnaire}")
+    object CreateContact : Screens("contact_screen/{idGestionnaire}")
+    object EditContact : Screens("contact_screen/{idGestionnaire}/{idContact}")
 }
