@@ -3,12 +3,10 @@ package fr.sdis83.remocra.mobile.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import fr.sdis83.remocra.mobile.MapViewState
-import fr.sdis83.remocra.mobile.ui.screens.hydrants.HydrantsScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.SettingScreen
 import fr.sdis83.remocra.mobile.ui.screens.sync.SyncScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneesScreen
@@ -24,7 +22,7 @@ fun NavGraph(navController: NavHostController, mapViewModel: MutableState<MapVie
             LaunchedEffect(Unit) {
                 mapViewModel.value = MapViewState(showMapView = false, isFullscreen = false)
             }
-            SettingScreen( )
+            SettingScreen()
         }
         composable(route = Screens.Sync.route) {
             LaunchedEffect(Unit) {
@@ -37,12 +35,6 @@ fun NavGraph(navController: NavHostController, mapViewModel: MutableState<MapVie
                 mapViewModel.value = MapViewState(showMapView = true, isFullscreen = false)
             }
             TourneesScreen()
-        }
-        composable(route = Screens.Hydrants.route) {
-            LaunchedEffect(Unit) {
-                mapViewModel.value = MapViewState(showMapView = true, isFullscreen = false)
-            }
-            HydrantsScreen()
         }
     }
 }

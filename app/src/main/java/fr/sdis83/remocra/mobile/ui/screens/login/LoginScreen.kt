@@ -7,8 +7,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
@@ -27,7 +28,6 @@ import androidx.compose.ui.text.input.VisualTransformation
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(viewModel: LoginViewModel) {
     var username: String by remember { mutableStateOf("") }
@@ -69,8 +69,8 @@ fun LoginScreen(viewModel: LoginViewModel) {
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 val image = if (passwordVisible)
-                    Icons.Filled.Check
-                else Icons.Filled.Clear
+                    Icons.Filled.VisibilityOff
+                else Icons.Filled.Visibility
 
                 IconButton(onClick = {
                     passwordVisible = !passwordVisible
