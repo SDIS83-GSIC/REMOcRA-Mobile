@@ -6,21 +6,22 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -28,15 +29,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import fr.sdis83.remocra.mobile.navigation.Screens
-import fr.sdis83.remocra.mobile.viewmodels.TourneesViewModel
-import kotlin.math.roundToInt
+import fr.sdis83.remocra.mobile.viewmodels.TourneeViewModel
+import java.util.UUID
 
 @Composable
-fun TourneesScreen(navController: NavController) {
+fun TourneeScreen(navController: NavController, idTournee: UUID) {
     val context = LocalContext.current
-    val tourneesViewModel = TourneesViewModel(context.applicationContext as Application)
-    val tourneeList by tourneesViewModel.tourneeList.observeAsState()
+    val tourneeViewModel = TourneeViewModel(context.applicationContext as Application, idTournee)
+    val hydrantList by tourneeViewModel.hydrantList.observeAsState()
+    val tourneeData by tourneeViewModel.tourneeData.observeAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.fillMaxSize()) {
@@ -50,59 +51,53 @@ fun TourneesScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(10.dp)
                 ) {
+                    Button(onClick = { navController.popBackStack() }) {
+                        Text(
+                            text = "Retour"
+                        )
+                    }
+                    Spacer(Modifier.height(16.dp))
                     Text(
-                        text = "Liste des tournées",
+                        text = tourneeData?.nom ?: "",
                         fontSize = MaterialTheme.typography.headlineLarge.fontSize,
                         fontWeight = FontWeight.Bold
                     )
                 }
-                if (!tourneeList.isNullOrEmpty()) {
+                if (!hydrantList.isNullOrEmpty()) {
                     Row {
                         LazyColumn {
-                            items(tourneeList!!) { tourneeItem ->
+                            items(hydrantList!!) { hydrantItem ->
                                 Row(
                                     Modifier
                                         .padding(8.dp)
                                         .fillMaxWidth()
                                         .clickable {
-                                            navController.navigate(
-                                                Screens.TourneeHydrants.route
-                                                    .replace(
-                                                        oldValue = "{idTournee}",
-                                                        newValue = tourneeItem.tournee.idTournee.toString()
-                                                    )
-                                            )
+                                            // TODO : navigation vers hydrant
                                         }
                                 ) {
                                     Box(
                                         modifier =
                                         Modifier
                                             .clip(RoundedCornerShape(8.dp))
-                                            .background(if (tourneeList!!.indexOf(tourneeItem) % 2 == 0) Color.LightGray else Color.Gray)
+                                            .background(Color(0xDDE9F3FF))
                                             .padding(16.dp)
-                                            .fillMaxWidth()
+                                            .fillMaxWidth(),
                                     ) {
                                         Column {
-                                            Row {
-                                                Text(text = tourneeItem.tournee.nom)
+                                            Row(modifier = Modifier.fillMaxWidth()) {
+                                                Text(text = hydrantItem.hydrant.numero ?: "N/A")
+                                                Spacer(modifier = Modifier.width(16.dp))
+                                                Text(text = hydrantItem.statut ?: "N/A")
                                             }
-                                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Column(Modifier.weight(4f)) {
-                                                    Text(text = "${tourneeItem.tournee.hydrantCount} point(s) d'eau")
-
-                                                }
-                                                Column(Modifier.weight(1f)) {
-                                                    Text(text = "${(tourneeItem.progression * 100).roundToInt()}%")
-                                                }
-                                                Column(Modifier.weight(5f)) {
-                                                    LinearProgressIndicator(
-                                                        progress = tourneeItem.progression,
-                                                        modifier = Modifier
-                                                            .height(8.dp)
-                                                            .clip(RoundedCornerShape(16.dp)),
-                                                        color = Color.Blue,
-                                                    )
-                                                }
+                                            Row(modifier = Modifier.fillMaxWidth()) {
+                                                Text(
+                                                    text = hydrantItem.hydrantNature.nom
+                                                )
+                                            }
+                                            Row(modifier = Modifier.fillMaxWidth()) {
+                                                Text(
+                                                    text = hydrantItem.hydrant.dispoTerrestre.toString()
+                                                )
                                             }
                                         }
                                     }

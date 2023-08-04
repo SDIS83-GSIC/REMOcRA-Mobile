@@ -6,10 +6,13 @@ import androidx.compose.runtime.MutableState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import fr.sdis83.remocra.mobile.MapViewState
 import fr.sdis83.remocra.mobile.ui.screens.settings.SettingScreen
 import fr.sdis83.remocra.mobile.ui.screens.sync.SyncScreen
+import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneeScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneesScreen
+import java.util.UUID
 
 @Composable
 fun NavGraph(navController: NavHostController, mapViewState: MutableState<MapViewState>) {
@@ -34,7 +37,20 @@ fun NavGraph(navController: NavHostController, mapViewState: MutableState<MapVie
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
             }
-            TourneesScreen()
+            TourneesScreen(navController)
+        }
+        composable(
+            route = Screens.TourneeHydrants.route,
+            arguments = listOf(navArgument("idTournee") {})
+        ) {
+            if (!it.arguments?.getString("idTournee").isNullOrEmpty()) {
+                val idTournee = UUID.fromString(it.arguments?.getString("idTournee"))
+                    ?: throw Exception("wrong idTournee")
+                LaunchedEffect(Unit) {
+                    mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
+                }
+                TourneeScreen(navController, idTournee)
+            }
         }
     }
 }

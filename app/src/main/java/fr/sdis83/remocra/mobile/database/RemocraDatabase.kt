@@ -53,6 +53,8 @@ abstract class RemocraDatabase : RoomDatabase() {
 
     abstract fun hydrantDao(): HydrantDao
 
+    abstract fun tourneeDao(): TourneeDao
+
     abstract fun tourneesDao(): TourneesDao
 }
 

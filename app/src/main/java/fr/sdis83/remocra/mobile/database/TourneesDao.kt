@@ -2,6 +2,7 @@ package fr.sdis83.remocra.mobile.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Embedded
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -38,4 +39,19 @@ abstract class TourneesDao {
     abstract fun insertTournee(tournee: Tournee)
     @Insert
     abstract fun insertLienHydrantTournee(hydrantTournee: HydrantTournee)
+
+    @Query("""
+        SELECT t.*, COUNT(hv.idHydrantVisite) AS doneCount FROM tournee t
+        LEFT JOIN hydrantVisite hv ON hv.idTournee = t.idTournee
+        GROUP BY t.idTournee
+        """)
+    abstract fun getTourneeList() : LiveData<List<TourneeAvancement>>
+
+    data class TourneeAvancement(
+        @Embedded val tournee: Tournee,
+        val doneCount: Int,
+    ) {
+        val progression: Float
+            get() = if (tournee.hydrantCount > 0) (doneCount.toFloat() / tournee.hydrantCount) else 0.0f
+    }
 }
