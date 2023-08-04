@@ -12,27 +12,27 @@ import fr.sdis83.remocra.mobile.ui.screens.sync.SyncScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneesScreen
 
 @Composable
-fun NavGraph(navController: NavHostController, mapViewModel: MutableState<MapViewState>) {
+fun NavGraph(navController: NavHostController, mapViewState: MutableState<MapViewState>) {
     NavHost(
         navController = navController,
         startDestination = Screens.Tournees.route
-    )
-    {
+    ) {
         composable(route = Screens.Settings.route) {
             LaunchedEffect(Unit) {
-                mapViewModel.value = MapViewState(showMapView = false, isFullscreen = false)
+                mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
             }
             SettingScreen()
         }
+
         composable(route = Screens.Sync.route) {
             LaunchedEffect(Unit) {
-                mapViewModel.value = MapViewState(showMapView = false, isFullscreen = false)
+                mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
             }
             SyncScreen()
         }
         composable(route = Screens.Tournees.route) {
             LaunchedEffect(Unit) {
-                mapViewModel.value = MapViewState(showMapView = true, isFullscreen = false)
+                mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
             }
             TourneesScreen()
         }

@@ -30,6 +30,7 @@ import fr.sdis83.remocra.mobile.navigation.NavGraph
 import fr.sdis83.remocra.mobile.ui.components.MapView
 import fr.sdis83.remocra.mobile.ui.layout.Layout
 import fr.sdis83.remocra.mobile.ui.theme.REMOcRAMobileTheme
+import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 
 data class MapViewState(
     val showMapView: Boolean = true,
@@ -38,6 +39,8 @@ data class MapViewState(
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val mapViewModel = MapViewModel(applicationContext)
 
         setContent {
             REMOcRAMobileTheme {
@@ -61,7 +64,7 @@ class MainActivity : ComponentActivity() {
                                             )
                                         ),
                                 ) {
-                                    MapView()
+                                    MapView(mapViewModel, mapViewState)
                                 }
                             }
                             Column(
