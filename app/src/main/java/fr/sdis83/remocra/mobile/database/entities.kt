@@ -10,7 +10,10 @@ import java.util.UUID
 
 @Entity(
     tableName = "hydrant",
-    indices = [Index("idHydrant"), Index("idRemocra", unique = true), Index("idCommune"), Index("idNature"),
+    indices = [Index("idHydrant"), Index(
+        "idRemocra",
+        unique = true
+    ), Index("idCommune"), Index("idNature"),
         Index("idNatureDeci"), Index("idGestionnaire")],
     foreignKeys = [
         ForeignKey(
@@ -130,7 +133,7 @@ data class HydrantTournee(
         ),
         ForeignKey(
             entity = TypeHydrantSaisie::class,
-            parentColumns = ["idTypeHydrantSaisie"],
+            parentColumns = ["idRemocra"],
             childColumns = ["idTypeHydrantSaisie"],
             onDelete = ForeignKey.CASCADE
         ),
@@ -140,9 +143,9 @@ data class HydrantVisite(
     @PrimaryKey val idHydrantVisite: UUID = UUID.randomUUID(),
     val idHydrant: UUID,
     val idTournee: UUID,
-    val dateTime: ZonedDateTime = ZonedDateTime.now(),
+    val dateVisite: ZonedDateTime = ZonedDateTime.now(),
     val statut: HydrantVisiteStatut = HydrantVisiteStatut.EN_COURS,
-    val idTypeHydrantSaisie: UUID? = null,
+    val idTypeHydrantSaisie: Long? = null,
     var agent1: String? = null,
     var agent2: String? = null,
     var ctrlDebitPression: Boolean = false,

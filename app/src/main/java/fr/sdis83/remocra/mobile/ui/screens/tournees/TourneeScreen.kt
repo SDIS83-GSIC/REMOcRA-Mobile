@@ -29,6 +29,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.viewmodels.TourneeViewModel
 import java.util.UUID
 
@@ -72,7 +73,21 @@ fun TourneeScreen(navController: NavController, idTournee: UUID) {
                                         .padding(8.dp)
                                         .fillMaxWidth()
                                         .clickable {
-                                            // TODO : navigation vers hydrant
+                                            navController.navigate(
+                                                Screens.Hydrant.route
+                                                    .replace(
+                                                        oldValue = "{idHydrant}",
+                                                        newValue = hydrantItem.hydrant.idHydrant.toString()
+                                                    )
+                                                    .replace(
+                                                        oldValue = "{idTournee}",
+                                                        newValue = idTournee.toString()
+                                                    )
+                                            ) {
+                                                popUpTo(Screens.TourneeHydrants.route) {
+                                                    inclusive = true
+                                                }
+                                            }
                                         }
                                 ) {
                                     Box(

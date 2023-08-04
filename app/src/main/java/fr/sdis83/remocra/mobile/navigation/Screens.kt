@@ -11,4 +11,5 @@ sealed class Screens(val route: String, val title: String? = null, val icon: Ima
     object Sync : Screens("sync", "Synchronisation",  Icons.Filled.Sync)
     object Tournees : Screens("tournees", "Tournées", Icons.Filled.Checklist)
     object TourneeHydrants : Screens("tournees/{idTournee}/hydrants")
+    object Hydrant : Screens("tournees/{idTournee}/hydrants/{idHydrant}")
 }

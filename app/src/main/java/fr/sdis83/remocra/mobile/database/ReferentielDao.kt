@@ -1,8 +1,12 @@
 package fr.sdis83.remocra.mobile.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Embedded
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Relation
+import java.util.UUID
 
 @Dao
 abstract class ReferentielDao {
@@ -66,4 +70,15 @@ abstract class ReferentielDao {
     abstract fun truncateTypeHydrantCritere()
     @Query("DELETE FROM typeHydrantSaisie")
     abstract fun truncateTypeHydrantSaisie()
+
+    @Query("SELECT ths.* FROM typeHydrantSaisie ths")
+    abstract fun getTypeSaisieList(): LiveData<List<TypeHydrantSaisie>>
+
+    @Query("SELECT tha.* FROM typeHydrantAnomalie tha")
+    abstract fun getAnomalieItemList(): LiveData<List<AnomalieItem>>
+
+    data class AnomalieItem(
+        @Embedded val anomalie: TypeHydrantAnomalie,
+        @Relation(parentColumn = "idCritere", entityColumn = "idRemocra") val critere: TypeHydrantCritere,
+    )
 }

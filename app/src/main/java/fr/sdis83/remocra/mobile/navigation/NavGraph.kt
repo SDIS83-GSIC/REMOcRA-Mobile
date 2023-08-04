@@ -8,14 +8,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import fr.sdis83.remocra.mobile.MapViewState
+import fr.sdis83.remocra.mobile.ui.screens.hydrants.HydrantVisiteScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.SettingScreen
 import fr.sdis83.remocra.mobile.ui.screens.sync.SyncScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneeScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneesScreen
+import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import java.util.UUID
 
 @Composable
-fun NavGraph(navController: NavHostController, mapViewState: MutableState<MapViewState>) {
+fun NavGraph(
+    navController: NavHostController,
+    mapViewModel: MapViewModel,
+    mapViewState: MutableState<MapViewState>
+) {
     NavHost(
         navController = navController,
         startDestination = Screens.Tournees.route
@@ -50,6 +56,23 @@ fun NavGraph(navController: NavHostController, mapViewState: MutableState<MapVie
                     mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
                 }
                 TourneeScreen(navController, idTournee)
+            }
+        }
+        composable(
+            route = Screens.Hydrant.route,
+            arguments = listOf(navArgument("idTournee") {}, navArgument("idHydrant") {})
+        ) {
+            if (!it.arguments?.getString("idTournee")
+                    .isNullOrEmpty() && !it.arguments?.getString("idHydrant").isNullOrEmpty()
+            ) {
+                val idHydrant = UUID.fromString(it.arguments?.getString("idHydrant"))
+                    ?: throw Exception("wrong idHydrant")
+                val idTournee = UUID.fromString(it.arguments?.getString("idTournee"))
+                    ?: throw Exception("wrong idTournee")
+                LaunchedEffect(Unit) {
+                    mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
+                }
+                HydrantVisiteScreen(navController, idTournee, idHydrant, mapViewModel)
             }
         }
     }

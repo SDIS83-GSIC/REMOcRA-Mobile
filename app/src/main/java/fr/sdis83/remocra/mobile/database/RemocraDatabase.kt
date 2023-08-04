@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.time.Instant
+import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -56,6 +57,8 @@ abstract class RemocraDatabase : RoomDatabase() {
     abstract fun tourneeDao(): TourneeDao
 
     abstract fun tourneesDao(): TourneesDao
+
+    abstract fun hydrantVisiteDao(): HydrantVisiteDao
 }
 
 class Converters {

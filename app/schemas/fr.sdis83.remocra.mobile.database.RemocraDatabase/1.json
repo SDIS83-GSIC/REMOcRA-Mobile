@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "96f88bebb21a8e17b4297a4e78302a14",
+    "identityHash": "13585b7de27802586e86fffa800b8f22",
     "entities": [
       {
         "tableName": "hydrant",
@@ -782,7 +782,7 @@
       },
       {
         "tableName": "hydrantVisite",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrantVisite` BLOB NOT NULL, `idHydrant` BLOB NOT NULL, `idTournee` BLOB NOT NULL, `dateTime` INTEGER NOT NULL, `statut` TEXT NOT NULL, `idTypeHydrantSaisie` BLOB, `agent1` TEXT, `agent2` TEXT, `ctrlDebitPression` INTEGER NOT NULL, `Débit à 1 bar (㎥/h)` INTEGER, `Pression dynamique à 60 ㎥ (bar)` REAL, `Pression statique (bar)` REAL, `hasAnomalieChanges` INTEGER NOT NULL, `observations` TEXT, PRIMARY KEY(`idHydrantVisite`), FOREIGN KEY(`idHydrant`) REFERENCES `hydrant`(`idHydrant`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idTournee`) REFERENCES `tournee`(`idTournee`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idTypeHydrantSaisie`) REFERENCES `typeHydrantSaisie`(`idTypeHydrantSaisie`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrantVisite` BLOB NOT NULL, `idHydrant` BLOB NOT NULL, `idTournee` BLOB NOT NULL, `dateVisite` INTEGER NOT NULL, `statut` TEXT NOT NULL, `idTypeHydrantSaisie` INTEGER, `agent1` TEXT, `agent2` TEXT, `ctrlDebitPression` INTEGER NOT NULL, `Débit à 1 bar (㎥/h)` INTEGER, `Pression dynamique à 60 ㎥ (bar)` REAL, `Pression statique (bar)` REAL, `hasAnomalieChanges` INTEGER NOT NULL, `observations` TEXT, PRIMARY KEY(`idHydrantVisite`), FOREIGN KEY(`idHydrant`) REFERENCES `hydrant`(`idHydrant`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idTournee`) REFERENCES `tournee`(`idTournee`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idTypeHydrantSaisie`) REFERENCES `typeHydrantSaisie`(`idRemocra`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "idHydrantVisite",
@@ -803,8 +803,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "dateTime",
-            "columnName": "dateTime",
+            "fieldPath": "dateVisite",
+            "columnName": "dateVisite",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -817,7 +817,7 @@
           {
             "fieldPath": "idTypeHydrantSaisie",
             "columnName": "idTypeHydrantSaisie",
-            "affinity": "BLOB",
+            "affinity": "INTEGER",
             "notNull": false
           },
           {
@@ -944,7 +944,7 @@
               "idTypeHydrantSaisie"
             ],
             "referencedColumns": [
-              "idTypeHydrantSaisie"
+              "idRemocra"
             ]
           }
         ]
@@ -1571,7 +1571,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '96f88bebb21a8e17b4297a4e78302a14')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '13585b7de27802586e86fffa800b8f22')"
     ]
   }
 }
