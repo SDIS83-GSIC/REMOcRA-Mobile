@@ -3,10 +3,9 @@ package fr.sdis83.remocra.mobile.ui.screens.login
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
@@ -25,20 +24,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
 import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel) {
+fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: AdministrationViewModel) {
     var username: String by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-
+    Button(
+        modifier = Modifier.padding(20.dp, 20.dp),
+        onClick = {
+            administrationViewModel.setAdministrationScreen(true)
+        },
+        enabled = !viewModel.isBusy,
+    ) {
+        Text(stringResource(R.string.administrer))
+    }
     Column(
         modifier = Modifier
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         OutlinedTextField(
             value = username,
@@ -66,13 +75,17 @@ fun LoginScreen(viewModel: LoginViewModel) {
                 Text(text = stringResource(R.string.password))
             },
             singleLine = true,
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            visualTransformation = if (passwordVisible && !viewModel.isBusy) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
-                val image = if (passwordVisible)
+                val image = if (passwordVisible && !viewModel.isBusy) {
                     Icons.Filled.VisibilityOff
-                else Icons.Filled.Visibility
+                } else {
+                    Icons.Filled.Visibility
+                }
 
-                IconButton(onClick = {
+                IconButton(
+                    enabled = !viewModel.isBusy,
+                    onClick = {
                     passwordVisible = !passwordVisible
                 }) {
                     Icon(imageVector = image, contentDescription = "")
@@ -87,7 +100,7 @@ fun LoginScreen(viewModel: LoginViewModel) {
                     viewModel.login(username, password)
                 }
             },
-            enabled = !username.isNullOrBlank() && !password.isNullOrBlank() && !viewModel.isBusy
+            enabled = !username.isNullOrBlank() && !password.isNullOrBlank() && !viewModel.isBusy,
         ) {
             Text("Connexion")
         }

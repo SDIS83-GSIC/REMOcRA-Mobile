@@ -11,47 +11,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import fr.sdis83.remocra.mobile.ui.screens.login.LoginScreen
+import fr.sdis83.remocra.mobile.ui.screens.administration.AdministrationScreen
 import fr.sdis83.remocra.mobile.ui.theme.REMOcRAMobileTheme
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
-import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
-import fr.sdis83.remocra.mobile.viewmodels.SplashViewModel
 
-class LoginActivity : ComponentActivity() {
+class AdministrationActivity : ComponentActivity() {
 
-    private val loginViewModel: LoginViewModel by viewModels()
-    private val splashViewModel: SplashViewModel by viewModels()
     private val administrationViewModel: AdministrationViewModel by viewModels()
 
     companion object {
-        private const val TAG = "LoginActivity"
+        private const val TAG = "AdministrationActivity"
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-
-        splashScreen.setKeepOnScreenCondition { splashViewModel.isLoading.value }
-
-        splashViewModel.goToMainActivity.observe(this) {
-            if (it) {
-                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                finish()
-            }
-        }
-
-        loginViewModel.goToMainActivity.observe(this) {
-            if (it) {
-                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-                finish()
-            }
-        }
 
         administrationViewModel.administrationScreen.observe(this) {
             if (it) {
-                startActivity(Intent(this@LoginActivity, AdministrationActivity::class.java))
+                startActivity(Intent(this@AdministrationActivity, LoginActivity::class.java))
                 finish()
             }
         }
@@ -63,7 +41,7 @@ class LoginActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Scaffold {
-                        LoginScreen(viewModel = loginViewModel, administrationViewModel)
+                        AdministrationScreen(administrationViewModel)
                     }
                 }
             }

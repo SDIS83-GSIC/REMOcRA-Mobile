@@ -3,7 +3,9 @@
     <string name="login">Connexion</string>
     <string name="username">Utilisateur</string>
     <string name="password">Mot de passe</string>
-    <string name="url_api">http://127.0.0.1:8881/</string>
+    <string name="url_api">preference_url_api</string>
+    <string name="server">Adresse du serveur de synchronisation</string>
+    <string name="server_placeholder">https://nomduserver.com</string>
 
     <string name="aucune_tournee_a_reserver">Aucune tournée à réserver</string>
     <string name="annuler">Annuler</string>
@@ -15,6 +17,9 @@
     <string name="choix_tournees">Choix des tournées</string>
     <string name="synchro_tournees">Synchroniser les tournées</string>
     <string name="historique_synchro">Historique des synchronisations</string>
+    <string name="retour">Retour</string>
+    <string name="verifier_connexion">Vérifier la connexion au serveur</string>
+    <string name="administrer">Administrer</string>
 <!-- SettingsScreen -->
     <string name="parametrage">Paramétrage</string>
     <string name="gestionnaireST">Gestionnaire et contact</string> <!-- ST pour Section Title -->

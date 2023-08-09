@@ -1,6 +1,7 @@
 package fr.sdis83.remocra.mobile.network
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import foodintech.collecte.synchronization.LocalDateConverterFactory
 import foodintech.collecte.synchronization.OffsetDateTimeConverterFactory
@@ -17,7 +18,11 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 object RetrofitBuilder : SingletonHolder<Retrofit>() {
+
     override fun newInstance(context: Context): Retrofit {
+        val prefs: SharedPreferences =
+            context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
+        val url = context.resources.getString(R.string.url_api)
 
         val client = OkHttpClient.Builder().eventListenerFactory(
             LoggingEventListener.Factory()
@@ -30,11 +35,13 @@ object RetrofitBuilder : SingletonHolder<Retrofit>() {
             .addInterceptor(AuthInterceptor(context))
             .build()
 
+
+
         return Retrofit.Builder()
             .client(client)
             .baseUrl(
                 buildApiUrl(
-                    context.resources.getString(R.string.url_api)
+                    prefs.getString(url, "")!!
                 )
             )
             .addConverterFactory(LocalDateConverterFactory())
@@ -43,6 +50,13 @@ object RetrofitBuilder : SingletonHolder<Retrofit>() {
             .addConverterFactory(ScalarsConverterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    /**
+     * Permert de recharger le retrofit si on change l'url du serveur
+     */
+    fun setNewUrl(context: Context) : Retrofit {
+       return newInstance(context)
     }
 }
 

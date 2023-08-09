@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import fr.sdis83.remocra.mobile.network.RetrofitBuilder
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.create
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
@@ -15,10 +16,15 @@ interface AuthService {
     companion object {
         fun getRetroFitInstance(context: Context): AuthService =
             RetrofitBuilder.getInstance(context).create(AuthService::class.java)
+        fun rebuildUrl(context: Context): AuthService =
+            RetrofitBuilder.setNewUrl(context).create(AuthService::class.java)
     }
 
     @PUT("authentication/token")
     fun checkToken(): Call<ResponseBody>
+
+    @PUT("authentication/check")
+    fun checkUrl(): Call<ResponseBody>
 
     @FormUrlEncoded
     @POST("authentication/login")
