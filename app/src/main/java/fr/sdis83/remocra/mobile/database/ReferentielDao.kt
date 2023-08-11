@@ -77,6 +77,15 @@ abstract class ReferentielDao {
     @Query("SELECT tha.* FROM typeHydrantAnomalie tha")
     abstract fun getAnomalieItemList(): LiveData<List<AnomalieItem>>
 
+    @Query("SELECT g.* FROM gestionnaire g WHERE g.actif = 1")
+    abstract fun getGestionnaireList(): LiveData<List<Gestionnaire>>
+
+    @Query("SELECT thn.* FROM typeHydrantNature thn WHERE thn.actif = 1")
+    abstract fun getTypeHydrantNatureList(): LiveData<List<TypeHydrantNature>>
+
+    @Query("SELECT thnd.* FROM typeHydrantNatureDeci thnd WHERE thnd.actif = 1")
+    abstract fun getTypeHydrantNatureDeciList(): LiveData<List<TypeHydrantNatureDeci>>
+
     data class AnomalieItem(
         @Embedded val anomalie: TypeHydrantAnomalie,
         @Relation(parentColumn = "idCritere", entityColumn = "idRemocra") val critere: TypeHydrantCritere,

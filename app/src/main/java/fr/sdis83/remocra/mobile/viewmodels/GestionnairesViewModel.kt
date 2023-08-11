@@ -34,7 +34,7 @@ class GestionnairesViewModel(application: Application, idGestionnaire: UUID?) : 
     private val _gestionnaireState = MutableStateFlow(
         Gestionnaire(
             idRemocra = null,
-            nom = null,
+            nom = "",
             code = null,
             actif = true
         )
@@ -50,7 +50,7 @@ class GestionnairesViewModel(application: Application, idGestionnaire: UUID?) : 
         } else {
             _gestionnaireState.value = Gestionnaire(
                 idRemocra = null,
-                nom = null,
+                nom = "",
                 code = null,
                 actif = true
             )

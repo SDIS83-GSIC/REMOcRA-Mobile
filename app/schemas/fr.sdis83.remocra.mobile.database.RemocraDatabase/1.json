@@ -2,6 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
+    "identityHash": "741900293c1871716c7af56540c2cb8e",
     "entities": [
       {
         "tableName": "hydrant",
@@ -308,7 +309,7 @@
       },
       {
         "tableName": "gestionnaire",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idGestionnaire` BLOB NOT NULL, `idRemocra` INTEGER, `nom` TEXT, `code` TEXT, `actif` INTEGER NOT NULL, `edited` INTEGER NOT NULL, PRIMARY KEY(`idGestionnaire`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idGestionnaire` BLOB NOT NULL, `idRemocra` INTEGER, `nom` TEXT NOT NULL, `code` TEXT, `actif` INTEGER NOT NULL, `edited` INTEGER NOT NULL, PRIMARY KEY(`idGestionnaire`))",
         "fields": [
           {
             "fieldPath": "idGestionnaire",
@@ -326,7 +327,7 @@
             "fieldPath": "nom",
             "columnName": "nom",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "code",
@@ -1582,7 +1583,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '741900293c1871716c7af56540c2cb8e')"
     ]
   }
 }

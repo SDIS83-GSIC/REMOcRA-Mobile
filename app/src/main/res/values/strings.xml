@@ -18,6 +18,9 @@
     <string name="synchro_tournees">Synchroniser les tournées</string>
     <string name="historique_synchro">Historique des synchronisations</string>
     <string name="retour">Retour</string>
+    <string name="valider">Valider</string>
+    <string name="oui">Oui</string>
+    <string name="non">Non</string>
     <string name="verifier_connexion">Vérifier la connexion au serveur</string>
     <string name="administrer">Administrer</string>
 <!-- SettingsScreen -->
@@ -74,4 +77,15 @@
     <string name="saveContactBTN">Enregistrer ce contact</string>
 <!-- Listing Screen -->
     <string name="listingGestionnaireST">Liste des gestionnaires</string>
+<!--    Création / Listing  Hydrant Sreen-->
+    <string name="creationHydrant">Création d\'un point d\'eau</string>
+    <string name="suppressionHydrant">Suppression du point d\'eau</string>
+    <string name="confirmSuppressionHydrant">Voulez-vous supprimer le point d\'eau ?</string>
+    <string name="hydrantCrees">Points d\'eau créés</string>
+    <string name="observations">Observations</string>
+    <string name="gestionnaire">Gestionnaire</string>
+    <string name="statut">Statut</string>
+    <string name="type">Type</string>
+    <string name="x">X</string>
+    <string name="y">Y</string>
 </resources>

@@ -81,10 +81,10 @@ fun SettingScreen(navController: NavController?) {
             ) {
                 Text(text = stringResource(R.string.createPeiST), fontWeight = FontWeight.Bold)
                 Text(text = stringResource(R.string.createPeiSubST),fontWeight = FontWeight.Normal)
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { navController?.navigate(Screens.HydrantCreate.route) }) {
                     Text(text = stringResource(R.string.createPeiBTN))
                 }
-                Button(onClick = { /*TODO*/ }) {
+                Button(onClick = { navController?.navigate(Screens.HydrantList.route) }) {
                     Text(text = stringResource(R.string.listingPeiBTN))
                 }
             }

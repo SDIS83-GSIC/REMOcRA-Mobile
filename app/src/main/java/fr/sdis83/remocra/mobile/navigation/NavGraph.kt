@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import fr.sdis83.remocra.mobile.MapViewState
+import fr.sdis83.remocra.mobile.ui.screens.hydrants.HydrantCreateScreen
+import fr.sdis83.remocra.mobile.ui.screens.hydrants.HydrantListScreen
 import fr.sdis83.remocra.mobile.ui.screens.hydrants.HydrantVisiteScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.ContactFormScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireFormScreen
@@ -35,7 +37,18 @@ fun NavGraph(
             }
             SettingScreen(navController)
         }
-
+        composable(route = Screens.HydrantCreate.route) {
+            LaunchedEffect(Unit) {
+                mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
+            }
+            HydrantCreateScreen(navController, mapViewModel)
+        }
+        composable(route = Screens.HydrantList.route) {
+            LaunchedEffect(Unit) {
+                mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
+            }
+            HydrantListScreen(navController, mapViewModel)
+        }
         composable(route = Screens.Sync.route) {
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)

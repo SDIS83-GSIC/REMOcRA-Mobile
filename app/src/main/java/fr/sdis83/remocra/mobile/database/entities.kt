@@ -340,7 +340,7 @@ data class TypeHydrantSaisie(
 data class Gestionnaire(
     @PrimaryKey val idGestionnaire: UUID = UUID.randomUUID(),
     val idRemocra: Long?,
-    val nom: String?,
+    val nom: String,
     val code: String?,
     val actif: Boolean,
     val edited: Boolean = false

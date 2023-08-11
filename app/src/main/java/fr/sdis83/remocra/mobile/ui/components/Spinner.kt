@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.toSize
 
 @Composable
 fun <T> Spinner(
+    modifier: Modifier = Modifier,
     items: List<T>,
     value: T? = items.firstOrNull(),
     valueToString: T.() -> String,
@@ -44,7 +45,7 @@ fun <T> Spinner(
     else
         Icons.Filled.ArrowDropDown
 
-    Box {
+    Box(modifier = modifier) {
         OutlinedTextField(
             value = items.find { i -> i == value }?.valueToString() ?: "",
             onValueChange = { selectedOption?.valueToString() ?: "" },
