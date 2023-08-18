@@ -5,9 +5,11 @@ import fr.sdis83.remocra.mobile.database.Commune
 import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.Hydrant
+import fr.sdis83.remocra.mobile.database.ParamConf
 import fr.sdis83.remocra.mobile.database.Role
 import fr.sdis83.remocra.mobile.database.Tournee
 import fr.sdis83.remocra.mobile.database.TourneeDispo
+import fr.sdis83.remocra.mobile.database.TypeDroit
 import fr.sdis83.remocra.mobile.database.TypeHydrant
 import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalie
 import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalieNature
@@ -62,6 +64,8 @@ interface ReferentielService {
         val typesHydrantAnomalieNatureSaisie: List<TypeHydrantAnomalieNatureSaisie>,
         val typesHydrantCritere: List<TypeHydrantCritere>,
         val typesHydrantSaisie: List<TypeHydrantSaisie>,
+        val paramsConf: List<ParamConf>,
+        val typesDroit: List<TypeDroit>,
     )
 
     data class ContactRoleInput(

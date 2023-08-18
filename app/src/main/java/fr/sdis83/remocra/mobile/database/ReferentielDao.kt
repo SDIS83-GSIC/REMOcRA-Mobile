@@ -56,6 +56,12 @@ abstract class ReferentielDao {
     @Insert
     abstract fun insertContactRole(contactRole: ContactRole)
 
+    @Insert
+    abstract fun insertParamConf(paramConf: ParamConf)
+
+    @Insert
+    abstract fun insertTypeDroit(typeDroit: TypeDroit)
+
     @Query("DELETE FROM hydrantAnomalie")
     abstract fun truncateHydrantAnomalie()
 
@@ -109,6 +115,12 @@ abstract class ReferentielDao {
 
     @Query("DELETE FROM typeHydrantSaisie")
     abstract fun truncateTypeHydrantSaisie()
+
+    @Query("DELETE FROM paramConf")
+    abstract fun truncateParamConf()
+
+    @Query("DELETE FROM typeDroit")
+    abstract fun truncateTypeDroit()
 
     @Query("SELECT ths.* FROM typeHydrantSaisie ths")
     abstract fun getTypeSaisieList(): LiveData<List<TypeHydrantSaisie>>

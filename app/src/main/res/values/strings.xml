@@ -79,6 +79,7 @@
     <string name="saveContactBTN">Enregistrer ce contact</string>
 <!-- Listing Screen -->
     <string name="listingGestionnaireST">Liste des gestionnaires</string>
+
 <!--    Création / Listing  Hydrant Sreen-->
     <string name="creationHydrant">Création d\'un point d\'eau</string>
     <string name="suppressionHydrant">Suppression du point d\'eau</string>
@@ -90,4 +91,8 @@
     <string name="type">Type</string>
     <string name="x">X</string>
     <string name="y">Y</string>
+
+    <string name="noDroitCreationPei">Vous ne possèdez pas les droits de création de PEI</string>
+    <string name="noDroitCreationGestionnaire">Vous ne possèdez pas les droits de modification /création de gestionnaires</string>
+
 </resources>

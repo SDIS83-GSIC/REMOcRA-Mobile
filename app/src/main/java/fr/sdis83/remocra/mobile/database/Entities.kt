@@ -514,3 +514,22 @@ data class TourneeDispo(
     val nom: String?,
     var choisie: Boolean = false,
 )
+
+@Entity(
+    tableName = "paramConf",
+    indices = [Index("idParamConf")],
+)
+data class ParamConf(
+    @PrimaryKey val idParamConf: UUID = UUID.randomUUID(),
+    val cle: String,
+    val valeur: String,
+)
+
+@Entity(
+    tableName = "typeDroit",
+    indices = [Index("idTypeDroit")],
+)
+data class TypeDroit(
+    @PrimaryKey val idTypeDroit: UUID = UUID.randomUUID(),
+    val code: String,
+)

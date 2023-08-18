@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5fa089a517b4035856e8db1c1d765be3",
+    "identityHash": "9362aff125fedad6094c897fc1f4cbaa",
     "entities": [
       {
         "tableName": "hydrant",
@@ -1777,12 +1777,90 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "paramConf",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idParamConf` BLOB NOT NULL, `cle` TEXT NOT NULL, `valeur` TEXT NOT NULL, PRIMARY KEY(`idParamConf`))",
+        "fields": [
+          {
+            "fieldPath": "idParamConf",
+            "columnName": "idParamConf",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cle",
+            "columnName": "cle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valeur",
+            "columnName": "valeur",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idParamConf"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_paramConf_idParamConf",
+            "unique": false,
+            "columnNames": [
+              "idParamConf"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_paramConf_idParamConf` ON `${TABLE_NAME}` (`idParamConf`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "typeDroit",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idTypeDroit` BLOB NOT NULL, `code` TEXT NOT NULL, PRIMARY KEY(`idTypeDroit`))",
+        "fields": [
+          {
+            "fieldPath": "idTypeDroit",
+            "columnName": "idTypeDroit",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idTypeDroit"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_typeDroit_idTypeDroit",
+            "unique": false,
+            "columnNames": [
+              "idTypeDroit"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typeDroit_idTypeDroit` ON `${TABLE_NAME}` (`idTypeDroit`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5fa089a517b4035856e8db1c1d765be3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9362aff125fedad6094c897fc1f4cbaa')"
     ]
   }
 }

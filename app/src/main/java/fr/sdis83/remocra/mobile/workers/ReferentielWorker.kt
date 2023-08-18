@@ -56,6 +56,8 @@ class ReferentielWorker constructor(
             truncateTypeHydrantAnomalie()
             truncateTypeHydrantCritere()
             truncateTypeHydrantSaisie()
+            truncateParamConf()
+            truncateTypeDroit()
         }
 
         referentielResponse.body()!!.apply {
@@ -150,6 +152,14 @@ class ReferentielWorker constructor(
                         idAnomalie = hydrantAnomalie.idAnomalie,
                     ),
                 )
+            }
+
+            paramsConf.forEach { paramConf ->
+                referentielDao.insertParamConf(paramConf.copy(idParamConf = UUID.randomUUID()))
+            }
+
+            typesDroit.forEach { typeDroit ->
+                referentielDao.insertTypeDroit(typeDroit.copy(idTypeDroit = UUID.randomUUID()))
             }
         }
 

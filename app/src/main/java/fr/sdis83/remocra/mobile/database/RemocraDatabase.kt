@@ -40,6 +40,8 @@ import java.util.UUID
         HydrantVisiteAnomalie::class,
         HydrantAnomalie::class,
         TourneeDispo::class,
+        ParamConf::class,
+        TypeDroit::class,
     ],
 )
 @TypeConverters(Converters::class)
@@ -67,6 +69,8 @@ abstract class RemocraDatabase : RoomDatabase() {
     abstract fun contactsDao(): ContactsDao
 
     abstract fun synchronisationDao(): SynchronisationDao
+
+    abstract fun paramConfDao(): DroitDao
 }
 
 class Converters {
