@@ -14,6 +14,8 @@ import fr.sdis83.remocra.mobile.database.TypeHydrantNature
 import fr.sdis83.remocra.mobile.database.TypeHydrantNatureDeci
 import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
 import fr.sdis83.remocra.mobile.database.TourneeDispo
+import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalieNature
+import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalieNatureSaisie
 import fr.sdis83.remocra.mobile.network.RetrofitBuilder
 import retrofit2.Call
 import retrofit2.http.Field
@@ -50,6 +52,8 @@ interface ReferentielService {
         val typesHydrantNature: List<TypeHydrantNature>,
         val typesHydrantNatureDeci: List<TypeHydrantNatureDeci>,
         val typesHydrantAnomalie: List<TypeHydrantAnomalie>,
+        val typesHydrantAnomalieNature: List<TypeHydrantAnomalieNature>,
+        val typesHydrantAnomalieNatureSaisie: List<TypeHydrantAnomalieNatureSaisie>,
         val typesHydrantCritere: List<TypeHydrantCritere>,
         val typesHydrantSaisie: List<TypeHydrantSaisie>,
     )

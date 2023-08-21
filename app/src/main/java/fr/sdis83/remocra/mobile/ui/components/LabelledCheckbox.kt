@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 fun LabelledCheckbox(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    label: String,
+    label: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     colors: CheckboxColors = CheckboxDefaults.colors()
@@ -36,6 +36,6 @@ fun LabelledCheckbox(
             colors = colors
         )
         Spacer(Modifier.width(8.dp))
-        Text(label)
+        label.invoke()
     }
 }

@@ -27,6 +27,9 @@ abstract class HydrantDao {
     @Query("SELECT h.* FROM hydrant h WHERE h.idHydrant = :idHydrant ")
     abstract fun getHydrantByIdHydrant(idHydrant: UUID): Hydrant
 
+    @Query("SELECT h.* FROM hydrant h WHERE h.idHydrant = :idHydrant ")
+    abstract fun getHydrantByIdHydrantLiveData(idHydrant: UUID): LiveData<Hydrant>
+
     @Insert
     abstract suspend fun insertHydrant(hydrant: Hydrant)
 

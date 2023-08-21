@@ -51,17 +51,7 @@ abstract class HydrantVisiteDao {
 
 
     data class HydrantVisiteWithAnomalies(
-        @Embedded val hydrantVisite: HydrantVisite,
-        @Relation(
-            parentColumn = "idHydrantVisite",
-            entity = TypeHydrantAnomalie::class,
-            entityColumn = "idRemocra",
-            associateBy = Junction(
-                value = HydrantVisiteAnomalie::class,
-                parentColumn = "idHydrantVisite",
-                entityColumn = "idAnomalie"
-            )
-        )
+        val hydrantVisite: HydrantVisite,
         val anomalies: MutableList<TypeHydrantAnomalie> = mutableListOf(),
     )
 

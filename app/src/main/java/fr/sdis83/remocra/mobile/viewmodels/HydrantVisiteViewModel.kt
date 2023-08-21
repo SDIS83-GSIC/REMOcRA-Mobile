@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import fr.sdis83.remocra.mobile.database.Hydrant
 import fr.sdis83.remocra.mobile.database.HydrantVisite
 import fr.sdis83.remocra.mobile.database.HydrantVisiteDao.HydrantVisiteWithAnomalies
 import fr.sdis83.remocra.mobile.database.ReferentielDao
@@ -20,11 +21,16 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
     AndroidViewModel(application) {
 
     private val hydrantVisiteDao = RemocraDatabase.getInstance(application).hydrantVisiteDao()
+    private val hydrantDao = RemocraDatabase.getInstance(application).hydrantDao()
     private val referentielDao = RemocraDatabase.getInstance(application).referentielDao()
 
     val typeSaisieList: LiveData<List<TypeHydrantSaisie>> = referentielDao.getTypeSaisieList()
     val anomalieList: LiveData<List<ReferentielDao.AnomalieItem>> =
         referentielDao.getAnomalieItemList()
+
+    private val _hydrant: MutableStateFlow<Hydrant?> = MutableStateFlow(null)
+    val hydrantState: StateFlow<Hydrant?> =
+        _hydrant.asStateFlow()
 
     private val _hydrantVisiteState = MutableStateFlow(
         HydrantVisiteWithAnomalies(
@@ -38,6 +44,8 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
         _hydrantVisiteState.asStateFlow()
 
     suspend fun loadData(idTournee: UUID, idHydrant: UUID) {
+        _hydrant.value = hydrantDao.getHydrantByIdHydrant(idHydrant)
+
         val hydrantVisite = hydrantVisiteDao.getCurrentVisite(
             idTournee = idTournee,
             idHydrant = idHydrant

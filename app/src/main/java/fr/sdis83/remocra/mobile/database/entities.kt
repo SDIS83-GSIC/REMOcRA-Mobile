@@ -262,6 +262,61 @@ data class TypeHydrantAnomalie(
 )
 
 @Entity(
+    tableName = "typeHydrantAnomalieNature",
+    indices = [Index("idTypeHydrantAnomalieNature"), Index(
+        "idRemocra",
+        unique = true
+    ), Index("idTypeHydrantAnomalie"), Index("idTypeHydrantNature")],
+    foreignKeys = [
+        ForeignKey(
+            entity = TypeHydrantAnomalie::class,
+            parentColumns = ["idRemocra"],
+            childColumns = ["idTypeHydrantAnomalie"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = TypeHydrantNature::class,
+            parentColumns = ["idRemocra"],
+            childColumns = ["idTypeHydrantNature"],
+            onDelete = ForeignKey.CASCADE
+        )],
+)
+data class TypeHydrantAnomalieNature(
+    @PrimaryKey val idTypeHydrantAnomalieNature: UUID = UUID.randomUUID(),
+    val idRemocra: Long,
+    val idTypeHydrantAnomalie: Long,
+    val idTypeHydrantNature: Long,
+    val valIndispoTerrestre: Int,
+    val valIndispoHbe: Int,
+    val valIndispoAdmin: Int,
+)
+
+@Entity(
+    tableName = "typeHydrantAnomalieNatureSaisie",
+    indices = [Index("idTypeHydrantAnomalieNatureSaisie"), Index("idTypeHydrantAnomalieNature"), Index(
+        "idTypeHydrantSaisie"
+    )],
+    foreignKeys = [
+        ForeignKey(
+            entity = TypeHydrantAnomalieNature::class,
+            parentColumns = ["idRemocra"],
+            childColumns = ["idTypeHydrantAnomalieNature"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = TypeHydrantSaisie::class,
+            parentColumns = ["idRemocra"],
+            childColumns = ["idTypeHydrantSaisie"],
+            onDelete = ForeignKey.CASCADE
+        )],
+)
+data class TypeHydrantAnomalieNatureSaisie(
+    @PrimaryKey val idTypeHydrantAnomalieNatureSaisie: UUID = UUID.randomUUID(),
+    val idTypeHydrantAnomalieNature: Long,
+    val idTypeHydrantSaisie: Long,
+)
+
+@Entity(
     tableName = "commune",
     indices = [Index("idCommune"), Index("idRemocra", unique = true)],
 )

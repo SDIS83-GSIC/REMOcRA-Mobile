@@ -31,6 +31,8 @@ import java.util.UUID
         HydrantVisite::class,
         TypeHydrant::class,
         TypeHydrantAnomalie::class,
+        TypeHydrantAnomalieNature::class,
+        TypeHydrantAnomalieNatureSaisie::class,
         TypeHydrantCritere::class,
         TypeHydrantNature::class,
         TypeHydrantNatureDeci::class,

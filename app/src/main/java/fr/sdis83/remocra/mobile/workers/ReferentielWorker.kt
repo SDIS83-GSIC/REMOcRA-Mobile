@@ -51,6 +51,8 @@ class ReferentielWorker constructor(
             truncateTypeHydrantNature()
             truncateTypeHydrantNatureDeci()
             truncateTypeHydrant()
+            truncateTypeHydrantAnomalieNatureSaisie()
+            truncateTypeHydrantAnomalieNature()
             truncateTypeHydrantAnomalie()
             truncateTypeHydrantCritere()
             truncateTypeHydrantSaisie()
@@ -95,6 +97,12 @@ class ReferentielWorker constructor(
                         )
                     )
                 }
+            }
+            typesHydrantAnomalieNature.forEach { typeHydrantAnomalieNature ->
+                referentielDao.insertTypeHydrantAnomalieNature(typeHydrantAnomalieNature.copy(idTypeHydrantAnomalieNature = UUID.randomUUID()))
+            }
+            typesHydrantAnomalieNatureSaisie.forEach { typeHydrantAnomalieNatureSaisie ->
+                referentielDao.insertTypeHydrantAnomalieNatureSaisie(typeHydrantAnomalieNatureSaisie.copy(idTypeHydrantAnomalieNatureSaisie = UUID.randomUUID()))
             }
             roles.forEach { role ->
                 referentielDao.insertRole(role.copy(idRole = UUID.randomUUID()))

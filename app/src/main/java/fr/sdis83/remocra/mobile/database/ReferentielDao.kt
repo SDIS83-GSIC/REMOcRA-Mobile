@@ -30,6 +30,10 @@ abstract class ReferentielDao {
     @Insert
     abstract fun insertHydrantAnomalie(hydrantAnomalie: HydrantAnomalie)
     @Insert
+    abstract fun insertTypeHydrantAnomalieNature(typeHydrantAnomalieNature: TypeHydrantAnomalieNature)
+    @Insert
+    abstract fun insertTypeHydrantAnomalieNatureSaisie(typeHydrantAnomalieNatureSaisie: TypeHydrantAnomalieNatureSaisie)
+    @Insert
     abstract fun insertRole(role: Role)
     @Insert
     abstract fun insertGestionnaire(gestionnaire: Gestionnaire)
@@ -66,6 +70,10 @@ abstract class ReferentielDao {
     abstract fun truncateTypeHydrant()
     @Query("DELETE FROM typeHydrantAnomalie")
     abstract fun truncateTypeHydrantAnomalie()
+    @Query("DELETE FROM typeHydrantAnomalieNatureSaisie")
+    abstract fun truncateTypeHydrantAnomalieNatureSaisie()
+    @Query("DELETE FROM typeHydrantAnomalieNature")
+    abstract fun truncateTypeHydrantAnomalieNature()
     @Query("DELETE FROM typeHydrantCritere")
     abstract fun truncateTypeHydrantCritere()
     @Query("DELETE FROM typeHydrantSaisie")
@@ -89,5 +97,6 @@ abstract class ReferentielDao {
     data class AnomalieItem(
         @Embedded val anomalie: TypeHydrantAnomalie,
         @Relation(parentColumn = "idCritere", entityColumn = "idRemocra") val critere: TypeHydrantCritere,
+        @Relation(parentColumn = "idRemocra", entityColumn = "idTypeHydrantAnomalie") val anomalieNature: TypeHydrantAnomalieNature,
     )
 }

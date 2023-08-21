@@ -51,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import fr.sdis83.remocra.mobile.database.Hydrant
 import fr.sdis83.remocra.mobile.database.HydrantVisiteDao.HydrantVisiteWithAnomalies
 import fr.sdis83.remocra.mobile.database.ReferentielDao
 import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
@@ -59,12 +60,12 @@ import fr.sdis83.remocra.mobile.ui.components.Spinner
 import fr.sdis83.remocra.mobile.viewmodels.HydrantVisiteViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
-import java.util.Date
 import java.util.UUID
 
 private val DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy")
@@ -152,8 +153,6 @@ fun HydrantVisiteForm(
 ) {
     if (hydrantVisite == null) return
 
-    val date = Date()
-
     val typeSaisieList by hydrantVisiteViewModel.typeSaisieList.observeAsState()
     val anomalieList by hydrantVisiteViewModel.anomalieList.observeAsState()
 
@@ -189,7 +188,8 @@ fun HydrantVisiteForm(
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     }
                 },
-                anomalieList = anomalieList ?: listOf()
+                anomalieList = anomalieList ?: listOf(),
+                hydrantVisiteViewModel.hydrantState
             )
 
             2 -> StepThree(
@@ -514,12 +514,10 @@ fun StepTwo(
     onValueChange: (HydrantVisiteWithAnomalies) -> Unit = {},
     onClick: () -> Unit,
     anomalieList: List<ReferentielDao.AnomalieItem>,
+    hydrantState: StateFlow<Hydrant?>,
 ) {
-//    var hasAnomaliesChanged by remember { mutableStateOf(hydrantVisite.hydrantVisite.hasAnomalieChanges) }
 
-//    val mapAnomalies = anomalieList.groupBy { it.critere }
-
-    val options = anomalieList.groupBy { it.critere }.mapValues { entry ->
+    val options = anomalieList.filter { it.anomalieNature.idTypeHydrantNature == hydrantState.value?.idNature }.groupBy { it.critere }.mapValues { entry ->
         entry.value.map { item ->
             val checked =
                 remember { mutableStateOf(hydrantVisite.anomalies.contains(item.anomalie)) }
@@ -535,7 +533,6 @@ fun StepTwo(
                             )
                         )
                     } else {
-
                         onValueChange(
                             hydrantVisite.copy(
                                 anomalies = hydrantVisite.anomalies.apply { remove(item.anomalie) }
@@ -543,7 +540,8 @@ fun StepTwo(
                         )
                     }
                 },
-                label = item.anomalie.nom,
+                label = { Text(text = item.anomalie.nom,
+                fontWeight = if (item.anomalieNature.valIndispoTerrestre >= 5) FontWeight.Bold else null) },
                 enabled = hydrantVisite.hydrantVisite.hasAnomalieChanges,
             )
         }
@@ -571,7 +569,7 @@ fun StepTwo(
                         )
                     )
                 },
-                label = "Ne rien modifier"
+                label = { Text("Ne rien modifier") }
             )
         }
         Row(
@@ -672,9 +670,9 @@ fun StepThree(
     }
 }
 
-data class Option( // 1
+data class Option(
     var checked: Boolean,
     var onCheckedChange: (Boolean) -> Unit = {},
-    val label: String,
+    val label: @Composable () -> Unit,
     var enabled: Boolean = true
 )
