@@ -43,7 +43,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
             Data.Builder()
                 .putString("username", username)
                 .putString("password", password)
-                .build()
+                .build(),
         ).build()
         val referentielWorker = OneTimeWorkRequestBuilder<ReferentielWorker>().build()
 
@@ -65,8 +65,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     }
 
                     WorkInfo.State.FAILED -> {
-                        info.value = if(!it.outputData.getString("VERSION_INCOMPATIBLE").isNullOrEmpty()) {
-
+                        info.value = if (!it.outputData.getString("VERSION_INCOMPATIBLE").isNullOrEmpty()) {
                             loginStatus.value = JobStatus.ERROR_VERSION
                             "La version de la tablette n'est pas à jour, veuillez contacter votre SDIS."
                         } else {
@@ -79,7 +78,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                 }
             }
             workManager.getWorkInfoByIdLiveData(referentielWorker.id).observeForever {
-                if(loginStatus.value != JobStatus.ERROR_VERSION) {
+                if (loginStatus.value != JobStatus.ERROR_VERSION) {
                     when (it.state) {
                         WorkInfo.State.RUNNING -> {
                             info.value = "Récupération du référentiel"

@@ -2,7 +2,6 @@ package fr.sdis83.remocra.mobile.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import fr.sdis83.remocra.mobile.database.Hydrant
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import java.util.UUID
 

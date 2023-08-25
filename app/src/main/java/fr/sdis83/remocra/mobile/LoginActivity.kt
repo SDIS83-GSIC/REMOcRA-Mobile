@@ -60,7 +60,7 @@ class LoginActivity : ComponentActivity() {
             REMOcRAMobileTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
                 ) {
                     Scaffold {
                         LoginScreen(viewModel = loginViewModel, administrationViewModel)

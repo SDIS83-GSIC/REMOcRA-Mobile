@@ -13,7 +13,7 @@ import java.util.UUID
 
 class ReserveTourneesWorker constructor(
     context: Context,
-    workerParams: WorkerParameters
+    workerParams: WorkerParameters,
 ) : Worker(context, workerParams) {
 
     companion object {
@@ -28,7 +28,8 @@ class ReserveTourneesWorker constructor(
         val tourneesReserveesResponse = retrofitBuilder.reserveTourneesDisponibles(
             tourneesDao.getTourneesAReserver()
                 .map { it.idRemocra.toString() }
-                .toTypedArray()).execute()
+                .toTypedArray(),
+        ).execute()
 
         if (!tourneesReserveesResponse.isSuccessful) {
             Log.e(TAG, "Error executing work: " + tourneesReserveesResponse.errorBody().toString())
@@ -43,10 +44,9 @@ class ReserveTourneesWorker constructor(
                     idTournee = idTournee,
                     idRemocra = tournee.idRemocra,
                     nom = tournee.nom,
-                    hydrantCount = tournee.listeHydrant.size
-                )
+                    hydrantCount = tournee.listeHydrant.size,
+                ),
             )
-
 
             tournee.listeHydrant.forEach { idHydrant ->
                 tourneesDao.insertLienHydrantTournee(
@@ -54,7 +54,7 @@ class ReserveTourneesWorker constructor(
                         idHydrantTournee = UUID.randomUUID(),
                         idRemocraHydrant = idHydrant,
                         idRemocraTournee = tournee.idRemocra,
-                    )
+                    ),
                 )
             }
         }
@@ -63,7 +63,7 @@ class ReserveTourneesWorker constructor(
             .putString(
                 "NON_RESERVEES",
                 tourneesReserveesResponse.body()?.tourneesNonReservees?.map { it.nom }
-                    ?.joinToString(", ")
+                    ?.joinToString(", "),
             )
             .build()
 

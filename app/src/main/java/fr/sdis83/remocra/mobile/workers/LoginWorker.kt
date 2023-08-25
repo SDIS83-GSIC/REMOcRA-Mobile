@@ -14,7 +14,7 @@ import fr.sdis83.remocra.mobile.services.AuthService
 @Suppress("DEPRECATION")
 class LoginWorker constructor(
     context: Context,
-    workerParams: WorkerParameters
+    workerParams: WorkerParameters,
 ) : Worker(context, workerParams) {
 
     companion object {
@@ -29,12 +29,12 @@ class LoginWorker constructor(
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
                 applicationContext.packageManager.getPackageInfo(
                     applicationContext.packageName,
-                    PackageManager.PackageInfoFlags.of(0)
+                    PackageManager.PackageInfoFlags.of(0),
                 ).versionName
             } else {
                 applicationContext.packageManager.getPackageInfo(
                     applicationContext.packageName,
-                    PackageManager.GET_META_DATA
+                    PackageManager.GET_META_DATA,
                 ).versionName
             }
 
@@ -47,8 +47,8 @@ class LoginWorker constructor(
         if (!loginResponse.isSuccessful) {
             // Si la version n'est pas compatible, on met un message
             val json = JsonParser()
-            val errorMessage : JsonObject? = json.parse(loginResponse.errorBody()?.string()).asJsonObject
-            if(errorMessage != null && errorMessage.get("message").toString().contains("version", ignoreCase = true)) {
+            val errorMessage: JsonObject? = json.parse(loginResponse.errorBody()?.string()).asJsonObject
+            if (errorMessage != null && errorMessage.get("message").toString().contains("version", ignoreCase = true)) {
                 // On renvoie le message à logger !
                 val outputData = Data.Builder()
                     .putString("VERSION_INCOMPATIBLE", errorMessage.get("message").toString())
@@ -56,7 +56,6 @@ class LoginWorker constructor(
 
                 return Result.failure(outputData)
             } else {
-
                 Log.e(TAG, "Error executing work: " + loginResponse.errorBody().toString())
             }
             return Result.failure()

@@ -33,13 +33,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun Layout(
     navController: NavController?,
-    content: @Composable (PaddingValues) -> Unit = {}
+    content: @Composable (PaddingValues) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val items = listOf(
         Screens.Tournees,
         Screens.Sync,
-        Screens.Settings
+        Screens.Settings,
     )
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val selectedItem = remember { mutableStateOf(items[0]) }
@@ -61,11 +61,11 @@ fun Layout(
                                 drawerState.close()
                             }
                         },
-                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
                     )
                 }
             }
-        }
+        },
 
     ) {
         Scaffold(
@@ -83,7 +83,7 @@ fun Layout(
                     Icon(imageVector = Icons.Filled.Menu, contentDescription = "Menu")
                 }
             },
-            content = content
+            content = content,
         )
     }
 }
@@ -95,4 +95,3 @@ fun homeScreenPreview() {
         Layout(null)
     }
 }
-

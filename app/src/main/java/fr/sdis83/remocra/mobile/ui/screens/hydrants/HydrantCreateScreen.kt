@@ -72,30 +72,30 @@ private fun HydrantCreateScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(10.dp),
                 ) {
                     Button(onClick = { navController.popBackStack() }) {
                         Text(
-                            text = stringResource(id = R.string.retour)
+                            text = stringResource(id = R.string.retour),
                         )
                     }
                     Text(
                         text = stringResource(id = R.string.creationHydrant),
                         fontSize = MaterialTheme.typography.headlineLarge.fontSize,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(10.dp),
                 ) {
                     HydrantCreateForm(
                         coroutineScope = coroutineScope,
                         mapViewModel = mapViewModel,
                         hydrantCreateViewModel = hydrantCreateViewModel,
                         navController = navController,
-                        hydrantForm = hydrantForm
+                        hydrantForm = hydrantForm,
                     )
                 }
             }
@@ -131,8 +131,8 @@ private fun HydrantCreateForm(
                         hydrantCreateViewModel.updateForm(
                             hydrantForm.copy(
                                 x = value,
-                                lon = value //FIXME
-                            )
+                                lon = value, // FIXME
+                            ),
                         )
                     }
                 },
@@ -152,8 +152,8 @@ private fun HydrantCreateForm(
                         hydrantCreateViewModel.updateForm(
                             hydrantForm.copy(
                                 y = value,
-                                lat = value // FIXME
-                            )
+                                lat = value, // FIXME
+                            ),
                         )
                     }
                 },
@@ -174,7 +174,7 @@ private fun HydrantCreateForm(
                             y = it.latitude,
                             lon = it.longitude,
                             lat = it.latitude,
-                        )
+                        ),
                     )
                 }
             }) {
@@ -191,10 +191,10 @@ private fun HydrantCreateForm(
                 onSelectionChanged = {
                     hydrantCreateViewModel.updateForm(
                         hydrantForm.copy(
-                            nature = it
-                        )
+                            nature = it,
+                        ),
                     )
-                }
+                },
             )
             Spinner(
                 modifier = Modifier.weight(1f),
@@ -205,10 +205,10 @@ private fun HydrantCreateForm(
                 onSelectionChanged = {
                     hydrantCreateViewModel.updateForm(
                         hydrantForm.copy(
-                            natureDeci = it
-                        )
+                            natureDeci = it,
+                        ),
                     )
-                }
+                },
             )
         }
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -220,10 +220,10 @@ private fun HydrantCreateForm(
                 onSelectionChanged = {
                     hydrantCreateViewModel.updateForm(
                         hydrantForm.copy(
-                            gestionnaire = it
-                        )
+                            gestionnaire = it,
+                        ),
                     )
-                }
+                },
             )
         }
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -254,7 +254,7 @@ private fun HydrantCreateForm(
                         navController.popBackStack()
                     }
                 },
-                enabled = hydrantForm.isValid
+                enabled = hydrantForm.isValid,
             ) {
                 Text(stringResource(id = R.string.valider))
             }

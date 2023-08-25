@@ -13,7 +13,7 @@ class OffsetDateTimeConverterFactory : Converter.Factory() {
     override fun stringConverter(
         type: Type,
         annotations: Array<Annotation>,
-        retrofit: Retrofit
+        retrofit: Retrofit,
     ): Converter<*, String>? {
         if (type != (OffsetDateTime::class.java)) {
             return super.stringConverter(type, annotations, retrofit)
@@ -25,7 +25,7 @@ class OffsetDateTimeConverterFactory : Converter.Factory() {
         type: Type,
         parameterAnnotations: Array<Annotation>,
         methodAnnotations: Array<Annotation>,
-        retrofit: Retrofit
+        retrofit: Retrofit,
     ): Converter<*, RequestBody>? {
         if (type != (OffsetDateTime::class.java)) {
             return super.requestBodyConverter(type, parameterAnnotations, methodAnnotations, retrofit)
@@ -33,7 +33,7 @@ class OffsetDateTimeConverterFactory : Converter.Factory() {
         return Converter<OffsetDateTime, RequestBody>(
             function = { value ->
                 value.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-            }
+            },
         )
     }
 }

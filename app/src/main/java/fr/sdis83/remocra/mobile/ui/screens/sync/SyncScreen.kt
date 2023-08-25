@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.sp
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 
-
 @Composable
 fun SyncScreen() {
     val context = LocalContext.current
@@ -44,14 +43,14 @@ fun SyncScreen() {
             .fillMaxWidth()
             .fillMaxHeight(),
         verticalArrangement = Arrangement.Top,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(30.dp),
             verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             Text(
                 text = stringResource(R.string.synchronisation),
@@ -64,38 +63,38 @@ fun SyncScreen() {
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(30.dp),
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.Start,
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
+                horizontalAlignment = Alignment.Start,
             ) {
                 // TODO : implémenter les strings
                 Text(
                     modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp),
                     text = stringResource(R.string.derniere_synchro),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
                 )
                 Text(
                     text = stringResource(R.string.visites_finies),
                     fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp
+                    fontSize = 18.sp,
                 )
                 Text(
                     text = stringResource(R.string.tournees_finies),
                     fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp
+                    fontSize = 18.sp,
                 )
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp),
-                    horizontalArrangement = Arrangement.SpaceAround
+                    horizontalArrangement = Arrangement.SpaceAround,
                 ) {
                     // Bouton pour récupération des tournées
                     Button(
@@ -104,12 +103,12 @@ fun SyncScreen() {
                             showCustomDialog = !showCustomDialog
                         },
                         shape = RoundedCornerShape(50.dp),
-                        contentPadding = PaddingValues(10.dp)
+                        contentPadding = PaddingValues(10.dp),
                     ) {
                         Text(
                             modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 10.dp),
                             text = stringResource(R.string.choix_tournees),
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
                         )
                     }
 
@@ -117,31 +116,28 @@ fun SyncScreen() {
                     Button(
                         modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 20.dp),
                         onClick = {
-
                         },
                         shape = RoundedCornerShape(50.dp),
-                        contentPadding = PaddingValues(10.dp)
+                        contentPadding = PaddingValues(10.dp),
                     ) {
                         Text(
                             modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 10.dp),
                             text = stringResource(R.string.synchro_tournees),
-                            fontSize = 20.sp
+                            fontSize = 20.sp,
                         )
                     }
                 }
-
             }
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
+                horizontalAlignment = Alignment.Start,
             ) {
-
                 Text(
                     text = stringResource(R.string.historique_synchro),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
                 )
             }
         }

@@ -86,8 +86,9 @@ fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: Administrati
                 IconButton(
                     enabled = !viewModel.isBusy,
                     onClick = {
-                    passwordVisible = !passwordVisible
-                }) {
+                        passwordVisible = !passwordVisible
+                    },
+                ) {
                     Icon(imageVector = image, contentDescription = "")
                 }
             },

@@ -36,9 +36,9 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
         HydrantVisiteWithAnomalies(
             hydrantVisite = HydrantVisite(
                 idTournee = idTournee,
-                idHydrant = idHydrant
-            )
-        )
+                idHydrant = idHydrant,
+            ),
+        ),
     )
     val hydrantVisiteState: StateFlow<HydrantVisiteWithAnomalies> =
         _hydrantVisiteState.asStateFlow()
@@ -48,19 +48,20 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
 
         val hydrantVisite = hydrantVisiteDao.getCurrentVisite(
             idTournee = idTournee,
-            idHydrant = idHydrant
+            idHydrant = idHydrant,
         ) ?: HydrantVisite(
             idTournee = idTournee,
-            idHydrant = idHydrant
+            idHydrant = idHydrant,
         )
 
         _hydrantVisiteState.value = HydrantVisiteWithAnomalies(
             hydrantVisite = hydrantVisite,
             anomalies =
-            if (hydrantVisite.hasAnomalieChanges)
+            if (hydrantVisite.hasAnomalieChanges) {
                 hydrantVisiteDao.getCurrentVisiteAnomalie(idHydrant, idTournee).toMutableList()
-            else
+            } else {
                 hydrantVisiteDao.getExistingVisiteAnomalie(idHydrant).toMutableList()
+            },
         )
     }
 
@@ -76,8 +77,8 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
                 _hydrantVisiteState.value =
                     _hydrantVisiteState.value.copy(
                         hydrantVisite = _hydrantVisiteState.value.hydrantVisite.copy(
-                            statut = HydrantVisite.HydrantVisiteStatut.TERMINE
-                        )
+                            statut = HydrantVisite.HydrantVisiteStatut.TERMINE,
+                        ),
                     )
             }
             hydrantVisiteDao.upsertHydrantVisite(_hydrantVisiteState.value)

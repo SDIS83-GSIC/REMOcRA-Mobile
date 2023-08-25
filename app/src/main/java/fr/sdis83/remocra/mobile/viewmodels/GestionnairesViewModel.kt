@@ -22,12 +22,12 @@ class GestionnairesViewModel(application: Application, idGestionnaire: UUID?) : 
         private const val TAG: String = "GestionnairesViewModel"
     }
 
-    val gestionnairesDao= RemocraDatabase.getInstance(application).gestionnairesDao()
+    val gestionnairesDao = RemocraDatabase.getInstance(application).gestionnairesDao()
     val gestionnairesList: LiveData<List<Gestionnaire>> = gestionnairesDao.getGestionnairesList()
     val gestionnaire: LiveData<Gestionnaire?> = gestionnairesDao.getCurrentGestionnaireByUUID(idGestionnaire)
     val contactsList: LiveData<List<Contact>> = gestionnairesDao.getContactByGestionnaireUUID(idGestionnaire)
 
-    suspend fun upsertGestionnaire(gestionnaire: Gestionnaire){
+    suspend fun upsertGestionnaire(gestionnaire: Gestionnaire) {
         gestionnairesDao.upsertGestionnaire(gestionnaire.copy(edited = true))
     }
 
@@ -36,15 +36,15 @@ class GestionnairesViewModel(application: Application, idGestionnaire: UUID?) : 
             idRemocra = null,
             nom = "",
             code = null,
-            actif = true
-        )
+            actif = true,
+        ),
     )
 
     var gestionnaireState: StateFlow<Gestionnaire> = _gestionnaireState.asStateFlow()
-    var gestionnaireValidState: MutableState<GestionnaireValidation>
-        = mutableStateOf(GestionnaireValidation(false))
+    var gestionnaireValidState: MutableState<GestionnaireValidation> =
+        mutableStateOf(GestionnaireValidation(false))
 
-    suspend fun loadData(idGestionnaire: UUID?){
+    suspend fun loadData(idGestionnaire: UUID?) {
         if (idGestionnaire != null) {
             _gestionnaireState.value = gestionnairesDao.getGestionnaireByUUID(idGestionnaire)
         } else {
@@ -52,7 +52,7 @@ class GestionnairesViewModel(application: Application, idGestionnaire: UUID?) : 
                 idRemocra = null,
                 nom = "",
                 code = null,
-                actif = true
+                actif = true,
             )
         }
     }
@@ -62,13 +62,13 @@ class GestionnairesViewModel(application: Application, idGestionnaire: UUID?) : 
         }
     }
 
-    data class GestionnaireValidation(val isNomValid: Boolean){
-        val isValid:Boolean = isNomValid
+    data class GestionnaireValidation(val isNomValid: Boolean) {
+        val isValid: Boolean = isNomValid
     }
 
-    fun formValidation(){
+    fun formValidation() {
         gestionnaireValidState.value = GestionnaireValidation(
-            isNomValid = !_gestionnaireState.value.nom.isNullOrEmpty()
+            isNomValid = !_gestionnaireState.value.nom.isNullOrEmpty(),
         )
     }
 

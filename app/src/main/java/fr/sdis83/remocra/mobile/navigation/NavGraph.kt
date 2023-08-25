@@ -25,11 +25,11 @@ import java.util.UUID
 fun NavGraph(
     navController: NavHostController,
     mapViewModel: MapViewModel,
-    mapViewState: MutableState<MapViewState>
+    mapViewState: MutableState<MapViewState>,
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screens.Tournees.route
+        startDestination = Screens.Tournees.route,
     ) {
         composable(route = Screens.Settings.route) {
             LaunchedEffect(Unit) {
@@ -64,7 +64,7 @@ fun NavGraph(
         }
         composable(
             route = Screens.TourneeHydrants.route,
-            arguments = listOf(navArgument("idTournee") {})
+            arguments = listOf(navArgument("idTournee") {}),
         ) {
             if (!it.arguments?.getString("idTournee").isNullOrEmpty()) {
                 val idTournee = UUID.fromString(it.arguments?.getString("idTournee"))
@@ -78,7 +78,7 @@ fun NavGraph(
 
         composable(
             route = Screens.Hydrant.route,
-            arguments = listOf(navArgument("idTournee") {}, navArgument("idHydrant") {})
+            arguments = listOf(navArgument("idTournee") {}, navArgument("idHydrant") {}),
         ) {
             if (!it.arguments?.getString("idTournee")
                     .isNullOrEmpty() && !it.arguments?.getString("idHydrant").isNullOrEmpty()
@@ -110,7 +110,7 @@ fun NavGraph(
 
         composable(
             route = Screens.EditGestionnaire.route,
-            arguments = listOf(navArgument("idGestionnaire") { nullable = true })
+            arguments = listOf(navArgument("idGestionnaire") { nullable = true }),
         ) {
             if (!it.arguments?.getString("idGestionnaire").isNullOrEmpty()) {
                 val idGestionnaire = UUID.fromString(it.arguments?.getString("idGestionnaire"))
@@ -125,8 +125,8 @@ fun NavGraph(
         composable(
             route = Screens.CreateContact.route,
             arguments = listOf(
-                navArgument("idGestionnaire") { nullable = true }
-            )
+                navArgument("idGestionnaire") { nullable = true },
+            ),
         ) {
             if (!it.arguments?.getString("idGestionnaire").isNullOrEmpty()) {
                 val idGestionnaire = UUID.fromString(it.arguments?.getString("idGestionnaire"))
@@ -142,7 +142,8 @@ fun NavGraph(
             route = Screens.EditContact.route,
             arguments = listOf(
                 navArgument("idGestionnaire") { nullable = false },
-                navArgument("idContact") { nullable = true })
+                navArgument("idContact") { nullable = true },
+            ),
         ) {
             if (!it.arguments?.getString("idContact").isNullOrEmpty()) {
                 val idContact = UUID.fromString(it.arguments?.getString("idContact"))

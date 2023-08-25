@@ -13,7 +13,7 @@ class LocalDateConverterFactory : Converter.Factory() {
     override fun stringConverter(
         type: Type,
         annotations: Array<Annotation>,
-        retrofit: Retrofit
+        retrofit: Retrofit,
     ): Converter<*, String>? {
         if (type != (LocalDate::class.java)) {
             return super.stringConverter(type, annotations, retrofit)
@@ -25,7 +25,7 @@ class LocalDateConverterFactory : Converter.Factory() {
         type: Type,
         parameterAnnotations: Array<Annotation>,
         methodAnnotations: Array<Annotation>,
-        retrofit: Retrofit
+        retrofit: Retrofit,
     ): Converter<*, RequestBody>? {
         if (type != (LocalDate::class.java)) {
             return super.requestBodyConverter(type, parameterAnnotations, methodAnnotations, retrofit)
@@ -33,7 +33,7 @@ class LocalDateConverterFactory : Converter.Factory() {
         return Converter<LocalDate, RequestBody>(
             function = { value ->
                 value.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-            }
+            },
         )
     }
 }

@@ -18,24 +18,28 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-
 @Composable
-fun HeaderAppBar(title: String, returnAction: () -> Unit){
-    Row(modifier = Modifier.fillMaxWidth()
-        .height(100.dp),
+fun HeaderAppBar(title: String, returnAction: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth()
+            .height(100.dp),
         horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically) {
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         IconButton(
             modifier = Modifier.padding(20.dp),
-            onClick = { returnAction() }
+            onClick = { returnAction() },
         ) {
-            Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "return",
-                modifier = Modifier.size(30.dp)
+            Icon(
+                imageVector = Icons.Filled.ArrowBack,
+                contentDescription = "return",
+                modifier = Modifier.size(30.dp),
             )
         }
         Text(
             text = title,
             fontWeight = FontWeight.Bold,
-            fontSize = 35.sp)
+            fontSize = 35.sp,
+        )
     }
 }

@@ -13,7 +13,7 @@ class UUIDConverterFactory : Converter.Factory() {
     override fun stringConverter(
         type: Type,
         annotations: Array<Annotation>,
-        retrofit: Retrofit
+        retrofit: Retrofit,
     ): Converter<*, String>? {
         if (type != (UUID::class.java)) {
             return super.stringConverter(type, annotations, retrofit)
@@ -25,7 +25,7 @@ class UUIDConverterFactory : Converter.Factory() {
         type: Type,
         parameterAnnotations: Array<Annotation>,
         methodAnnotations: Array<Annotation>,
-        retrofit: Retrofit
+        retrofit: Retrofit,
     ): Converter<*, RequestBody>? {
         if (type != (UUID::class.java)) {
             return super.requestBodyConverter(type, parameterAnnotations, methodAnnotations, retrofit)
@@ -33,7 +33,7 @@ class UUIDConverterFactory : Converter.Factory() {
         return Converter<UUID, RequestBody>(
             function = { value ->
                 value.toString().toRequestBody("text/plain".toMediaTypeOrNull())
-            }
+            },
         )
     }
 }

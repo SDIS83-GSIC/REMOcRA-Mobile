@@ -11,24 +11,23 @@ import androidx.room.Transaction
 import androidx.room.Upsert
 import java.util.UUID
 
-
 @Dao
 abstract class ContactsDao {
 
     @Query("SELECT * FROM contact")
-    abstract fun getContactsList() : LiveData<List<Contact>>
+    abstract fun getContactsList(): LiveData<List<Contact>>
 
     @Query("SELECT * FROM contact WHERE idGestionnaire = :idGestionnaire")
-    abstract suspend fun getContactsByGestionnaireUUID(idGestionnaire: UUID) : Contact
+    abstract suspend fun getContactsByGestionnaireUUID(idGestionnaire: UUID): Contact
 
     @Query("SELECT * FROM contact WHERE idContact = :idContact")
-    abstract suspend fun getContactByUUID(idContact: UUID? = null) : ContactWithRoles
+    abstract suspend fun getContactByUUID(idContact: UUID? = null): ContactWithRoles
 
     @Query("SELECT * FROM contact WHERE idContact = :idContact")
-    abstract fun getCurrentContactByUUID(idContact: UUID? = null) : LiveData<Contact?>
+    abstract fun getCurrentContactByUUID(idContact: UUID? = null): LiveData<Contact?>
 
     @Query("SELECT * FROM gestionnaire WHERE idGestionnaire = :idGestionnaire")
-    abstract fun getAppartenanceInfoByGestUUID(idGestionnaire: UUID) : LiveData<Gestionnaire>
+    abstract fun getAppartenanceInfoByGestUUID(idGestionnaire: UUID): LiveData<Gestionnaire>
 
     @Query("UPDATE gestionnaire SET edited = 1 WHERE idGestionnaire = :idGestionnaire")
     abstract suspend fun updateGestionnaireIsFlaged(idGestionnaire: UUID)
@@ -40,14 +39,14 @@ abstract class ContactsDao {
     abstract fun getRolesList(): LiveData<List<Role>>
 
     @Query("SELECT * FROM contactRole WHERE idContact = :idContact")
-    abstract fun getContactRolesByUUID(idContact: UUID? = null) : LiveData<List<ContactRole>>
+    abstract fun getContactRolesByUUID(idContact: UUID? = null): LiveData<List<ContactRole>>
 
     @Query("DELETE FROM contactRole WHERE idContact = :idContact")
     abstract suspend fun truncateContactRolesByContactUUID(idContact: UUID)
 
     @Insert
     abstract suspend fun insertContactRole(contactRole: ContactRole)
-    
+
     @Transaction
     open suspend fun saveContact(contactWithRoles: ContactWithRoles) {
         updateGestionnaireIsFlaged(contactWithRoles.contact.idGestionnaire!!)
@@ -71,9 +70,9 @@ abstract class ContactsDao {
             associateBy = Junction(
                 value = ContactRole::class,
                 parentColumn = "idContact",
-                entityColumn = "idRole"
-            )
+                entityColumn = "idRole",
+            ),
         )
-        val roles: MutableList<Role> = mutableListOf()
+        val roles: MutableList<Role> = mutableListOf(),
     )
 }

@@ -22,7 +22,6 @@ import fr.sdis83.remocra.mobile.ui.components.GestionnaireCard
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
 import fr.sdis83.remocra.mobile.viewmodels.GestionnairesViewModel
 
-
 @Composable
 fun GestionnaireListingScreen(navController: NavController) {
     val context = LocalContext.current
@@ -33,16 +32,19 @@ fun GestionnaireListingScreen(navController: NavController) {
 
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         HeaderAppBar(
             title = stringResource(R.string.listingGestionnaireST),
-            returnAction = { navController.navigate(Screens.Settings.route) })
-        Column(Modifier.padding(horizontal = 80.dp)
+            returnAction = { navController.navigate(Screens.Settings.route) },
+        )
+        Column(
+            Modifier.padding(horizontal = 80.dp),
         ) {
-            LazyVerticalGrid(columns = GridCells.Adaptive(minSize = 300.dp)
+            LazyVerticalGrid(
+                columns = GridCells.Adaptive(minSize = 300.dp),
             ) {
-                items(gestionnairesList.value){ gestionnaire ->
+                items(gestionnairesList.value) { gestionnaire ->
                     GestionnaireCard(gestionnaire = gestionnaire, navController = navController)
                 }
             }

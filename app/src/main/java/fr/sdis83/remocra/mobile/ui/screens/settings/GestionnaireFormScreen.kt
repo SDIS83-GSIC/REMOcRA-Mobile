@@ -46,7 +46,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-
 @Composable
 fun GestionnaireFormScreen(navController: NavController?, idGestionnaire: UUID?) {
     val context = LocalContext.current
@@ -58,7 +57,7 @@ fun GestionnaireFormScreen(navController: NavController?, idGestionnaire: UUID?)
     GestionnaireFormScreenInner(
         gestionnairesViewModel,
         coroutineScope,
-        navController
+        navController,
     )
 }
 
@@ -66,7 +65,7 @@ fun GestionnaireFormScreen(navController: NavController?, idGestionnaire: UUID?)
 fun GestionnaireFormScreenInner(
     gestionnairesViewModel: GestionnairesViewModel,
     coroutineScope: CoroutineScope,
-    navController: NavController?
+    navController: NavController?,
 ) {
     val currentGestionnaire by gestionnairesViewModel.gestionnaireState.collectAsState() // Current gestionnaire
     val gestionnaire by gestionnairesViewModel.gestionnaire.observeAsState() // Construction du titre
@@ -86,23 +85,25 @@ fun GestionnaireFormScreenInner(
 
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         HeaderAppBar(
             title = mainTitle,
-            returnAction = { navController?.popBackStack() })
+            returnAction = { navController?.popBackStack() },
+        )
         Row(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(10.dp),
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.Top,
         ) {
-            Column(modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 10.dp, horizontal = 20.dp)
+                        .padding(vertical = 10.dp, horizontal = 20.dp),
                 ) {
                     OutlinedTextField(
                         modifier = Modifier
@@ -111,7 +112,7 @@ fun GestionnaireFormScreenInner(
                         value = currentGestionnaire.nom ?: "",
                         onValueChange = { it: String ->
                             gestionnairesViewModel.updateForm(
-                                currentGestionnaire.copy(nom = it)
+                                currentGestionnaire.copy(nom = it),
                             )
                         },
                         label = { Text(text = stringResource(R.string.formGestionnaireName)) },
@@ -119,9 +120,10 @@ fun GestionnaireFormScreenInner(
                         singleLine = true,
                         isError = !gestionnairesViewModel.gestionnaireValidState.value.isNomValid,
                         supportingText = {
-                            if (!gestionnairesViewModel.gestionnaireValidState.value.isNomValid)
+                            if (!gestionnairesViewModel.gestionnaireValidState.value.isNomValid) {
                                 Text(text = "Ce champ est obligatoire")
-                        }
+                            }
+                        },
                     )
                     OutlinedTextField(
                         modifier = Modifier
@@ -130,7 +132,7 @@ fun GestionnaireFormScreenInner(
                         value = currentGestionnaire.code ?: "",
                         onValueChange = { it: String ->
                             gestionnairesViewModel.updateForm(
-                                currentGestionnaire.copy(code = it)
+                                currentGestionnaire.copy(code = it),
                             )
                         },
                         label = { Text(text = stringResource(R.string.formGestionnaireSiren)) },
@@ -142,26 +144,27 @@ fun GestionnaireFormScreenInner(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 20.dp)
+                            .padding(horizontal = 20.dp),
                     ) {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Row(
                                 modifier = Modifier,
                                 horizontalArrangement = Arrangement.Start,
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                Column(modifier = Modifier.fillMaxWidth(.5f)
+                                Column(
+                                    modifier = Modifier.fillMaxWidth(.5f),
                                 ) {
                                     Text(
                                         modifier = Modifier.fillMaxWidth(),
                                         text = stringResource(R.string.associatedContactSubST),
                                         fontWeight = FontWeight.Bold,
-                                        fontSize = 25.sp
+                                        fontSize = 25.sp,
                                     )
                                 }
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.End
+                                    horizontalAlignment = Alignment.End,
                                 ) {
                                     OutlinedButton(
                                         modifier = Modifier,
@@ -170,19 +173,19 @@ fun GestionnaireFormScreenInner(
                                                 Screens.CreateContact.route
                                                     .replace(
                                                         oldValue = "{idGestionnaire}",
-                                                        newValue = gestionnaire?.idGestionnaire.toString()
-                                                    )
+                                                        newValue = gestionnaire?.idGestionnaire.toString(),
+                                                    ),
                                             )
-                                        }
+                                        },
                                     ) {
                                         Icon(
                                             imageVector = Icons.Filled.Add,
-                                            contentDescription = "CreateContact"
+                                            contentDescription = "CreateContact",
                                         )
                                         Text(
                                             modifier = Modifier,
                                             text = stringResource(R.string.addContactClickText),
-                                            textAlign = TextAlign.Center
+                                            textAlign = TextAlign.Center,
                                         )
                                     }
                                 }
@@ -190,21 +193,21 @@ fun GestionnaireFormScreenInner(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(250.dp)
+                                    .height(250.dp),
                             ) {
                                 Column(Modifier.padding(horizontal = 80.dp)) {
-                                    if(contactsList.value.isEmpty()){
+                                    if (contactsList.value.isEmpty()) {
                                         Text(text = stringResource(R.string.noContact))
                                     } else {
                                         LazyVerticalGrid(
-                                            modifier = Modifier.border(color = Color.Black,width = .5.dp),
-                                            columns = GridCells.Adaptive(minSize = 350.dp)
+                                            modifier = Modifier.border(color = Color.Black, width = .5.dp),
+                                            columns = GridCells.Adaptive(minSize = 350.dp),
                                         ) {
                                             items(contactsList.value) { contact ->
                                                 if (navController != null) {
                                                     ContactCard(
                                                         contact = contact,
-                                                        navController = navController
+                                                        navController = navController,
                                                     )
                                                 }
                                             }
@@ -219,9 +222,8 @@ fun GestionnaireFormScreenInner(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = 20.dp),
-                    verticalAlignment = Alignment.Bottom
-                )
-                {
+                    verticalAlignment = Alignment.Bottom,
+                ) {
                     Button( // "Enregistrer ce gestionnaire"
                         enabled = gestionnairesViewModel.gestionnaireValidState.value.isValid,
                         onClick = {
@@ -232,14 +234,15 @@ fun GestionnaireFormScreenInner(
                                         Screens.CreateContact.route
                                             .replace(
                                                 oldValue = "{idGestionnaire}",
-                                                newValue = currentGestionnaire.idGestionnaire.toString()
-                                            )
+                                                newValue = currentGestionnaire.idGestionnaire.toString(),
+                                            ),
                                     )
                                 } else { // Modification
                                     navController?.navigate(Screens.ListGestionnaire.route)
                                 }
                             }
-                        }) {
+                        },
+                    ) {
                         Text(text = stringResource(R.string.saveGestionnaireBTN))
                     }
                 }

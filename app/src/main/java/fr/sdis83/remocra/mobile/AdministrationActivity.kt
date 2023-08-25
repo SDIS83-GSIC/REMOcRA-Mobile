@@ -38,7 +38,7 @@ class AdministrationActivity : ComponentActivity() {
             REMOcRAMobileTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
                 ) {
                     Scaffold {
                         AdministrationScreen(administrationViewModel)

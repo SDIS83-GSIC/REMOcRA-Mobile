@@ -15,13 +15,13 @@ abstract class HydrantDao {
         """
         SELECT h.* FROM hydrant h
         WHERE h.lat <= :north AND h.lat >= :south AND h.lon >= :west AND h.lon <= :east
-        """
+        """,
     )
     abstract fun getHydrantInBoundingBox(
         north: Double,
         south: Double,
         west: Double,
-        east: Double
+        east: Double,
     ): List<Hydrant>
 
     @Query("SELECT h.* FROM hydrant h WHERE h.idHydrant = :idHydrant ")
@@ -41,11 +41,11 @@ abstract class HydrantDao {
         val hydrant: Hydrant,
         @Relation(
             parentColumn = "idNature",
-            entityColumn = "idRemocra"
+            entityColumn = "idRemocra",
         ) val hydrantNature: TypeHydrantNature,
         @Relation(
             parentColumn = "idNatureDeci",
-            entityColumn = "idRemocra"
+            entityColumn = "idRemocra",
         ) val hydrantNatureDeci: TypeHydrantNatureDeci,
     )
 

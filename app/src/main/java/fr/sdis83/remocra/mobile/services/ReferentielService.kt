@@ -7,15 +7,15 @@ import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.Hydrant
 import fr.sdis83.remocra.mobile.database.Role
 import fr.sdis83.remocra.mobile.database.Tournee
+import fr.sdis83.remocra.mobile.database.TourneeDispo
 import fr.sdis83.remocra.mobile.database.TypeHydrant
 import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalie
+import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalieNature
+import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalieNatureSaisie
 import fr.sdis83.remocra.mobile.database.TypeHydrantCritere
 import fr.sdis83.remocra.mobile.database.TypeHydrantNature
 import fr.sdis83.remocra.mobile.database.TypeHydrantNatureDeci
 import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
-import fr.sdis83.remocra.mobile.database.TourneeDispo
-import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalieNature
-import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalieNatureSaisie
 import fr.sdis83.remocra.mobile.network.RetrofitBuilder
 import retrofit2.Call
 import retrofit2.http.Field
@@ -37,7 +37,7 @@ interface ReferentielService {
     @FormUrlEncoded
     @POST("synchro/reservertournees")
     fun reserveTourneesDisponibles(
-        @Field("listIdTournees") listIdTournees: Array<String>
+        @Field("listIdTournees") listIdTournees: Array<String>,
     ): Call<ReservationTourneesResponse>
 
     data class ReferentielResponse(
@@ -70,12 +70,12 @@ interface ReferentielService {
 
     data class ReservationTourneesResponse(
         var tourneesReservees: List<TourneeWithHydrant>,
-        var tourneesNonReservees: List<Tournee>
+        var tourneesNonReservees: List<Tournee>,
     )
 
     data class TourneeWithHydrant(
         val idRemocra: Long,
         val nom: String,
-        val listeHydrant: List<Long>
+        val listeHydrant: List<Long>,
     )
 }

@@ -49,7 +49,7 @@ fun MapView(
     mapViewModel: MapViewModel,
     mapViewState: MutableState<MapViewState>,
     modifier: Modifier = Modifier,
-    onLoad: ((map: MapView) -> Unit)? = null
+    onLoad: ((map: MapView) -> Unit)? = null,
 ) {
     val context = LocalContext.current
 
@@ -61,14 +61,14 @@ fun MapView(
     val hydrantPoints = remember {
         mutableStateOf<PointAdapter>(
             SimplePointTheme(
-                emptyList()
-            )
+                emptyList(),
+            ),
         )
     }
     val iwOverlay = Marker(mapState)
 
     val hydrantLayer = SimpleFastPointOverlay(
-        hydrantPoints.value
+        hydrantPoints.value,
     ).apply {
         setOnClickListener { points, point ->
             val selected = points.get(point) as MapViewModel.HydrantGeoPoint
@@ -87,8 +87,8 @@ fun MapView(
         listOf(
             locationOverlay,
             hydrantLayer,
-            iwOverlay
-        )
+            iwOverlay,
+        ),
     )
 
     mapState.addMapListener(
@@ -97,7 +97,7 @@ fun MapView(
                 mapViewModel.setCenter(mapState.mapCenter)
                 mapViewModel.getHydrantDebounced(
                     hydrantPoints,
-                    mapState.boundingBox.increaseByScale(2f)
+                    mapState.boundingBox.increaseByScale(2f),
                 )
                 return true
             }
@@ -106,41 +106,43 @@ fun MapView(
                 mapViewModel.setZoom(mapState.zoomLevelDouble)
                 return true
             }
-        }
+        },
     )
 
     val icon =
-        if (mapViewState.value.isFullscreen)
+        if (mapViewState.value.isFullscreen) {
             Icons.Filled.ZoomInMap
-        else
+        } else {
             Icons.Filled.ZoomOutMap
+        }
 
     Box {
         AndroidView(
             { mapState },
-            modifier
+            modifier,
         ) { mapView -> onLoad?.invoke(mapView) }
         Column(
             Modifier
                 .padding(16.dp)
-                .align(Alignment.BottomStart)
+                .align(Alignment.BottomStart),
         ) {
             FloatingActionButton(
                 onClick = {
                     if (!locationOverlay.isFollowLocationEnabled) {
-                        locationOverlay.enableFollowLocation();
+                        locationOverlay.enableFollowLocation()
                     } else {
-                        locationOverlay.disableFollowLocation();
+                        locationOverlay.disableFollowLocation()
                     }
                 },
-                shape = CircleShape
+                shape = CircleShape,
             ) {
                 Icon(
                     imageVector = if (!locationOverlay.isFollowLocationEnabled) {
                         Icons.Filled.GpsNotFixed
                     } else {
                         Icons.Filled.GpsFixed
-                    }, contentDescription = "GPS"
+                    },
+                    contentDescription = "GPS",
                 )
             }
             Spacer(Modifier.height(16.dp))
@@ -148,14 +150,14 @@ fun MapView(
                 onClick = {
                     mapViewState.value = mapViewState.value.copy(
                         showMapView = mapViewState.value.showMapView,
-                        isFullscreen = !mapViewState.value.isFullscreen
+                        isFullscreen = !mapViewState.value.isFullscreen,
                     )
                 },
-                shape = CircleShape
+                shape = CircleShape,
             ) {
                 Icon(
                     imageVector = icon,
-                    contentDescription = "Fullscreen"
+                    contentDescription = "Fullscreen",
                 )
             }
         }

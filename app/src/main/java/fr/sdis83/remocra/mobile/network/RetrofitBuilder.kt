@@ -25,7 +25,7 @@ object RetrofitBuilder : SingletonHolder<Retrofit>() {
         val url = context.resources.getString(R.string.url_api)
 
         val client = OkHttpClient.Builder().eventListenerFactory(
-            LoggingEventListener.Factory()
+            LoggingEventListener.Factory(),
         )
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
@@ -35,14 +35,12 @@ object RetrofitBuilder : SingletonHolder<Retrofit>() {
             .addInterceptor(AuthInterceptor(context))
             .build()
 
-
-
         return Retrofit.Builder()
             .client(client)
             .baseUrl(
                 buildApiUrl(
-                    prefs.getString(url, "")!!
-                )
+                    prefs.getString(url, "")!!,
+                ),
             )
             .addConverterFactory(LocalDateConverterFactory())
             .addConverterFactory(OffsetDateTimeConverterFactory())
@@ -55,8 +53,8 @@ object RetrofitBuilder : SingletonHolder<Retrofit>() {
     /**
      * Permert de recharger le retrofit si on change l'url du serveur
      */
-    fun setNewUrl(context: Context) : Retrofit {
-       return newInstance(context)
+    fun setNewUrl(context: Context): Retrofit {
+        return newInstance(context)
     }
 }
 
@@ -69,6 +67,6 @@ private fun buildApiUrl(uri: String): String {
             .authority(parsedUri.authority)
             .appendPath("mobile")
             .appendPath("")
-            .build().toString()
+            .build().toString(),
     )
 }

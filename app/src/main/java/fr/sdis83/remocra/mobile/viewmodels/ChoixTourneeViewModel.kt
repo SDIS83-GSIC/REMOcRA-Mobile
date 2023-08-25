@@ -13,7 +13,7 @@ import fr.sdis83.remocra.mobile.database.TourneeDispo
 import fr.sdis83.remocra.mobile.workers.ReserveTourneesWorker
 import fr.sdis83.remocra.mobile.workers.TourneesDisposWorker
 
-class ChoixTourneeViewModel(application: Application) :  AndroidViewModel(application) {
+class ChoixTourneeViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         private const val TAG = "TourneeViewModel"
 
@@ -27,7 +27,7 @@ class ChoixTourneeViewModel(application: Application) :  AndroidViewModel(applic
     private val tourneesDao = RemocraDatabase.getInstance(getApplication()).tourneesDao()
     val tourneesDisponibles = tourneesDao.getTourneesDisponiblesLiveData()
 
-    suspend fun updateTourneeDispo(tourneeDispo : TourneeDispo) = tourneesDao.updateTourneeDispo(tourneeDispo)
+    suspend fun updateTourneeDispo(tourneeDispo: TourneeDispo) = tourneesDao.updateTourneeDispo(tourneeDispo)
 
     private var tourneesDisponiblesStatus = mutableStateOf(JobStatus.WAITING)
     private var tourneesReserveesStatus = mutableStateOf(JobStatus.WAITING)
@@ -58,22 +58,20 @@ class ChoixTourneeViewModel(application: Application) :  AndroidViewModel(applic
                         tourneesDisponiblesStatus.value = JobStatus.SUCCESS
                     }
 
-                     WorkInfo.State.FAILED -> {
-                         info.value = "Impossible de charger les données demandées"
-                         tourneesDisponiblesStatus.value = JobStatus.ERROR
-                     }
+                    WorkInfo.State.FAILED -> {
+                        info.value = "Impossible de charger les données demandées"
+                        tourneesDisponiblesStatus.value = JobStatus.ERROR
+                    }
 
                     else -> {
                         tourneesDisponiblesStatus.value = JobStatus.WAITING
                     }
                 }
             }
-
         }
     }
 
     fun reserveTournees(context: Context) {
-
         val reserveTourneesWorker = OneTimeWorkRequestBuilder<ReserveTourneesWorker>().build()
 
         WorkManager.getInstance(getApplication()).let { workManager ->
@@ -92,11 +90,11 @@ class ChoixTourneeViewModel(application: Application) :  AndroidViewModel(applic
                     WorkInfo.State.SUCCEEDED -> {
                         val tourneesNonReservees = it.outputData.getString("NON_RESERVEES")
                         infoReservation.value =
-                        if(!tourneesNonReservees.isNullOrBlank()) {
-                            "$tourneesNonReservees n'ont pas pu être réservées."
-                        } else {
-                            "Tournées réservées"
-                        }
+                            if (!tourneesNonReservees.isNullOrBlank()) {
+                                "$tourneesNonReservees n'ont pas pu être réservées."
+                            } else {
+                                "Tournées réservées"
+                            }
 
                         Toast.makeText(context, infoReservation.value, Toast.LENGTH_SHORT).show()
                         tourneesReserveesStatus.value = JobStatus.SUCCESS

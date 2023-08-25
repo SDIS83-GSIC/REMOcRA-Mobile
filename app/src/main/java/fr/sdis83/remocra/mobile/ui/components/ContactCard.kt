@@ -26,21 +26,22 @@ fun ContactCard(contact: Contact, navController: NavController) {
     Card(Modifier.padding(5.dp)) {
         Row(
             horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             var nomComplet: String = "${contact.nom ?: ""} ${contact.prenom ?: ""}"
             Column(
                 Modifier
                     .padding(5.dp)
-                    .weight(.7f)) {
+                    .weight(.7f),
+            ) {
                 Text(
-                    text = if (nomComplet!=" ") nomComplet else "n/a",
+                    text = if (nomComplet != " ") nomComplet else "n/a",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 30.sp
+                    fontSize = 30.sp,
                 )
                 Text(
                     text = contact.fonction ?: "Fonction n/a",
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
                 )
             }
             Column(Modifier.padding(5.dp)) {
@@ -50,14 +51,14 @@ fun ContactCard(contact: Contact, navController: NavController) {
                             Screens.EditContact.route
                                 .replace(
                                     oldValue = "{idGestionnaire}",
-                                    newValue = contact.idGestionnaire.toString()
+                                    newValue = contact.idGestionnaire.toString(),
                                 )
                                 .replace(
                                     oldValue = "{idContact}",
-                                    newValue = contact.idContact.toString()
-                                )
+                                    newValue = contact.idContact.toString(),
+                                ),
                         )
-                    }
+                    },
                 ) {
                     Icon(imageVector = Icons.Filled.Edit, contentDescription = "EditGestionnaire", Modifier.size(30.dp))
                 }

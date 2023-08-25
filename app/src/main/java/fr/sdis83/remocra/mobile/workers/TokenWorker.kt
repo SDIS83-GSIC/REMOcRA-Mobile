@@ -9,7 +9,7 @@ import fr.sdis83.remocra.mobile.services.AuthService
 
 class TokenWorker constructor(
     context: Context,
-    workerParams: WorkerParameters
+    workerParams: WorkerParameters,
 ) : Worker(context, workerParams) {
 
     companion object {

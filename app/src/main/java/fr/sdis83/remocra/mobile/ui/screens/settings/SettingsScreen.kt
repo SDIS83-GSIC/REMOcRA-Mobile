@@ -30,37 +30,41 @@ fun SettingScreen(navController: NavController?) {
     BackHandler { navController?.navigate(Screens.Tournees.route) }
     Column(
         modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
     ) {
         HeaderAppBar(
             title = stringResource(R.string.parametrage),
-            returnAction = { navController?.popBackStack() })
+            returnAction = { navController?.popBackStack() },
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(50.dp),
-            verticalAlignment = Alignment.Top
+            verticalAlignment = Alignment.Top,
         ) {
-            Column(modifier = Modifier.fillMaxWidth(0.6f)
+            Column(
+                modifier = Modifier.fillMaxWidth(0.6f),
             ) {
                 Text(text = stringResource(R.string.gestionnaireST), fontWeight = FontWeight.Bold)
-                Text(text = stringResource(R.string.gestionnaireSubST),fontWeight = FontWeight.Normal)
+                Text(text = stringResource(R.string.gestionnaireSubST), fontWeight = FontWeight.Normal)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Button(
                         modifier = Modifier
                             .fillMaxWidth(.5f)
                             .padding(20.dp),
-                        onClick = { navController?.navigate(Screens.CreateGestionnaire.route) }) {
+                        onClick = { navController?.navigate(Screens.CreateGestionnaire.route) },
+                    ) {
                         Text(text = stringResource(R.string.createGestionnaireBTN))
                     }
                     Button(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(20.dp),
-                        onClick = { navController?.navigate(Screens.ListGestionnaire.route) }) {
+                        onClick = { navController?.navigate(Screens.ListGestionnaire.route) },
+                    ) {
                         Text(text = stringResource(R.string.manageGestionnaireBTN))
                     }
                 }
@@ -68,19 +72,20 @@ fun SettingScreen(navController: NavController?) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth(0.1f)
-                    .padding(10.dp)
+                    .padding(10.dp),
             ) {
                 Spacer(
                     modifier = Modifier
                         .width(2.dp)
                         .fillMaxHeight(.9f)
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
                 )
             }
-            Column(modifier = Modifier.fillMaxWidth()
+            Column(
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(text = stringResource(R.string.createPeiST), fontWeight = FontWeight.Bold)
-                Text(text = stringResource(R.string.createPeiSubST),fontWeight = FontWeight.Normal)
+                Text(text = stringResource(R.string.createPeiSubST), fontWeight = FontWeight.Normal)
                 Button(onClick = { navController?.navigate(Screens.HydrantCreate.route) }) {
                     Text(text = stringResource(R.string.createPeiBTN))
                 }

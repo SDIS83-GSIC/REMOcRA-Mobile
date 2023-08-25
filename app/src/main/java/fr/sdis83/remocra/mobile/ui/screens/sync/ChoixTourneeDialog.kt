@@ -37,7 +37,6 @@ import fr.sdis83.remocra.mobile.database.TourneeDispo
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 import kotlinx.coroutines.launch
 
-
 @Composable
 fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, onDismiss: () -> Unit) {
     val context = LocalContext.current
@@ -49,31 +48,32 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, onDismiss: 
     }
 
     Dialog(
-        onDismissRequest = { onDismiss() }, properties = DialogProperties(
-            dismissOnBackPress = true, dismissOnClickOutside = true
-        )
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(
+            dismissOnBackPress = true,
+            dismissOnClickOutside = true,
+        ),
     ) {
         Card(
             shape = RoundedCornerShape(10.dp),
-            modifier = Modifier.size(1600.dp, 300.dp)
+            modifier = Modifier.size(1600.dp, 300.dp),
         ) {
             Column(
                 Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .background(Color.White)
+                    .background(Color.White),
             ) {
-
-
                 Text(
                     text = stringResource(R.string.tournees_a_embarquer),
-                    modifier = Modifier.padding(8.dp), fontSize = 20.sp
+                    modifier = Modifier.padding(8.dp),
+                    fontSize = 20.sp,
                 )
 
                 if (!listeTourneesDispo.value.isNullOrEmpty()) {
                     LazyVerticalGrid(
                         columns = GridCells.Adaptive(minSize = 225.dp),
-                        modifier = Modifier.weight(1f, fill = false)
+                        modifier = Modifier.weight(1f, fill = false),
                     ) {
                         items(listeTourneesDispo.value) {
                             TourneeRow(tourneeDispo = it, choixTourneeViewModel)
@@ -86,7 +86,7 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, onDismiss: 
                             Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp)
-                                .weight(1F)
+                                .weight(1F),
                         ) {
                             Text(text = stringResource(R.string.annuler))
                         }
@@ -99,10 +99,10 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, onDismiss: 
                             },
                             Modifier
                                 .padding(8.dp)
-                                .weight(1F)
+                                .weight(1F),
                         ) {
                             Text(
-                                text = "Réserver"
+                                text = "Réserver",
                             )
                         }
                     }
@@ -112,10 +112,10 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, onDismiss: 
                             .fillMaxWidth()
                             .fillMaxHeight(),
                         verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         Text(
-                            text = stringResource(R.string.aucune_tournee_a_reserver)
+                            text = stringResource(R.string.aucune_tournee_a_reserver),
                         )
 
                         Button(
@@ -123,14 +123,13 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, onDismiss: 
                                 onDismiss()
                             },
                             Modifier
-                                .padding(10.dp)
+                                .padding(10.dp),
                         ) {
                             Text(
-                                text = "Retour"
+                                text = "Retour",
                             )
                         }
                     }
-
                 }
             }
         }
@@ -144,7 +143,7 @@ fun TourneeRow(tourneeDispo: TourneeDispo, choixTourneeViewModel: ChoixTourneeVi
     Card(
         modifier = Modifier
             .padding(all = 10.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(),
     ) {
         Row {
             Checkbox(

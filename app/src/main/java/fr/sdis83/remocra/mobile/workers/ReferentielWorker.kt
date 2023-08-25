@@ -12,7 +12,7 @@ import java.util.UUID
 
 class ReferentielWorker constructor(
     context: Context,
-    workerParams: WorkerParameters
+    workerParams: WorkerParameters,
 ) : Worker(context, workerParams) {
 
     companion object {
@@ -77,12 +77,12 @@ class ReferentielWorker constructor(
                 referentielDao.insertTypeHydrantNatureDeci(
                     typeHydrantNatureDeci.copy(
                         idTypeHydrantNatureDeci = UUID.randomUUID(),
-                    )
+                    ),
                 )
             }
             typesHydrantSaisie.forEach { typeHydrantSaisie ->
                 referentielDao.insertTypeHydrantSaisie(
-                    typeHydrantSaisie.copy(idTypeHydrantSaisie = UUID.randomUUID())
+                    typeHydrantSaisie.copy(idTypeHydrantSaisie = UUID.randomUUID()),
                 )
             }
             typesHydrantCritere.forEach { typeHydrantCritere ->
@@ -93,8 +93,8 @@ class ReferentielWorker constructor(
                     anomalieMap.add(Pair(idTypeHydrantAnomalie, typeHydrantAnomalie.idRemocra))
                     referentielDao.insertTypeHydrantAnomalie(
                         typeHydrantAnomalie.copy(
-                            idTypeHydrantAnomalie = idTypeHydrantAnomalie
-                        )
+                            idTypeHydrantAnomalie = idTypeHydrantAnomalie,
+                        ),
                     )
                 }
             }
@@ -119,8 +119,8 @@ class ReferentielWorker constructor(
                     referentielDao.insertContact(
                         contact.copy(
                             idContact = idContact,
-                            idGestionnaire = gestionnaireMap.find { it.second == contact.idRemocraGestionnaire }?.first
-                        )
+                            idGestionnaire = gestionnaireMap.find { it.second == contact.idRemocraGestionnaire }?.first,
+                        ),
                     )
                 }
             }
@@ -128,8 +128,8 @@ class ReferentielWorker constructor(
                 referentielDao.insertContactRole(
                     ContactRole(
                         idContact = contactMap.find { it.second == contactRole.idContact }!!.first,
-                        idRole = contactRole.idRole
-                    )
+                        idRole = contactRole.idRole,
+                    ),
                 )
             }
             hydrants.forEach { hydrant ->
@@ -138,8 +138,8 @@ class ReferentielWorker constructor(
                     referentielDao.insertHydrant(
                         hydrant.copy(
                             idHydrant = idHydrant,
-                            idGestionnaire = gestionnaireMap.find { it.second == hydrant.idRemocraGestionnaire }?.first
-                        )
+                            idGestionnaire = gestionnaireMap.find { it.second == hydrant.idRemocraGestionnaire }?.first,
+                        ),
                     )
                 }
             }
@@ -148,7 +148,7 @@ class ReferentielWorker constructor(
                     HydrantAnomalie(
                         idHydrant = hydrantMap.find { it.second == hydrantAnomalie.idHydrant }!!.first,
                         idAnomalie = hydrantAnomalie.idAnomalie,
-                    )
+                    ),
                 )
             }
         }

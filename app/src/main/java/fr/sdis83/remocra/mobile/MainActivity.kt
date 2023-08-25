@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
             REMOcRAMobileTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
                 ) {
                     val navController = rememberNavController()
                     val mapViewState = remember { mutableStateOf(MapViewState()) }
@@ -53,8 +53,8 @@ class MainActivity : ComponentActivity() {
                                         .animateContentSize(
                                             animationSpec = tween(
                                                 durationMillis = 100,
-                                                easing = LinearOutSlowInEasing
-                                            )
+                                                easing = LinearOutSlowInEasing,
+                                            ),
                                         ),
                                 ) {
                                     MapView(mapViewModel, mapViewState)
@@ -62,30 +62,32 @@ class MainActivity : ComponentActivity() {
                             }
                             Column(
                                 modifier =
-                                if (mapViewState.value.isFullscreen) Modifier
-                                    .fillMaxHeight()
-                                    .width(0.dp)
-                                    .animateContentSize(
-                                        animationSpec = tween(
-                                            durationMillis = 500,
-                                            easing = LinearOutSlowInEasing
+                                if (mapViewState.value.isFullscreen) {
+                                    Modifier
+                                        .fillMaxHeight()
+                                        .width(0.dp)
+                                        .animateContentSize(
+                                            animationSpec = tween(
+                                                durationMillis = 500,
+                                                easing = LinearOutSlowInEasing,
+                                            ),
                                         )
-                                    )
-                                else
+                                } else {
                                     Modifier
                                         .fillMaxHeight()
                                         .weight(1f)
                                         .animateContentSize(
                                             animationSpec = tween(
                                                 durationMillis = 500,
-                                                easing = LinearOutSlowInEasing
-                                            )
-                                        ),
+                                                easing = LinearOutSlowInEasing,
+                                            ),
+                                        )
+                                },
                             ) {
                                 NavGraph(
                                     navController = navController,
                                     mapViewModel = mapViewModel,
-                                    mapViewState = mapViewState
+                                    mapViewState = mapViewState,
                                 )
                             }
                         }

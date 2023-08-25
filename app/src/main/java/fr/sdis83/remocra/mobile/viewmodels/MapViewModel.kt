@@ -62,7 +62,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
     @WorkerThread
     fun getHydrantDebounced(
         hydrantLayer: MutableState<SimpleFastPointOverlay.PointAdapter>,
-        box: BoundingBox
+        box: BoundingBox,
     ) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
@@ -74,10 +74,10 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
                             box.latNorth,
                             box.latSouth,
                             box.lonWest,
-                            box.lonEast
+                            box.lonEast,
                         ).map {
                             HydrantGeoPoint(it.lat, it.lon, it.idHydrant)
-                        }
+                        },
                     )
             }
         }

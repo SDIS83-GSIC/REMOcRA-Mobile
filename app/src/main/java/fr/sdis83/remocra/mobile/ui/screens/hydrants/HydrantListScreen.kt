@@ -2,7 +2,6 @@ package fr.sdis83.remocra.mobile.ui.screens.hydrants
 
 import android.app.Application
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.GpsFixed
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -41,7 +39,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
-import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.viewmodels.HydrantListViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import kotlinx.coroutines.launch
@@ -56,7 +53,6 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
 
     val openDialog = remember { mutableStateOf<UUID?>(null) }
 
-
     Box(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -67,24 +63,23 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(10.dp),
                 ) {
                     Button(onClick = { navController.popBackStack() }) {
                         Text(
-                            text = stringResource(id = R.string.retour)
+                            text = stringResource(id = R.string.retour),
                         )
                     }
                     Spacer(Modifier.height(16.dp))
                     Text(
                         text = stringResource(id = R.string.hydrantCrees),
                         fontSize = MaterialTheme.typography.headlineLarge.fontSize,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
                 if (!hydrantList.isNullOrEmpty()) {
                     Row {
                         if (openDialog.value != null) {
-
                             AlertDialog(
                                 onDismissRequest = {
                                     openDialog.value = null
@@ -104,7 +99,8 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                                                     openDialog.value = null
                                                 }
                                             }
-                                        }) {
+                                        },
+                                    ) {
                                         Text(stringResource(id = R.string.oui))
                                     }
                                 },
@@ -112,10 +108,11 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                                     Button(
                                         onClick = {
                                             openDialog.value = null
-                                        }) {
+                                        },
+                                    ) {
                                         Text(stringResource(id = R.string.non))
                                     }
-                                }
+                                },
                             )
                         }
                         LazyColumn {
@@ -123,7 +120,7 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                                 Row(
                                     Modifier
                                         .padding(8.dp)
-                                        .fillMaxWidth()
+                                        .fillMaxWidth(),
                                 ) {
                                     Box(
                                         modifier =
@@ -142,7 +139,7 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                                                 }) {
                                                     Icon(
                                                         imageVector = Icons.Filled.GpsFixed,
-                                                        contentDescription = ""
+                                                        contentDescription = "",
                                                     )
                                                 }
                                                 Spacer(modifier = Modifier.width(16.dp))
@@ -151,18 +148,18 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                                                 }) {
                                                     Icon(
                                                         imageVector = Icons.Filled.Delete,
-                                                        contentDescription = ""
+                                                        contentDescription = "",
                                                     )
                                                 }
                                             }
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(
-                                                    text = hydrantItem.hydrantNature.nom
+                                                    text = hydrantItem.hydrantNature.nom,
                                                 )
                                             }
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(
-                                                    text = hydrantItem.hydrantNatureDeci.nom
+                                                    text = hydrantItem.hydrantNatureDeci.nom,
                                                 )
                                             }
                                         }

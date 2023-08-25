@@ -1,16 +1,13 @@
 package fr.sdis83.remocra.mobile.workers
 
 import android.content.Context
-import android.widget.Toast
-import androidx.work.Data
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import fr.sdis83.remocra.mobile.authn.SessionManager
 import fr.sdis83.remocra.mobile.services.AuthService
 
 class AdministrationWorker constructor(
     context: Context,
-    workerParams: WorkerParameters
+    workerParams: WorkerParameters,
 ) : Worker(context, workerParams) {
 
     companion object {

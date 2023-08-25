@@ -50,18 +50,18 @@ fun TourneeScreen(navController: NavController, idTournee: UUID) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(10.dp),
                 ) {
                     Button(onClick = { navController.popBackStack() }) {
                         Text(
-                            text = "Retour"
+                            text = "Retour",
                         )
                     }
                     Spacer(Modifier.height(16.dp))
                     Text(
                         text = tourneeData?.nom ?: "",
                         fontSize = MaterialTheme.typography.headlineLarge.fontSize,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
                 if (!hydrantList.isNullOrEmpty()) {
@@ -77,18 +77,18 @@ fun TourneeScreen(navController: NavController, idTournee: UUID) {
                                                 Screens.Hydrant.route
                                                     .replace(
                                                         oldValue = "{idHydrant}",
-                                                        newValue = hydrantItem.hydrant.idHydrant.toString()
+                                                        newValue = hydrantItem.hydrant.idHydrant.toString(),
                                                     )
                                                     .replace(
                                                         oldValue = "{idTournee}",
-                                                        newValue = idTournee.toString()
-                                                    )
+                                                        newValue = idTournee.toString(),
+                                                    ),
                                             ) {
                                                 popUpTo(Screens.TourneeHydrants.route) {
                                                     inclusive = true
                                                 }
                                             }
-                                        }
+                                        },
                                 ) {
                                     Box(
                                         modifier =
@@ -106,12 +106,12 @@ fun TourneeScreen(navController: NavController, idTournee: UUID) {
                                             }
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(
-                                                    text = hydrantItem.hydrantNature.nom
+                                                    text = hydrantItem.hydrantNature.nom,
                                                 )
                                             }
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(
-                                                    text = hydrantItem.hydrant.dispoTerrestre.toString()
+                                                    text = hydrantItem.hydrant.dispoTerrestre.toString(),
                                                 )
                                             }
                                         }

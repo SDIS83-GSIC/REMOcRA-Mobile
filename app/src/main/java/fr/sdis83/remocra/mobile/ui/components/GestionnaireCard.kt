@@ -22,18 +22,22 @@ import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.navigation.Screens
 
 @Composable
-fun GestionnaireCard(gestionnaire: Gestionnaire, navController: NavController){
-    Card(Modifier.padding(5.dp))
-    {
-        Row(horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-            ){
+fun GestionnaireCard(gestionnaire: Gestionnaire, navController: NavController) {
+    Card(Modifier.padding(5.dp)) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Column(Modifier.padding(5.dp).weight(.7f)) {
-                Text(text = if (gestionnaire.nom!=null) "${gestionnaire.nom}" else "n/a",
+                Text(
+                    text = if (gestionnaire.nom != null) "${gestionnaire.nom}" else "n/a",
                     fontWeight = FontWeight.Bold,
-                    fontSize = 30.sp)
-                Text(text = "SIREN : " + if (gestionnaire.code!=null) "${gestionnaire.code}" else "",
-                    fontSize = 20.sp)
+                    fontSize = 30.sp,
+                )
+                Text(
+                    text = "SIREN : " + if (gestionnaire.code != null) "${gestionnaire.code}" else "",
+                    fontSize = 20.sp,
+                )
             }
             Column(Modifier.padding(5.dp)) {
                 IconButton(
@@ -42,10 +46,10 @@ fun GestionnaireCard(gestionnaire: Gestionnaire, navController: NavController){
                             Screens.EditGestionnaire.route
                                 .replace(
                                     oldValue = "{idGestionnaire}",
-                                    newValue = gestionnaire.idGestionnaire.toString()
-                                )
+                                    newValue = gestionnaire.idGestionnaire.toString(),
+                                ),
                         )
-                    }
+                    },
                 ) {
                     Icon(imageVector = Icons.Filled.Edit, contentDescription = "EditGestionnaire", Modifier.size(30.dp))
                 }

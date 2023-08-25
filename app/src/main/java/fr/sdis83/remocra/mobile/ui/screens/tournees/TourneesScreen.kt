@@ -48,12 +48,12 @@ fun TourneesScreen(navController: NavController) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(10.dp),
                 ) {
                     Text(
                         text = "Liste des tournées",
                         fontSize = MaterialTheme.typography.headlineLarge.fontSize,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
                 if (!tourneeList.isNullOrEmpty()) {
@@ -69,10 +69,10 @@ fun TourneesScreen(navController: NavController) {
                                                 Screens.TourneeHydrants.route
                                                     .replace(
                                                         oldValue = "{idTournee}",
-                                                        newValue = tourneeItem.tournee.idTournee.toString()
-                                                    )
+                                                        newValue = tourneeItem.tournee.idTournee.toString(),
+                                                    ),
                                             )
-                                        }
+                                        },
                                 ) {
                                     Box(
                                         modifier =
@@ -80,7 +80,7 @@ fun TourneesScreen(navController: NavController) {
                                             .clip(RoundedCornerShape(8.dp))
                                             .background(if (tourneeList!!.indexOf(tourneeItem) % 2 == 0) Color.LightGray else Color.Gray)
                                             .padding(16.dp)
-                                            .fillMaxWidth()
+                                            .fillMaxWidth(),
                                     ) {
                                         Column {
                                             Row {
@@ -89,7 +89,6 @@ fun TourneesScreen(navController: NavController) {
                                             Row(verticalAlignment = Alignment.CenterVertically) {
                                                 Column(Modifier.weight(4f)) {
                                                     Text(text = "${tourneeItem.tournee.hydrantCount} point(s) d'eau")
-
                                                 }
                                                 Column(Modifier.weight(1f)) {
                                                     Text(text = "${(tourneeItem.progression * 100).roundToInt()}%")

@@ -108,7 +108,7 @@ fun HydrantVisiteScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(10.dp),
                 ) {
                     Button(onClick = {
                         if (pagerState.currentPage == pagerState.initialPage) {
@@ -120,13 +120,13 @@ fun HydrantVisiteScreenInner(
                         }
                     }) {
                         Text(
-                            text = "Retour"
+                            text = "Retour",
                         )
                     }
                     Text(
                         text = "Visite d'un point d'eau : ${pagerState.currentPage + 1} / $nbSteps",
                         fontSize = MaterialTheme.typography.headlineLarge.fontSize,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
                     )
                 }
                 HydrantVisiteForm(
@@ -136,7 +136,6 @@ fun HydrantVisiteScreenInner(
                     navController = navController,
                     hydrantVisite = hydrantVisite,
                 )
-
             }
         }
     }
@@ -176,7 +175,7 @@ fun HydrantVisiteForm(
                     }
                 },
                 onValueChange = hydrantVisiteViewModel::updateForm,
-                typeSaisieList = typeSaisieList ?: listOf()
+                typeSaisieList = typeSaisieList ?: listOf(),
             )
 
             1 -> StepTwo(
@@ -189,12 +188,12 @@ fun HydrantVisiteForm(
                     }
                 },
                 anomalieList = anomalieList ?: listOf(),
-                hydrantVisiteViewModel.hydrantState
+                hydrantVisiteViewModel.hydrantState,
             )
 
             2 -> StepThree(
                 hydrantVisite = hydrantVisite,
-                onValueChange = hydrantVisiteViewModel::updateForm
+                onValueChange = hydrantVisiteViewModel::updateForm,
             ) {
                 coroutineScope.launch {
                     hydrantVisiteViewModel.save(close = true)
@@ -210,7 +209,7 @@ fun StepOne(
     hydrantVisite: HydrantVisiteWithAnomalies,
     onValueChange: (HydrantVisiteWithAnomalies) -> Unit = {},
     onClick: () -> Unit,
-    typeSaisieList: List<TypeHydrantSaisie>
+    typeSaisieList: List<TypeHydrantSaisie>,
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -219,19 +218,21 @@ fun StepOne(
         context,
         { _, year: Int, month: Int, dayOfMonth: Int ->
             val date = ZonedDateTime.of(
-                year, month + 1, dayOfMonth,
+                year,
+                month + 1,
+                dayOfMonth,
                 hydrantVisite.hydrantVisite.dateVisite.hour,
                 hydrantVisite.hydrantVisite.dateVisite.minute,
                 hydrantVisite.hydrantVisite.dateVisite.second,
                 hydrantVisite.hydrantVisite.dateVisite.nano,
-                ZoneId.systemDefault()
+                ZoneId.systemDefault(),
             )
             onValueChange(
                 hydrantVisite.copy(
                     hydrantVisite = hydrantVisite.hydrantVisite.copy(
-                        dateVisite = date
+                        dateVisite = date,
                     ),
-                )
+                ),
             )
         },
         calendar.get(Calendar.YEAR),
@@ -250,19 +251,19 @@ fun StepOne(
                 minute,
                 hydrantVisite.hydrantVisite.dateVisite.second,
                 hydrantVisite.hydrantVisite.dateVisite.nano,
-                ZoneId.systemDefault()
+                ZoneId.systemDefault(),
             )
             onValueChange(
                 hydrantVisite.copy(
                     hydrantVisite = hydrantVisite.hydrantVisite.copy(
-                        dateVisite = date
+                        dateVisite = date,
                     ),
-                )
+                ),
             )
         },
         calendar.get(Calendar.HOUR),
         calendar.get(Calendar.MINUTE),
-        true
+        true,
     )
 
     val datePickerInteractionSource = remember { MutableInteractionSource() }
@@ -304,7 +305,7 @@ fun StepOne(
                     Text(text = "Date")
                 },
                 modifier = Modifier.weight(1f),
-                interactionSource = datePickerInteractionSource
+                interactionSource = datePickerInteractionSource,
             )
             OutlinedTextField(
                 readOnly = true,
@@ -320,7 +321,7 @@ fun StepOne(
                     Text(text = "Heure")
                 },
                 modifier = Modifier.weight(1f),
-                interactionSource = timePickerInteractionSource
+                interactionSource = timePickerInteractionSource,
             )
         }
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -334,9 +335,9 @@ fun StepOne(
                         onValueChange(
                             hydrantVisite.copy(
                                 hydrantVisite = hydrantVisite.hydrantVisite.copy(
-                                    idTypeHydrantSaisie = it.idRemocra
+                                    idTypeHydrantSaisie = it.idRemocra,
                                 ),
-                            )
+                            ),
                         )
                     } else {
                         onValueChange(
@@ -346,12 +347,12 @@ fun StepOne(
                                     ctrlDebitPression = false,
                                     debit = null,
                                     pressionDyn = null,
-                                    pression = null
+                                    pression = null,
                                 ),
-                            )
+                            ),
                         )
                     }
-                }
+                },
             )
         }
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -361,7 +362,7 @@ fun StepOne(
                     onValueChange(
                         hydrantVisite.copy(
                             hydrantVisite = hydrantVisite.hydrantVisite.copy(agent1 = it),
-                        )
+                        ),
                     )
                 },
                 label = {
@@ -371,7 +372,7 @@ fun StepOne(
                     Text(text = "Agent 1")
                 },
                 singleLine = true,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
             OutlinedTextField(
                 value = hydrantVisite.hydrantVisite.agent2 ?: "",
@@ -379,7 +380,7 @@ fun StepOne(
                     onValueChange(
                         hydrantVisite.copy(
                             hydrantVisite = hydrantVisite.hydrantVisite.copy(agent2 = it),
-                        )
+                        ),
                     )
                 },
                 label = {
@@ -389,7 +390,7 @@ fun StepOne(
                     Text(text = "Agent 2")
                 },
                 singleLine = true,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
             )
         }
         if (typeSaisieList.find { it.idRemocra == hydrantVisite.hydrantVisite.idTypeHydrantSaisie }?.code == "CTRL") {
@@ -409,9 +410,9 @@ fun StepOne(
                             onValueChange(
                                 hydrantVisite.copy(
                                     hydrantVisite = hydrantVisite.hydrantVisite.copy(
-                                        ctrlDebitPression = true
+                                        ctrlDebitPression = true,
                                     ),
-                                )
+                                ),
                             )
                         } else {
                             onValueChange(
@@ -420,12 +421,12 @@ fun StepOne(
                                         ctrlDebitPression = false,
                                         debit = null,
                                         pressionDyn = null,
-                                        pression = null
+                                        pression = null,
                                     ),
-                                )
+                                ),
                             )
                         }
-                    }
+                    },
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(text = "Oui")
@@ -439,7 +440,7 @@ fun StepOne(
                                 onValueChange(
                                     hydrantVisite.copy(
                                         hydrantVisite = hydrantVisite.hydrantVisite.copy(debit = value),
-                                    )
+                                    ),
                                 )
                             }
                         },
@@ -451,7 +452,7 @@ fun StepOne(
                         },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                     OutlinedTextField(
                         value = hydrantVisite.hydrantVisite.pressionDyn?.toString() ?: "",
@@ -460,7 +461,7 @@ fun StepOne(
                                 onValueChange(
                                     hydrantVisite.copy(
                                         hydrantVisite = hydrantVisite.hydrantVisite.copy(pressionDyn = value),
-                                    )
+                                    ),
                                 )
                             }
                         },
@@ -472,7 +473,7 @@ fun StepOne(
                         },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
@@ -483,7 +484,7 @@ fun StepOne(
                                 onValueChange(
                                     hydrantVisite.copy(
                                         hydrantVisite = hydrantVisite.hydrantVisite.copy(pression = value),
-                                    )
+                                    ),
                                 )
                             }
                         },
@@ -495,7 +496,7 @@ fun StepOne(
                         },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
                     )
                 }
             }
@@ -516,7 +517,6 @@ fun StepTwo(
     anomalieList: List<ReferentielDao.AnomalieItem>,
     hydrantState: StateFlow<Hydrant?>,
 ) {
-
     val options = anomalieList.filter { it.anomalieNature.idTypeHydrantNature == hydrantState.value?.idNature }.groupBy { it.critere }.mapValues { entry ->
         entry.value.map { item ->
             val checked =
@@ -529,19 +529,23 @@ fun StepTwo(
                     if (it) {
                         onValueChange(
                             hydrantVisite.copy(
-                                anomalies = hydrantVisite.anomalies.apply { add(item.anomalie) }
-                            )
+                                anomalies = hydrantVisite.anomalies.apply { add(item.anomalie) },
+                            ),
                         )
                     } else {
                         onValueChange(
                             hydrantVisite.copy(
-                                anomalies = hydrantVisite.anomalies.apply { remove(item.anomalie) }
-                            )
+                                anomalies = hydrantVisite.anomalies.apply { remove(item.anomalie) },
+                            ),
                         )
                     }
                 },
-                label = { Text(text = item.anomalie.nom,
-                fontWeight = if (item.anomalieNature.valIndispoTerrestre >= 5) FontWeight.Bold else null) },
+                label = {
+                    Text(
+                        text = item.anomalie.nom,
+                        fontWeight = if (item.anomalieNature.valIndispoTerrestre >= 5) FontWeight.Bold else null,
+                    )
+                },
                 enabled = hydrantVisite.hydrantVisite.hasAnomalieChanges,
             )
         }
@@ -551,14 +555,14 @@ fun StepTwo(
         modifier = Modifier
             .fillMaxHeight()
             .padding(10.dp)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text(fontWeight = FontWeight.Bold, text = "Anomalies")
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             LabelledCheckbox(
                 checked = !hydrantVisite.hydrantVisite.hasAnomalieChanges,
@@ -566,10 +570,10 @@ fun StepTwo(
                     onValueChange(
                         hydrantVisite.copy(
                             hydrantVisite = hydrantVisite.hydrantVisite.copy(hasAnomalieChanges = !it),
-                        )
+                        ),
                     )
                 },
-                label = { Text("Ne rien modifier") }
+                label = { Text("Ne rien modifier") },
             )
         }
         Row(
@@ -577,31 +581,33 @@ fun StepTwo(
                 .fillMaxWidth()
                 .weight(1f, fill = false)
                 .verticalScroll(
-                    rememberScrollState()
-                )
+                    rememberScrollState(),
+                ),
         ) {
             if (!options.isNullOrEmpty()) {
                 Column {
                     options.keys.forEach { critere ->
                         val opened = remember { mutableStateOf(false) }
-                        Row(modifier = Modifier
-                            .clickable { opened.value = !opened.value }
-                            .clip(RoundedCornerShape(8.dp))
-                            .padding(8.dp)
-                            .fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier
+                                .clickable { opened.value = !opened.value }
+                                .clip(RoundedCornerShape(8.dp))
+                                .padding(8.dp)
+                                .fillMaxWidth(),
+                        ) {
                             Icon(
                                 imageVector =
                                 if (opened.value) {
                                     Icons.Filled.ExpandLess
                                 } else {
                                     Icons.Filled.ExpandMore
-                                }, contentDescription = "Open/Close"
+                                },
+                                contentDescription = "Open/Close",
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(fontWeight = FontWeight.Bold, text = critere.nom)
                             Spacer(modifier = Modifier.width(16.dp))
                             Text(text = "(${options[critere]!!.count { it.checked }}/${options[critere]!!.size})")
-
                         }
                         if (opened.value) {
                             options[critere]!!.forEach { option ->
@@ -609,7 +615,7 @@ fun StepTwo(
                                     checked = option.checked,
                                     onCheckedChange = option.onCheckedChange,
                                     label = option.label,
-                                    enabled = option.enabled
+                                    enabled = option.enabled,
                                 )
                             }
                         }
@@ -629,13 +635,13 @@ fun StepTwo(
 fun StepThree(
     hydrantVisite: HydrantVisiteWithAnomalies,
     onValueChange: (HydrantVisiteWithAnomalies) -> Unit = {},
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     Column(
         Modifier
             .fillMaxHeight()
             .padding(10.dp)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(rememberScrollState()),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             Text("Observations")
@@ -650,7 +656,7 @@ fun StepThree(
                     onValueChange(
                         hydrantVisite.copy(
                             hydrantVisite = hydrantVisite.hydrantVisite.copy(observations = it),
-                        )
+                        ),
                     )
                 },
                 label = {
@@ -674,5 +680,5 @@ data class Option(
     var checked: Boolean,
     var onCheckedChange: (Boolean) -> Unit = {},
     val label: @Composable () -> Unit,
-    var enabled: Boolean = true
+    var enabled: Boolean = true,
 )

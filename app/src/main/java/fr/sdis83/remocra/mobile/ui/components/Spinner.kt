@@ -34,16 +34,17 @@ fun <T> Spinner(
     value: T? = items.firstOrNull(),
     valueToString: T.() -> String,
     label: String,
-    onSelectionChanged: (selection: T) -> Unit
+    onSelectionChanged: (selection: T) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf(value) }
     var textfieldSize by remember { mutableStateOf(Size.Zero) }
 
-    val icon = if (expanded)
+    val icon = if (expanded) {
         Icons.Filled.ArrowDropUp
-    else
+    } else {
         Icons.Filled.ArrowDropDown
+    }
 
     Box(modifier = modifier) {
         OutlinedTextField(
@@ -73,15 +74,16 @@ fun <T> Spinner(
             expanded = expanded,
             onDismissRequest = { expanded = false },
             modifier = Modifier
-                .width(with(LocalDensity.current) { textfieldSize.width.toDp() })
+                .width(with(LocalDensity.current) { textfieldSize.width.toDp() }),
         ) {
             items.forEach { item ->
-                DropdownMenuItem(onClick = {
-                    selectedOption = item
-                    onSelectionChanged(item)
-                    expanded = false
-                },
-                    text = { Text(text = item.valueToString()) }
+                DropdownMenuItem(
+                    onClick = {
+                        selectedOption = item
+                        onSelectionChanged(item)
+                        expanded = false
+                    },
+                    text = { Text(text = item.valueToString()) },
                 )
             }
         }

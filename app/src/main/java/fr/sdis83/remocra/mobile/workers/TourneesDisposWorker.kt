@@ -10,7 +10,7 @@ import java.util.UUID
 
 class TourneesDisposWorker constructor(
     context: Context,
-    workerParams: WorkerParameters
+    workerParams: WorkerParameters,
 ) : Worker(context, workerParams) {
 
     companion object {

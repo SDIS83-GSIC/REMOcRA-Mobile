@@ -10,7 +10,6 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 import retrofit2.http.PUT
-import retrofit2.http.Query
 
 interface AuthService {
     companion object {
@@ -37,11 +36,11 @@ interface AuthService {
         versionName: String,
     ): Call<LoginResponse>
 
-    data class LoginResponse (
+    data class LoginResponse(
         @SerializedName("token")
         var token: String,
 
         @SerializedName("username")
-        var username: String
+        var username: String,
     )
 }

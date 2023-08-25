@@ -17,7 +17,7 @@ abstract class TourneeDao {
         JOIN tournee t ON t.idRemocra = ht.idRemocraTournee
         LEFT JOIN hydrantVisite hv ON hv.idHydrant = h.idHydrant AND hv.idTournee = :idTournee
         WHERE t.idTournee = :idTournee
-        """
+        """,
     )
     abstract fun getHydrantByTournee(idTournee: UUID): LiveData<List<TourneeHydrantAvancement>>
 
@@ -25,7 +25,7 @@ abstract class TourneeDao {
         @Embedded val hydrant: Hydrant,
         @Relation(
             parentColumn = "idNature",
-            entityColumn = "idRemocra"
+            entityColumn = "idRemocra",
         ) val hydrantNature: TypeHydrantNature,
         var statut: String? = "",
     )
@@ -34,7 +34,7 @@ abstract class TourneeDao {
         """
         SELECT t.* FROM tournee t
         WHERE t.idTournee = :idTournee
-        """
+        """,
     )
     abstract fun getTournee(idTournee: UUID): LiveData<Tournee>
 }

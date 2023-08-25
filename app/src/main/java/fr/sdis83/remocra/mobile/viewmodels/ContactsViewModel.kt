@@ -4,9 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import androidx.room.Transaction
 import fr.sdis83.remocra.mobile.database.Contact
-import fr.sdis83.remocra.mobile.database.ContactRole
 import fr.sdis83.remocra.mobile.database.ContactsDao
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
@@ -32,8 +30,7 @@ class ContactsViewModel(application: Application, idContact: UUID?, idGestionnai
 
     val roleList: LiveData<List<Role>> = contactsDao.getRolesList()
 
-
-    suspend fun upsertContactWithRoles(contactWithRoles: ContactsDao.ContactWithRoles){
+    suspend fun upsertContactWithRoles(contactWithRoles: ContactsDao.ContactWithRoles) {
         contactsDao.saveContact(contactWithRoles)
     }
 
@@ -55,13 +52,12 @@ class ContactsViewModel(application: Application, idContact: UUID?, idGestionnai
                 ville = null,
                 pays = null,
                 telephone = null,
-                email = null
-            )
-        )
+                email = null,
+            ),
+        ),
     )
 
     var contactState: StateFlow<ContactsDao.ContactWithRoles> = _contactState.asStateFlow()
-
 
     private suspend fun loadData(idContact: UUID?, idGestionnaire: UUID) {
         if (idContact != null) {
@@ -84,8 +80,8 @@ class ContactsViewModel(application: Application, idContact: UUID?, idGestionnai
                     ville = null,
                     pays = null,
                     telephone = null,
-                    email = null
-                )
+                    email = null,
+                ),
             )
         }
     }

@@ -10,37 +10,39 @@ import java.util.UUID
 
 @Entity(
     tableName = "hydrant",
-    indices = [Index("idHydrant"), Index(
-        "idRemocra",
-        unique = true
-    ), Index("idCommune"), Index("idNature"),
-        Index("idNatureDeci"), Index("idGestionnaire")],
+    indices = [
+        Index("idHydrant"), Index(
+            "idRemocra",
+            unique = true,
+        ), Index("idCommune"), Index("idNature"),
+        Index("idNatureDeci"), Index("idGestionnaire"),
+    ],
     foreignKeys = [
         ForeignKey(
             entity = Commune::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idCommune"],
-            onDelete = ForeignKey.SET_NULL
+            onDelete = ForeignKey.SET_NULL,
         ),
         ForeignKey(
             entity = TypeHydrantNature::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idNature"],
-            onDelete = ForeignKey.SET_NULL
+            onDelete = ForeignKey.SET_NULL,
         ),
         ForeignKey(
             entity = TypeHydrantNatureDeci::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idNatureDeci"],
-            onDelete = ForeignKey.SET_NULL
+            onDelete = ForeignKey.SET_NULL,
         ),
         ForeignKey(
             entity = Gestionnaire::class,
             parentColumns = ["idGestionnaire"],
             childColumns = ["idGestionnaire"],
-            onDelete = ForeignKey.SET_NULL
+            onDelete = ForeignKey.SET_NULL,
         ),
-    ]
+    ],
 )
 data class Hydrant(
     @PrimaryKey val idHydrant: UUID = UUID.randomUUID(),
@@ -96,13 +98,13 @@ data class Tournee(
             entity = Hydrant::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idRemocraHydrant"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = Tournee::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idRemocraTournee"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
@@ -114,28 +116,30 @@ data class HydrantTournee(
 
 @Entity(
     tableName = "hydrantVisite",
-    indices = [Index(
-        "idHydrantVisite",
-        unique = true
-    ), Index("idHydrant"), Index("idTournee"), Index("idTypeHydrantSaisie")],
+    indices = [
+        Index(
+            "idHydrantVisite",
+            unique = true,
+        ), Index("idHydrant"), Index("idTournee"), Index("idTypeHydrantSaisie"),
+    ],
     foreignKeys = [
         ForeignKey(
             entity = Hydrant::class,
             parentColumns = ["idHydrant"],
             childColumns = ["idHydrant"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = Tournee::class,
             parentColumns = ["idTournee"],
             childColumns = ["idTournee"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = TypeHydrantSaisie::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idTypeHydrantSaisie"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
@@ -161,14 +165,16 @@ data class HydrantVisite(
     val isValid: Boolean
         get() =
             idTypeHydrantSaisie != null &&
-                    (ctrlDebitPression
-                            && debit != null && debit!! > 0
-                            && pressionDyn != null && pressionDyn!! > 0
-                            && pression != null && pression!! > 0.0
-                            || !ctrlDebitPression
-                            && debit == null
-                            && pressionDyn == null
-                            && pression == null)
+                (
+                    ctrlDebitPression &&
+                        debit != null && debit!! > 0 &&
+                        pressionDyn != null && pressionDyn!! > 0 &&
+                        pression != null && pression!! > 0.0 ||
+                        !ctrlDebitPression &&
+                        debit == null &&
+                        pressionDyn == null &&
+                        pression == null
+                    )
 
     enum class HydrantVisiteStatut {
         A_FAIRE,
@@ -187,13 +193,13 @@ data class HydrantVisite(
             entity = HydrantVisite::class,
             parentColumns = ["idHydrantVisite"],
             childColumns = ["idHydrantVisite"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = TypeHydrantAnomalie::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idAnomalie"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
@@ -211,13 +217,13 @@ data class HydrantVisiteAnomalie(
             entity = Hydrant::class,
             parentColumns = ["idHydrant"],
             childColumns = ["idHydrant"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = TypeHydrantAnomalie::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idAnomalie"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
@@ -240,17 +246,20 @@ data class TypeHydrantCritere(
 
 @Entity(
     tableName = "typeHydrantAnomalie",
-    indices = [Index("idTypeHydrantAnomalie"), Index(
-        "idRemocra",
-        unique = true
-    ), Index("idCritere")],
+    indices = [
+        Index("idTypeHydrantAnomalie"), Index(
+            "idRemocra",
+            unique = true,
+        ), Index("idCritere"),
+    ],
     foreignKeys = [
         ForeignKey(
             entity = TypeHydrantCritere::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idCritere"],
-            onDelete = ForeignKey.CASCADE
-        )],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class TypeHydrantAnomalie(
     @PrimaryKey val idTypeHydrantAnomalie: UUID = UUID.randomUUID(),
@@ -263,23 +272,26 @@ data class TypeHydrantAnomalie(
 
 @Entity(
     tableName = "typeHydrantAnomalieNature",
-    indices = [Index("idTypeHydrantAnomalieNature"), Index(
-        "idRemocra",
-        unique = true
-    ), Index("idTypeHydrantAnomalie"), Index("idTypeHydrantNature")],
+    indices = [
+        Index("idTypeHydrantAnomalieNature"), Index(
+            "idRemocra",
+            unique = true,
+        ), Index("idTypeHydrantAnomalie"), Index("idTypeHydrantNature"),
+    ],
     foreignKeys = [
         ForeignKey(
             entity = TypeHydrantAnomalie::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idTypeHydrantAnomalie"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = TypeHydrantNature::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idTypeHydrantNature"],
-            onDelete = ForeignKey.CASCADE
-        )],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class TypeHydrantAnomalieNature(
     @PrimaryKey val idTypeHydrantAnomalieNature: UUID = UUID.randomUUID(),
@@ -293,22 +305,25 @@ data class TypeHydrantAnomalieNature(
 
 @Entity(
     tableName = "typeHydrantAnomalieNatureSaisie",
-    indices = [Index("idTypeHydrantAnomalieNatureSaisie"), Index("idTypeHydrantAnomalieNature"), Index(
-        "idTypeHydrantSaisie"
-    )],
+    indices = [
+        Index("idTypeHydrantAnomalieNatureSaisie"), Index("idTypeHydrantAnomalieNature"), Index(
+            "idTypeHydrantSaisie",
+        ),
+    ],
     foreignKeys = [
         ForeignKey(
             entity = TypeHydrantAnomalieNature::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idTypeHydrantAnomalieNature"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = TypeHydrantSaisie::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idTypeHydrantSaisie"],
-            onDelete = ForeignKey.CASCADE
-        )],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
 )
 data class TypeHydrantAnomalieNatureSaisie(
     @PrimaryKey val idTypeHydrantAnomalieNatureSaisie: UUID = UUID.randomUUID(),
@@ -342,16 +357,18 @@ data class TypeHydrant(
 
 @Entity(
     tableName = "typeHydrantNature",
-    indices = [Index("idTypeHydrantNature"), Index(
-        "idRemocra",
-        unique = true
-    ), Index("idTypeHydrant")],
+    indices = [
+        Index("idTypeHydrantNature"), Index(
+            "idRemocra",
+            unique = true,
+        ), Index("idTypeHydrant"),
+    ],
     foreignKeys = [
         ForeignKey(
             entity = TypeHydrant::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idTypeHydrant"],
-            onDelete = ForeignKey.SET_NULL
+            onDelete = ForeignKey.SET_NULL,
         ),
     ],
 )
@@ -398,7 +415,7 @@ data class Gestionnaire(
     val nom: String,
     val code: String?,
     val actif: Boolean,
-    val edited: Boolean = false
+    val edited: Boolean = false,
 )
 
 @Entity(
@@ -409,8 +426,8 @@ data class Gestionnaire(
             entity = Gestionnaire::class,
             parentColumns = ["idGestionnaire"],
             childColumns = ["idGestionnaire"],
-            onDelete = ForeignKey.SET_NULL
-        )
+            onDelete = ForeignKey.SET_NULL,
+        ),
     ],
 )
 data class Contact(
@@ -431,7 +448,7 @@ data class Contact(
     val pays: String?,
     val telephone: String?,
     val email: String?,
-    val edited: Boolean = false
+    val edited: Boolean = false,
 ) {
     enum class Civilite {
         M,
@@ -448,13 +465,13 @@ data class Contact(
             entity = Contact::class,
             parentColumns = ["idContact"],
             childColumns = ["idContact"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = Role::class,
             parentColumns = ["idRemocra"],
             childColumns = ["idRole"],
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
@@ -475,7 +492,6 @@ data class Role(
     val actif: Boolean,
 )
 
-
 @Entity(
     tableName = "tourneeDispo",
     indices = [Index("idTourneeDispo")],
@@ -484,5 +500,5 @@ data class TourneeDispo(
     @PrimaryKey val idTourneeDispo: UUID = UUID.randomUUID(),
     val idRemocra: Long?,
     val nom: String?,
-    var choisie: Boolean = false
+    var choisie: Boolean = false,
 )

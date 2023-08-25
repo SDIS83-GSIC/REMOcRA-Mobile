@@ -13,14 +13,14 @@ import java.io.ByteArrayOutputStream
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.time.Instant
-import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.UUID
 
 @Database(
     version = 1,
-    entities = [Hydrant::class,
+    entities = [
+        Hydrant::class,
         Commune::class,
         Gestionnaire::class,
         Role::class,
@@ -39,7 +39,8 @@ import java.util.UUID
         TypeHydrantSaisie::class,
         HydrantVisiteAnomalie::class,
         HydrantAnomalie::class,
-        TourneeDispo::class]
+        TourneeDispo::class,
+    ],
 )
 @TypeConverters(Converters::class)
 abstract class RemocraDatabase : RoomDatabase() {

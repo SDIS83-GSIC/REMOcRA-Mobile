@@ -39,7 +39,7 @@ class AdministrationViewModel(application: Application) : AndroidViewModel(appli
                         Toast.makeText(
                             context,
                             "Echec de la connexion au serveur",
-                            Toast.LENGTH_SHORT
+                            Toast.LENGTH_SHORT,
                         ).show()
                     }
 

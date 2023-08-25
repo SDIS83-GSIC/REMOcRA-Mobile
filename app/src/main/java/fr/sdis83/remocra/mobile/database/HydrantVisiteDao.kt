@@ -1,15 +1,11 @@
 package fr.sdis83.remocra.mobile.database
 
 import androidx.room.Dao
-import androidx.room.Embedded
 import androidx.room.Insert
-import androidx.room.Junction
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Relation
 import androidx.room.Transaction
 import java.util.UUID
-
 
 @Dao
 abstract class HydrantVisiteDao {
@@ -18,11 +14,11 @@ abstract class HydrantVisiteDao {
         """
         SELECT hv.* FROM hydrantVisite hv
         WHERE idHydrant = :idHydrant AND idTournee = :idTournee
-        """
+        """,
     )
     abstract suspend fun getCurrentVisite(
         idHydrant: UUID,
-        idTournee: UUID
+        idTournee: UUID,
     ): HydrantVisite?
 
     @Query(
@@ -30,7 +26,7 @@ abstract class HydrantVisiteDao {
         SELECT tha.* FROM typeHydrantAnomalie tha
         JOIN hydrantAnomalie ha ON tha.idRemocra = ha.idAnomalie
         WHERE ha.idHydrant = :idHydrant
-        """
+        """,
     )
     abstract suspend fun getExistingVisiteAnomalie(
         idHydrant: UUID,
@@ -42,13 +38,12 @@ abstract class HydrantVisiteDao {
         JOIN hydrantVisiteAnomalie hva ON tha.idRemocra = hva.idAnomalie
         JOIN hydrantVisite hv ON hv.idHydrantVisite = hva.idHydrantVisite
         WHERE hv.idHydrant = :idHydrant AND hv.idTournee = :idTournee
-        """
+        """,
     )
     abstract suspend fun getCurrentVisiteAnomalie(
         idHydrant: UUID,
         idTournee: UUID,
     ): List<TypeHydrantAnomalie>
-
 
     data class HydrantVisiteWithAnomalies(
         val hydrantVisite: HydrantVisite,
@@ -73,8 +68,8 @@ abstract class HydrantVisiteDao {
                 insertHydrantVisiteAnomalie(
                     HydrantVisiteAnomalie(
                         input.hydrantVisite.idHydrantVisite,
-                        it.idRemocra
-                    )
+                        it.idRemocra,
+                    ),
                 )
             }
         }
