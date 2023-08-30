@@ -13,16 +13,26 @@ abstract class HydrantDao {
 
     @Query(
         """
-        SELECT h.* FROM hydrant h
-        WHERE h.lat <= :north AND h.lat >= :south AND h.lon >= :west AND h.lon <= :east
+        SELECT h.* FROM hydrant h WHERE h.idRemocra IS NOT NULL
         """,
     )
-    abstract fun getHydrantInBoundingBox(
-        north: Double,
-        south: Double,
-        west: Double,
-        east: Double,
-    ): List<Hydrant>
+    abstract fun getHydrantList(): LiveData<List<Hydrant>>
+
+    @Query(
+        """
+        SELECT h.* FROM hydrant h WHERE h.idRemocra IS NULL
+        """,
+    )
+    abstract fun getNewHydrantList(): LiveData<List<Hydrant>>
+
+    @Query(
+        """
+        SELECT h.*, t.* FROM tournee t
+        JOIN hydrantTournee ht ON ht.idRemocraTournee = t.idRemocra
+        JOIN hydrant h ON h.idRemocra = ht.idRemocraHydrant
+        """,
+    )
+    abstract fun getTourneeMap(): LiveData<Map<Tournee, List<Hydrant>>>
 
     @Query("SELECT h.* FROM hydrant h WHERE h.idHydrant = :idHydrant ")
     abstract fun getHydrantByIdHydrant(idHydrant: UUID): Hydrant

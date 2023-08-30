@@ -1,5 +1,6 @@
 package fr.sdis83.remocra.mobile.database
 
+import androidx.compose.ui.graphics.Color
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -88,7 +89,18 @@ data class Tournee(
     val idRemocra: Long,
     val hydrantCount: Int,
     val nom: String,
-)
+) {
+    fun getColor(): Color =
+        when (idRemocra % 4) {
+            0L -> Color(191, 63, 63)
+            1L -> Color(63, 191, 63)
+            2L -> Color(63, 63, 191)
+            3L -> Color(191, 191, 63)
+            4L -> Color(63, 191, 191)
+            5L -> Color(191, 63, 191)
+            else -> Color(127, 127, 127)
+        }
+}
 
 @Entity(
     tableName = "hydrantTournee",

@@ -1,23 +1,17 @@
 package fr.sdis83.remocra.mobile.viewmodels
 
 import android.content.Context
-import androidx.annotation.WorkerThread
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import fr.sdis83.remocra.mobile.database.Hydrant
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.osmdroid.api.IGeoPoint
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay
-import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
 import java.util.UUID
 
 class MapViewModel(applicationContext: Context) : ViewModel() {
@@ -33,6 +27,10 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
 
     private val hydrantDao = RemocraDatabase.getInstance(applicationContext).hydrantDao()
 
+    val hydrantList = hydrantDao.getHydrantList()
+    val newHydrantList = hydrantDao.getNewHydrantList()
+    val tourneeList = hydrantDao.getTourneeMap()
+
     var mapCenter = mutableStateOf<IGeoPoint?>(null)
         private set
 
@@ -47,42 +45,54 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
         mapZoom.value = zoom
     }
 
+    fun scaleToBox(boundingBox: BoundingBox) {
+        mapView?.zoomToBoundingBox(boundingBox, true)
+    }
+
     fun goToHydrant(idhydrant: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
             val hydrant = hydrantDao.getHydrantByIdHydrant(idhydrant)
             hydrant.let {
-                setCenter(HydrantGeoPoint(it.lat, it.lon, UUID.randomUUID()))
-                mapView?.setExpectedCenter(HydrantGeoPoint(it.lat, it.lon, it.idHydrant))
+                setCenter(
+                    HydrantGeoPoint(
+                        it.lat,
+                        it.lon,
+                        UUID.randomUUID(),
+                        it.code,
+                        it.dispoTerrestre,
+                        it.voie,
+                        it.suffixeVoie,
+                        it.voie2,
+                        it.observation,
+                    ),
+                )
+                mapView?.setExpectedCenter(
+                    HydrantGeoPoint(
+                        it.lat,
+                        it.lon,
+                        it.idHydrant,
+                        it.code,
+                        it.dispoTerrestre,
+                        it.voie,
+                        it.suffixeVoie,
+                        it.voie2,
+                        it.observation,
+                    ),
+                )
             }
         }
     }
 
-    private var searchJob: Job? = null
-
-    @WorkerThread
-    fun getHydrantDebounced(
-        hydrantLayer: MutableState<SimpleFastPointOverlay.PointAdapter>,
-        box: BoundingBox,
-    ) {
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            delay(250)
-            CoroutineScope(Dispatchers.IO).launch {
-                hydrantLayer.value =
-                    SimplePointTheme(
-                        hydrantDao.getHydrantInBoundingBox(
-                            box.latNorth,
-                            box.latSouth,
-                            box.lonWest,
-                            box.lonEast,
-                        ).map {
-                            HydrantGeoPoint(it.lat, it.lon, it.idHydrant)
-                        },
-                    )
-            }
-        }
-    }
-
-    data class HydrantGeoPoint(val lat: Double, val lon: Double, val idHydrant: UUID) :
+    data class HydrantGeoPoint(
+        val lat: Double,
+        val lon: Double,
+        val idHydrant: UUID,
+        val numero: String?,
+        val dispoTerrestre: Hydrant.Disponibilite?,
+        val voie: String?,
+        val suffixeVoie: String?,
+        val voie2: String?,
+        val observation: String?,
+    ) :
         GeoPoint(lat, lon)
 }
