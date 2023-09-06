@@ -1,21 +1,27 @@
 package fr.sdis83.remocra.mobile.ui.screens.settings
 
 import android.app.Application
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -29,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -39,9 +46,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.navigation.Screens
-import fr.sdis83.remocra.mobile.ui.components.ContactCard
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
-import fr.sdis83.remocra.mobile.viewmodels.GestionnairesViewModel
+import fr.sdis83.remocra.mobile.viewmodels.GestionnaireViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -51,11 +57,11 @@ fun GestionnaireFormScreen(navController: NavController?, idGestionnaire: UUID?)
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
-    val gestionnairesViewModel =
-        GestionnairesViewModel(context.applicationContext as Application, idGestionnaire)
+    val gestionnaireViewModel =
+        GestionnaireViewModel(context.applicationContext as Application, idGestionnaire)
 
     GestionnaireFormScreenInner(
-        gestionnairesViewModel,
+        gestionnaireViewModel,
         coroutineScope,
         navController,
     )
@@ -63,15 +69,15 @@ fun GestionnaireFormScreen(navController: NavController?, idGestionnaire: UUID?)
 
 @Composable
 fun GestionnaireFormScreenInner(
-    gestionnairesViewModel: GestionnairesViewModel,
+    gestionnaireViewModel: GestionnaireViewModel,
     coroutineScope: CoroutineScope,
     navController: NavController?,
 ) {
-    val currentGestionnaire by gestionnairesViewModel.gestionnaireState.collectAsState() // Current gestionnaire
-    val gestionnaire by gestionnairesViewModel.gestionnaire.observeAsState() // Construction du titre
+    val currentGestionnaire by gestionnaireViewModel.gestionnaireState.collectAsState() // Current gestionnaire
+    val gestionnaire by gestionnaireViewModel.gestionnaire.observeAsState() // Construction du titre
     var mainTitle: String by remember { mutableStateOf("") }
     val contextCreation: Boolean = gestionnaire?.idGestionnaire == null
-    val contactsList = gestionnairesViewModel.contactsList.observeAsState(listOf())
+    val contactsList = gestionnaireViewModel.contactsList.observeAsState(listOf())
 
     mainTitle = if (contextCreation) {
         // Context = Création d'un gestionnaire
@@ -81,7 +87,7 @@ fun GestionnaireFormScreenInner(
         "${stringResource(R.string.editGestionnaireST)} ${gestionnaire?.nom}"
     }
 
-    gestionnairesViewModel.updateForm(currentGestionnaire)
+    gestionnaireViewModel.updateForm(currentGestionnaire)
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -111,16 +117,16 @@ fun GestionnaireFormScreenInner(
                             .padding(end = 5.dp),
                         value = currentGestionnaire.nom ?: "",
                         onValueChange = { it: String ->
-                            gestionnairesViewModel.updateForm(
+                            gestionnaireViewModel.updateForm(
                                 currentGestionnaire.copy(nom = it),
                             )
                         },
                         label = { Text(text = stringResource(R.string.formGestionnaireName)) },
                         placeholder = { Text(text = stringResource(R.string.formGestionnaireNamePH)) },
                         singleLine = true,
-                        isError = !gestionnairesViewModel.gestionnaireValidState.value.isNomValid,
+                        isError = !gestionnaireViewModel.gestionnaireValidState.value.isNomValid,
                         supportingText = {
-                            if (!gestionnairesViewModel.gestionnaireValidState.value.isNomValid) {
+                            if (!gestionnaireViewModel.gestionnaireValidState.value.isNomValid) {
                                 Text(text = "Ce champ est obligatoire")
                             }
                         },
@@ -131,7 +137,7 @@ fun GestionnaireFormScreenInner(
                             .padding(start = 5.dp),
                         value = currentGestionnaire.code ?: "",
                         onValueChange = { it: String ->
-                            gestionnairesViewModel.updateForm(
+                            gestionnaireViewModel.updateForm(
                                 currentGestionnaire.copy(code = it),
                             )
                         },
@@ -195,20 +201,69 @@ fun GestionnaireFormScreenInner(
                                     .fillMaxWidth()
                                     .height(250.dp),
                             ) {
-                                Column(Modifier.padding(horizontal = 80.dp)) {
-                                    if (contactsList.value.isEmpty()) {
+                                if (contactsList.value.isEmpty()) {
+                                    Column(Modifier.padding(horizontal = 80.dp)) {
                                         Text(text = stringResource(R.string.noContact))
-                                    } else {
-                                        LazyVerticalGrid(
-                                            modifier = Modifier.border(color = Color.Black, width = .5.dp),
-                                            columns = GridCells.Adaptive(minSize = 350.dp),
-                                        ) {
-                                            items(contactsList.value) { contact ->
-                                                if (navController != null) {
-                                                    ContactCard(
-                                                        contact = contact,
-                                                        navController = navController,
-                                                    )
+                                    }
+                                } else {
+                                    LazyColumn(
+                                        Modifier.padding(horizontal = 80.dp),
+                                    ) {
+                                        items(contactsList.value) { contact ->
+                                            if (navController != null) {
+                                                Row(
+                                                    Modifier
+                                                        .padding(8.dp)
+                                                        .fillMaxWidth(),
+                                                ) {
+                                                    Box(
+                                                        modifier =
+                                                        Modifier
+                                                            .clip(RoundedCornerShape(8.dp))
+                                                            .background(Color(0xDDE9F3FF))
+                                                            .padding(16.dp)
+                                                            .fillMaxWidth(),
+                                                    ) {
+                                                        Column {
+                                                            Row {
+                                                                Column(
+                                                                    Modifier
+                                                                        .weight(1f),
+                                                                ) {
+                                                                    Text(
+                                                                        text = "${contact.nom ?: ""} ${contact.prenom ?: ""}",
+                                                                        fontWeight = FontWeight.Bold,
+                                                                    )
+                                                                    contact.fonction?.let {
+                                                                        Text(text = "Fonction : ${contact.fonction}")
+                                                                    }
+                                                                }
+                                                                Column {
+                                                                    IconButton(
+                                                                        onClick = {
+                                                                            navController.navigate(
+                                                                                Screens.EditContact.route
+                                                                                    .replace(
+                                                                                        oldValue = "{idGestionnaire}",
+                                                                                        newValue = contact.idGestionnaire.toString(),
+                                                                                    )
+                                                                                    .replace(
+                                                                                        oldValue = "{idContact}",
+                                                                                        newValue = contact.idContact.toString(),
+                                                                                    ),
+                                                                            )
+                                                                        },
+                                                                    ) {
+                                                                        Icon(
+                                                                            imageVector = Icons.Filled.Edit,
+                                                                            contentDescription = "EditContact",
+                                                                            Modifier.size(30.dp),
+                                                                        )
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -224,18 +279,16 @@ fun GestionnaireFormScreenInner(
                         .padding(all = 20.dp),
                     verticalAlignment = Alignment.Bottom,
                 ) {
-                    Button( // "Enregistrer ce gestionnaire"
-                        enabled = gestionnairesViewModel.gestionnaireValidState.value.isValid,
+                    Button(
+                        // "Enregistrer ce gestionnaire"
+                        enabled = gestionnaireViewModel.gestionnaireValidState.value.isValid,
                         onClick = {
                             coroutineScope.launch {
-                                gestionnairesViewModel.upsertGestionnaire(currentGestionnaire)
+                                gestionnaireViewModel.upsertGestionnaire(currentGestionnaire)
                                 if (contextCreation) { // Création
-                                    navController?.navigate(
-                                        Screens.CreateContact.route
-                                            .replace(
-                                                oldValue = "{idGestionnaire}",
-                                                newValue = currentGestionnaire.idGestionnaire.toString(),
-                                            ),
+                                    navController?.popBackStack(
+                                        Screens.Settings.route,
+                                        inclusive = false,
                                     )
                                 } else { // Modification
                                     navController?.navigate(Screens.ListGestionnaire.route)
@@ -244,6 +297,28 @@ fun GestionnaireFormScreenInner(
                         },
                     ) {
                         Text(text = stringResource(R.string.saveGestionnaireBTN))
+                    }
+                    if (contextCreation) {
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Button(
+                            enabled = gestionnaireViewModel.gestionnaireValidState.value.isValid,
+                            onClick = {
+                                coroutineScope.launch {
+                                    gestionnaireViewModel.upsertGestionnaire(currentGestionnaire)
+                                    navController?.navigate(
+                                        Screens.CreateContact.route
+                                            .replace(
+                                                oldValue = "{idGestionnaire}",
+                                                newValue = currentGestionnaire.idGestionnaire.toString(),
+                                            ),
+                                    ) {
+                                        popUpTo(Screens.Settings.route)
+                                    }
+                                }
+                            },
+                        ) {
+                            Text(text = "Ajouter un contact")
+                        }
                     }
                 }
             }

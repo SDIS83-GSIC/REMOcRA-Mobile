@@ -59,7 +59,6 @@ fun ContactFormScreenInner(
     coroutineScope: CoroutineScope,
     navController: NavController?,
 ) {
-    val context = LocalContext.current
     val currentContact by contactsViewModel.contactState.collectAsState() // Current Contact
     val contact by contactsViewModel.contact.observeAsState() // Infos statiques Contact
     val gestAppartenance by contactsViewModel.gestAppartenance.observeAsState() // Infos statiques gestionnaire
@@ -89,7 +88,7 @@ fun ContactFormScreenInner(
     ) {
         HeaderAppBar(
             title = mainTitle,
-            returnAction = { navController?.navigate(Screens.ListGestionnaire.route) },
+            returnAction = { navController?.popBackStack(Screens.EditGestionnaire.route, inclusive = false) },
         )
         Row(
             modifier = Modifier
@@ -436,7 +435,15 @@ fun ContactFormScreenInner(
                             onClick = {
                                 coroutineScope.launch {
                                     contactsViewModel.upsertContactWithRoles(currentContact)
-                                    navController?.navigate(Screens.ListGestionnaire.route)
+                                    navController?.navigate(
+                                        Screens.EditGestionnaire.route
+                                            .replace(
+                                                oldValue = "{idGestionnaire}",
+                                                newValue = currentContact.contact.idGestionnaire.toString(),
+                                            ),
+                                    ) {
+                                        popUpTo(Screens.Settings.route)
+                                    }
                                 }
                             },
                         ) {

@@ -4,13 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
+import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 @Dao
 abstract class GestionnairesDao {
 
-    @Query("SELECT * FROM gestionnaire")
-    abstract fun getGestionnairesList(): LiveData<List<Gestionnaire>>
+    @Query("SELECT * FROM gestionnaire g WHERE g.code LIKE '%' || :search || '%' OR g.nom LIKE '%' ||:search || '%'")
+    abstract fun getGestionnairesList(search: String): Flow<List<Gestionnaire>>
 
     @Query("SELECT * FROM gestionnaire WHERE idGestionnaire = :idGestionnaire")
     abstract suspend fun getGestionnaireByUUID(idGestionnaire: UUID): Gestionnaire

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -64,6 +65,7 @@ class MainActivity : ComponentActivity() {
                                 modifier =
                                 if (mapViewState.value.isFullscreen) {
                                     Modifier
+                                        .padding(8.dp)
                                         .fillMaxHeight()
                                         .width(0.dp)
                                         .animateContentSize(
@@ -74,6 +76,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                 } else {
                                     Modifier
+                                        .padding(8.dp)
                                         .fillMaxHeight()
                                         .weight(1f)
                                         .animateContentSize(

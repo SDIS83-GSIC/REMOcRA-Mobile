@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.viewmodels.TourneesViewModel
@@ -78,28 +79,43 @@ fun TourneesScreen(navController: NavController) {
                                         modifier =
                                         Modifier
                                             .clip(RoundedCornerShape(8.dp))
-                                            .background(if (tourneeList!!.indexOf(tourneeItem) % 2 == 0) Color.LightGray else Color.Gray)
+                                            .background(
+                                                tourneeItem.tournee
+                                                    .getColor()
+                                                    .copy(alpha = 0.5f),
+                                            )
                                             .padding(16.dp)
                                             .fillMaxWidth(),
                                     ) {
                                         Column {
                                             Row {
-                                                Text(text = tourneeItem.tournee.nom)
+                                                Text(
+                                                    text = tourneeItem.tournee.nom,
+                                                    fontWeight = FontWeight.Bold,
+                                                    fontSize = 18.sp,
+                                                )
                                             }
                                             Row(verticalAlignment = Alignment.CenterVertically) {
                                                 Column(Modifier.weight(4f)) {
-                                                    Text(text = "${tourneeItem.tournee.hydrantCount} point(s) d'eau")
+                                                    Text(
+                                                        text = "${tourneeItem.tournee.hydrantCount} point(s) d'eau",
+                                                        fontWeight = FontWeight.Bold,
+                                                    )
                                                 }
                                                 Column(Modifier.weight(1f)) {
-                                                    Text(text = "${(tourneeItem.progression * 100).roundToInt()}%")
+                                                    Text(
+                                                        text = "${(tourneeItem.progression * 100).roundToInt()}%",
+                                                        fontWeight = FontWeight.Bold,
+                                                    )
                                                 }
                                                 Column(Modifier.weight(5f)) {
                                                     LinearProgressIndicator(
                                                         progress = tourneeItem.progression,
                                                         modifier = Modifier
-                                                            .height(8.dp)
+                                                            .height(12.dp)
                                                             .clip(RoundedCornerShape(16.dp)),
-                                                        color = Color.Blue,
+                                                        color = Color(0.1f, 0.33f, 1f, 1f),
+                                                        trackColor = Color(0.5f, 0.5f, 0.5f, 0.25f),
                                                     )
                                                 }
                                             }

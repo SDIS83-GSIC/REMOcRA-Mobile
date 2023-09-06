@@ -213,7 +213,7 @@ private fun HydrantCreateForm(
         }
         Row(modifier = Modifier.fillMaxWidth()) {
             Spinner(
-                items = gestionnaireList ?: listOf(),
+                items = gestionnaireList?.sortedBy { it.nom } ?: listOf(),
                 value = gestionnaireList?.find { i -> i.idGestionnaire == hydrantForm.gestionnaire?.idGestionnaire },
                 valueToString = Gestionnaire::nom,
                 label = stringResource(id = R.string.gestionnaire),

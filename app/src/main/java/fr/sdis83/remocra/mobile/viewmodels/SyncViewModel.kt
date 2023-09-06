@@ -15,6 +15,6 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
 
     val hydrantVisiteCount = hydrantVisiteDao.getHydrantVisiteCount()
     val hydrantTourneeCount = hydrantVisiteDao.getHydrantTourneeCount()
-    val tourneeDoneCount = tourneesDao.getTourneeDoneCount()
+    val tourneeNotDoneCount = tourneesDao.getTourneeNotDoneCount()
     val tourneeCount = tourneesDao.getTourneeCount()
 }

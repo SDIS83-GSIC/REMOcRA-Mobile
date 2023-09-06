@@ -60,13 +60,12 @@ abstract class TourneesDao {
     @Query(
         """
         SELECT count(*) FROM tournee t
-        GROUP BY t.idRemocra
         -- pas optimal de passer par hydrantCount mais ça passe
-        HAVING t.hydrantCount !=
+        WHERE t.hydrantCount >
           (SELECT count(*) FROM hydrantVisite hv WHERE hv.idTournee = t.idTournee AND hv.statut == 'TERMINE')
          """,
     )
-    abstract fun getTourneeDoneCount(): LiveData<Int>
+    abstract fun getTourneeNotDoneCount(): LiveData<Int>
 
     @Query("SELECT count(*) FROM tournee t")
     abstract fun getTourneeCount(): LiveData<Int>

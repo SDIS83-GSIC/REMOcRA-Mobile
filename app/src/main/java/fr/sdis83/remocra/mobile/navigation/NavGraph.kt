@@ -13,7 +13,7 @@ import fr.sdis83.remocra.mobile.ui.screens.hydrants.HydrantListScreen
 import fr.sdis83.remocra.mobile.ui.screens.hydrants.HydrantVisiteScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.ContactFormScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireFormScreen
-import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireListingScreen
+import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireListScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.SettingScreen
 import fr.sdis83.remocra.mobile.ui.screens.sync.SyncScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneeScreen
@@ -72,7 +72,7 @@ fun NavGraph(
                 LaunchedEffect(Unit) {
                     mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
                 }
-                TourneeScreen(navController, idTournee)
+                TourneeScreen(navController, idTournee, mapViewModel)
             }
         }
 
@@ -98,7 +98,7 @@ fun NavGraph(
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
             }
-            GestionnaireListingScreen(navController)
+            GestionnaireListScreen(navController)
         }
 
         composable(route = Screens.CreateGestionnaire.route) {

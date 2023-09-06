@@ -52,7 +52,7 @@ fun SyncScreen() {
 
     val hydrantVisiteCount by syncViewModel.hydrantVisiteCount.observeAsState()
     val hydrantTourneeCount by syncViewModel.hydrantTourneeCount.observeAsState()
-    val tourneeDoneCount by syncViewModel.tourneeDoneCount.observeAsState()
+    val tourneeNotDoneCount by syncViewModel.tourneeNotDoneCount.observeAsState()
     val tourneeCount by syncViewModel.tourneeCount.observeAsState()
 
     var showCustomDialog by remember {
@@ -105,7 +105,7 @@ fun SyncScreen() {
                     fontSize = 18.sp,
                 )
                 Text(
-                    text = stringResource(R.string.tournees_finies, tourneeDoneCount ?: 0, tourneeCount ?: 0),
+                    text = stringResource(R.string.tournees_finies, tourneeNotDoneCount ?: 0, tourneeCount ?: 0),
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
                 )

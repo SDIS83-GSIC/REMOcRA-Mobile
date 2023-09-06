@@ -16,14 +16,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class GestionnairesViewModel(application: Application, idGestionnaire: UUID?) : AndroidViewModel(application) {
+class GestionnaireViewModel(application: Application, idGestionnaire: UUID?) : AndroidViewModel(application) {
 
     companion object {
         private const val TAG: String = "GestionnairesViewModel"
     }
 
     val gestionnairesDao = RemocraDatabase.getInstance(application).gestionnairesDao()
-    val gestionnairesList: LiveData<List<Gestionnaire>> = gestionnairesDao.getGestionnairesList()
     val gestionnaire: LiveData<Gestionnaire?> = gestionnairesDao.getCurrentGestionnaireByUUID(idGestionnaire)
     val contactsList: LiveData<List<Contact>> = gestionnairesDao.getContactByGestionnaireUUID(idGestionnaire)
 
