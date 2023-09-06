@@ -95,4 +95,31 @@ interface SynchronisationService {
         @Field("observations")
         observations: String?,
     ): Call<ResponseBody>
+
+    @FormUrlEncoded
+    @POST("synchro/synchrohydrantvisite/")
+    fun postHydrantsVisites(
+        @Field("idHydrantVisite")
+        idHydrantVisite: UUID,
+        @Field("idHydrant")
+        idHydrant: Long,
+        @Field("date")
+        date: String,
+        @Field("idTypeVisite")
+        idTypeVisite: Long,
+        @Field("ctrDebitPression")
+        ctrDebitPression: Boolean,
+        @Field("agent1")
+        agent1: String?,
+        @Field("agent2")
+        agent2: String?,
+        @Field("debit")
+        debit: Int?,
+        @Field("pression")
+        pression: Double?,
+        @Field("pressionDyn")
+        pressionDyn: Double?,
+        @Field("observations")
+        observations: String?,
+    ): Call<ResponseBody>
 }

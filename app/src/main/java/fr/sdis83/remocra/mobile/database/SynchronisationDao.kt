@@ -17,4 +17,10 @@ abstract class SynchronisationDao {
 
     @Query("SELECT * FROM hydrant where idRemocra is null")
     abstract fun getAllNewHydrants(): List<Hydrant>
+
+    @Query("SELECT * FROM hydrantVisite where statut = :statutFini")
+    abstract fun getAllHydrantVisite(statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE): List<HydrantVisite>
+
+    @Query("SELECT * FROM hydrant")
+    abstract fun getAllHydrant(): List<Hydrant>
 }
