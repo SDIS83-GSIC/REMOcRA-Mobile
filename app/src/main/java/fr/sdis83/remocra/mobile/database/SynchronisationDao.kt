@@ -23,4 +23,16 @@ abstract class SynchronisationDao {
 
     @Query("SELECT * FROM hydrant")
     abstract fun getAllHydrant(): List<Hydrant>
+
+    @Query(
+        """
+            SELECT * FROM hydrantVisiteAnomalie
+                JOIN hydrantVisite ON hydrantVisite.idHydrantVisite = hydrantVisiteAnomalie.idHydrantVisite
+                WHERE hydrantVisite.statut = :statutFini
+        """,
+    )
+    abstract fun getAllHydrantVisiteAnomalie(statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE): List<HydrantVisiteAnomalie>
+
+    @Query("SELECT * FROM hydrantAnomalie")
+    abstract fun getAllAnomalie(): List<HydrantAnomalie>
 }

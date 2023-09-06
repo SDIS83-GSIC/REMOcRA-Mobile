@@ -122,4 +122,13 @@ interface SynchronisationService {
         @Field("observations")
         observations: String?,
     ): Call<ResponseBody>
+
+    @FormUrlEncoded
+    @POST("synchro/synchrohydrantvisiteanomalie/")
+    fun postHydrantVisiteAnomalie(
+        @Field("idHydrantVisite")
+        idHydrantVisite: UUID,
+        @Field("idAnomalie")
+        idAnomalie: Long,
+    ): Call<ResponseBody>
 }
