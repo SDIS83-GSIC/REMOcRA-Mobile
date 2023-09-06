@@ -56,4 +56,18 @@ abstract class TourneesDao {
         val progression: Float
             get() = if (tournee.hydrantCount > 0) (doneCount.toFloat() / tournee.hydrantCount) else 0.0f
     }
+
+    @Query(
+        """
+        SELECT count(*) FROM tournee t
+        GROUP BY t.idRemocra
+        -- pas optimal de passer par hydrantCount mais ça passe
+        HAVING t.hydrantCount !=
+          (SELECT count(*) FROM hydrantVisite hv WHERE hv.idTournee = t.idTournee AND hv.statut == 'TERMINE')
+         """,
+    )
+    abstract fun getTourneeDoneCount(): LiveData<Int>
+
+    @Query("SELECT count(*) FROM tournee t")
+    abstract fun getTourneeCount(): LiveData<Int>
 }

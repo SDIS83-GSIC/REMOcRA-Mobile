@@ -1,5 +1,6 @@
 package fr.sdis83.remocra.mobile.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -74,4 +75,10 @@ abstract class HydrantVisiteDao {
             }
         }
     }
+
+    @Query("SELECT count(*) FROM hydrantVisite hv WHERE hv.statut = 'TERMINE'")
+    abstract fun getHydrantVisiteCount(): LiveData<Int>
+
+    @Query("SELECT count(*) FROM hydrantTournee ht")
+    abstract fun getHydrantTourneeCount(): LiveData<Int>
 }

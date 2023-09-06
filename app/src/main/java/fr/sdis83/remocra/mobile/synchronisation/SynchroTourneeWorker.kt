@@ -1,0 +1,40 @@
+package fr.sdis83.remocra.mobile.synchronisation
+
+import android.content.Context
+import android.util.Log
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import fr.sdis83.remocra.mobile.database.RemocraDatabase
+import fr.sdis83.remocra.mobile.services.SynchronisationService
+
+class SynchroTourneeWorker constructor(
+    context: Context,
+    workerParams: WorkerParameters,
+) : Worker(context, workerParams) {
+    private val TAG = "SynchroTourneeWorker"
+
+    override fun doWork(): Result = try {
+        val synchronisationDao = RemocraDatabase.getInstance(applicationContext).synchronisationDao()
+        val retrofitBuilder = SynchronisationService.getRetroFitInstance(applicationContext)
+
+        val tournees = synchronisationDao.getAllTournee().filter { it.progression == 1f }.map { it.tournee }
+
+        tournees.forEach { tournee ->
+            val res = retrofitBuilder.postTournee(
+                idTourneeRemocra = tournee.idRemocra,
+                nom = tournee.nom,
+            ).execute()
+
+            when (res.code()) {
+                200, 201, 409 -> Unit
+                else -> throw IllegalArgumentException(res.message())
+            }
+        }
+
+        retrofitBuilder.incomingToRemocra().execute()
+        Result.success()
+    } catch (e: Throwable) {
+        Log.e(TAG, "Error executing work: " + e.message, e)
+        Result.failure()
+    }
+}

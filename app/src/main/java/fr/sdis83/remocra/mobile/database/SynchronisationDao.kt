@@ -35,4 +35,13 @@ abstract class SynchronisationDao {
 
     @Query("SELECT * FROM hydrantAnomalie")
     abstract fun getAllAnomalie(): List<HydrantAnomalie>
+
+    @Query(
+        """
+        SELECT t.*, COUNT(hv.idHydrantVisite) AS doneCount FROM tournee t
+        LEFT JOIN hydrantVisite hv ON hv.idTournee = t.idTournee
+        GROUP BY t.idTournee
+        """,
+    )
+    abstract fun getAllTournee(): List<TourneesDao.TourneeAvancement>
 }

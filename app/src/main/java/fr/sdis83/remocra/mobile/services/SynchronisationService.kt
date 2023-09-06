@@ -7,6 +7,7 @@ import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import java.util.UUID
 
 interface SynchronisationService {
@@ -131,4 +132,16 @@ interface SynchronisationService {
         @Field("idAnomalie")
         idAnomalie: Long,
     ): Call<ResponseBody>
+
+    @FormUrlEncoded
+    @POST("synchro/synchrotournee/")
+    fun postTournee(
+        @Field("idTourneeRemocra")
+        idTourneeRemocra: Long,
+        @Field("nom")
+        nom: String,
+    ): Call<ResponseBody>
+
+    @PUT("synchro/incomingtoremocra/")
+    fun incomingToRemocra(): Call<ResponseBody>
 }

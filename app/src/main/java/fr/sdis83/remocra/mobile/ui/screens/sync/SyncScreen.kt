@@ -15,6 +15,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,13 +38,22 @@ import fr.sdis83.remocra.mobile.synchronisation.SynchroGestionnaireWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroHydrantVisiteAnomalieWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroHydrantVisiteWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroNewHydrantWorker
+import fr.sdis83.remocra.mobile.synchronisation.SynchroTourneeWorker
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
+import fr.sdis83.remocra.mobile.viewmodels.SyncViewModel
+import fr.sdis83.remocra.mobile.workers.ReferentielWorker
 
 @Composable
 fun SyncScreen() {
     val context = LocalContext.current
 
     val choixTourneeViewModel = ChoixTourneeViewModel(context.applicationContext as Application)
+    val syncViewModel = SyncViewModel(context.applicationContext as Application)
+
+    val hydrantVisiteCount by syncViewModel.hydrantVisiteCount.observeAsState()
+    val hydrantTourneeCount by syncViewModel.hydrantTourneeCount.observeAsState()
+    val tourneeDoneCount by syncViewModel.tourneeDoneCount.observeAsState()
+    val tourneeCount by syncViewModel.tourneeCount.observeAsState()
 
     var showCustomDialog by remember {
         mutableStateOf(false)
@@ -83,20 +93,19 @@ fun SyncScreen() {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start,
             ) {
-                // TODO : implémenter les strings
+//                Text(
+//                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp),
+//                    text = stringResource(R.string.derniere_synchro),
+//                    fontWeight = FontWeight.Bold,
+//                    fontSize = 20.sp,
+//                )
                 Text(
-                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp),
-                    text = stringResource(R.string.derniere_synchro),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                )
-                Text(
-                    text = stringResource(R.string.visites_finies),
+                    text = stringResource(R.string.visites_finies, hydrantVisiteCount ?: 0, hydrantTourneeCount ?: 0),
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
                 )
                 Text(
-                    text = stringResource(R.string.tournees_finies),
+                    text = stringResource(R.string.tournees_finies, tourneeDoneCount ?: 0, tourneeCount ?: 0),
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
                 )
@@ -200,6 +209,14 @@ private fun synchro(application: Application) {
         .setConstraints(constraints)
         .build()
 
+    val synchroTourneeWorker = OneTimeWorkRequestBuilder<SynchroTourneeWorker>()
+        .setConstraints(constraints)
+        .build()
+
+    val referentielWorker = OneTimeWorkRequestBuilder<ReferentielWorker>()
+        .setConstraints(constraints)
+        .build()
+
     WorkManager.getInstance(application).let { workManager ->
         workManager
             .beginWith(synchroGestionnaire)
@@ -208,9 +225,12 @@ private fun synchro(application: Application) {
             .then(synchroNewHydrants)
             .then(synchroHydrantVisiteWorker)
             .then(synchroHydrantVisiteAnomalieWorker)
+            .then(synchroTourneeWorker)
+            // On recharge le référentiel à la toute fin pour avoir les données à jour
+            .then(referentielWorker)
             .enqueue()
 
-        workManager.getWorkInfoByIdLiveData(synchroHydrantVisiteAnomalieWorker.id).observeForever {
+        workManager.getWorkInfoByIdLiveData(synchroTourneeWorker.id).observeForever {
             when (it.state) {
                 WorkInfo.State.RUNNING -> {
                     Toast.makeText(application, "Synchronisation en cours...", Toast.LENGTH_LONG)
