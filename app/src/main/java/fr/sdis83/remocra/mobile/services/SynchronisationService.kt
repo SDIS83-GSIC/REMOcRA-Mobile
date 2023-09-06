@@ -74,4 +74,25 @@ interface SynchronisationService {
         @Field("idRoleRemocra")
         idRoleRemocra: Long,
     ): Call<ResponseBody>
+
+    @FormUrlEncoded
+    @POST("synchro/createhydrant/")
+    fun postHydrants(
+        @Field("idHydrant")
+        idHydrant: UUID,
+        @Field("lat")
+        lat: Double,
+        @Field("lon")
+        lon: Double,
+        @Field("code")
+        code: String,
+        @Field("idGestionnaire")
+        idGestionnaire: UUID?,
+        @Field("idNatureDeci")
+        idNatureDeci: Long,
+        @Field("idNature")
+        idNature: Long,
+        @Field("observations")
+        observations: String?,
+    ): Call<ResponseBody>
 }

@@ -14,4 +14,7 @@ abstract class SynchronisationDao {
 
     @Query("SELECT * FROM contactRole join contact on contactRole.idContact = contact.idContact where contact.edited = 1")
     abstract fun getAllContactsRole(): List<ContactRole>
+
+    @Query("SELECT * FROM hydrant where idRemocra is null")
+    abstract fun getAllNewHydrants(): List<Hydrant>
 }

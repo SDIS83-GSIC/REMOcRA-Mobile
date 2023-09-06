@@ -34,6 +34,7 @@ import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.synchronisation.SynchroContactRoleWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroContactWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroGestionnaireWorker
+import fr.sdis83.remocra.mobile.synchronisation.SynchroNewHydrantWorker
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 
 @Composable
@@ -185,14 +186,19 @@ private fun synchro(application: Application) {
         .setConstraints(constraints)
         .build()
 
+    val synchroNewHydrants = OneTimeWorkRequestBuilder<SynchroNewHydrantWorker>()
+        .setConstraints(constraints)
+        .build()
+
     WorkManager.getInstance(application).let { workManager ->
         workManager
             .beginWith(synchroGestionnaire)
             .then(synchroContact)
             .then(synchroContactRole)
+            .then(synchroNewHydrants)
             .enqueue()
 
-        workManager.getWorkInfoByIdLiveData(synchroContactRole.id).observeForever {
+        workManager.getWorkInfoByIdLiveData(synchroNewHydrants.id).observeForever {
             when (it.state) {
                 WorkInfo.State.RUNNING -> {
                     Toast.makeText(application, "Synchronisation en cours...", Toast.LENGTH_LONG)
