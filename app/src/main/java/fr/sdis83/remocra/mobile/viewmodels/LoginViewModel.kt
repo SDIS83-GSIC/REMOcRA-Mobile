@@ -87,6 +87,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
                         WorkInfo.State.SUCCEEDED -> goToMainActivity.postValue(true)
                         WorkInfo.State.FAILED -> {
+                            sessionManager.invalidateAuthToken()
                             info.value = "Erreur lors de la récupération du référentiel"
                             referentielStatus.value = JobStatus.ERROR
                         }
