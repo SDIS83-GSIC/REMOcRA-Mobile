@@ -222,6 +222,25 @@ data class HydrantVisiteAnomalie(
 )
 
 @Entity(
+    tableName = "hydrantPhoto",
+    indices = [Index("idHydrantPhoto"), Index("idHydrant")],
+    foreignKeys = [
+        ForeignKey(
+            entity = Hydrant::class,
+            parentColumns = ["idHydrant"],
+            childColumns = ["idHydrant"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+)
+data class HydrantPhoto(
+    @PrimaryKey val idHydrantPhoto: UUID = UUID.randomUUID(),
+    val idHydrant: UUID,
+    val datePhoto: ZonedDateTime,
+    val path: String,
+)
+
+@Entity(
     tableName = "hydrantAnomalie",
     indices = [Index("idHydrant"), Index("idAnomalie")],
     primaryKeys = ["idHydrant", "idAnomalie"],

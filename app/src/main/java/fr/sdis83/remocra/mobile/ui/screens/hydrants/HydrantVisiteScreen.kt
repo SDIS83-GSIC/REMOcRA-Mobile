@@ -1,9 +1,16 @@
 package fr.sdis83.remocra.mobile.ui.screens.hydrants
 
+import android.Manifest
 import android.app.Application
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -11,12 +18,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -25,12 +37,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.EditCalendar
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
@@ -43,30 +58,42 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import fr.sdis83.remocra.mobile.database.Hydrant
+import fr.sdis83.remocra.mobile.database.HydrantPhoto
 import fr.sdis83.remocra.mobile.database.HydrantVisiteDao.HydrantVisiteWithAnomalies
 import fr.sdis83.remocra.mobile.database.ReferentielDao
 import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
+import fr.sdis83.remocra.mobile.navigation.Screens
+import fr.sdis83.remocra.mobile.ui.components.CameraCapture
 import fr.sdis83.remocra.mobile.ui.components.LabelledCheckbox
 import fr.sdis83.remocra.mobile.ui.components.Spinner
+import fr.sdis83.remocra.mobile.viewmodels.HydrantPhotoViewModel
 import fr.sdis83.remocra.mobile.viewmodels.HydrantVisiteViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.UUID
+import kotlin.reflect.KFunction1
 
 private val DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 private val HOUR_FORMAT = DateTimeFormatter.ofPattern("HH:mm")
@@ -82,8 +109,12 @@ fun HydrantVisiteScreen(
     val hydrantVisiteViewModel =
         HydrantVisiteViewModel(context.applicationContext as Application, idTournee, idHydrant)
 
+    val hydrantPhotoVisiteViewModel = HydrantPhotoViewModel(context.applicationContext as Application, idHydrant)
+
+    val photos = hydrantPhotoVisiteViewModel.photos.observeAsState()
+
     mapViewModel.goToHydrant(idHydrant)
-    HydrantVisiteScreenInner(hydrantVisiteViewModel, navController)
+    HydrantVisiteScreenInner(hydrantVisiteViewModel, navController, photos.value, hydrantPhotoVisiteViewModel)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -91,6 +122,8 @@ fun HydrantVisiteScreen(
 fun HydrantVisiteScreenInner(
     hydrantVisiteViewModel: HydrantVisiteViewModel,
     navController: NavController,
+    photos: List<HydrantPhoto>?,
+    hydrantPhotoVisiteViewModel: HydrantPhotoViewModel,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
@@ -111,17 +144,9 @@ fun HydrantVisiteScreenInner(
                         .padding(10.dp),
                 ) {
                     Button(onClick = {
-                        if (pagerState.currentPage == pagerState.initialPage) {
-                            navController.popBackStack()
-                        } else {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(pagerState.currentPage - 1)
-                            }
-                        }
+                        navController.popBackStack(Screens.TourneeHydrants.route, inclusive = false)
                     }) {
-                        Text(
-                            text = "Retour",
-                        )
+                        Text(text = "Retour")
                     }
                     Text(
                         text = "Visite d'un point d'eau : ${pagerState.currentPage + 1} / $nbSteps",
@@ -135,6 +160,8 @@ fun HydrantVisiteScreenInner(
                     hydrantVisiteViewModel = hydrantVisiteViewModel,
                     navController = navController,
                     hydrantVisite = hydrantVisite,
+                    photos = photos,
+                    hydrantPhotoViewModel = hydrantPhotoVisiteViewModel,
                 )
             }
         }
@@ -147,8 +174,10 @@ fun HydrantVisiteForm(
     coroutineScope: CoroutineScope,
     pagerState: PagerState,
     hydrantVisiteViewModel: HydrantVisiteViewModel,
+    hydrantPhotoViewModel: HydrantPhotoViewModel,
     navController: NavController,
     hydrantVisite: HydrantVisiteWithAnomalies?,
+    photos: List<HydrantPhoto>?,
 ) {
     if (hydrantVisite == null) return
 
@@ -165,50 +194,70 @@ fun HydrantVisiteForm(
     ) {
         when (it) {
             0 -> StepOne(
-                hydrantVisite = hydrantVisite,
-                onClick = {
-                    if (hydrantVisite.hydrantVisite.isValid) {
-                        coroutineScope.launch {
+                onNext = {
+                    coroutineScope.launch {
+                        if (hydrantVisite.hydrantVisite.isValid) {
                             hydrantVisiteViewModel.save()
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                     }
                 },
+                hydrantVisite = hydrantVisite,
                 onValueChange = hydrantVisiteViewModel::updateForm,
                 typeSaisieList = typeSaisieList ?: listOf(),
             )
 
             1 -> StepTwo(
-                hydrantVisite = hydrantVisite,
-                onValueChange = hydrantVisiteViewModel::updateForm,
-                onClick = {
+                onPrevious = {
+                    coroutineScope.launch {
+                        hydrantVisiteViewModel.save(close = false)
+                        pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                    }
+                },
+                onNext = {
                     coroutineScope.launch {
                         hydrantVisiteViewModel.save()
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     }
                 },
-                hydrantState = hydrantVisiteViewModel.hydrantState,
+                hydrantVisite = hydrantVisite,
+                onValueChange = hydrantVisiteViewModel::updateForm,
                 anomalieList = anomalieList,
+                hydrantState = hydrantVisiteViewModel.hydrantState,
             )
 
             2 -> StepThree(
+                onPrevious = {
+                    coroutineScope.launch {
+                        hydrantVisiteViewModel.save(close = false)
+                        pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                    }
+                },
+                onNext = {
+                    coroutineScope.launch {
+                        hydrantVisiteViewModel.save(close = true)
+                        navController.popBackStack(Screens.TourneeHydrants.route, inclusive = false)
+                    }
+                },
                 hydrantVisite = hydrantVisite,
                 onValueChange = hydrantVisiteViewModel::updateForm,
-            ) {
-                coroutineScope.launch {
-                    hydrantVisiteViewModel.save(close = true)
-                    navController.popBackStack()
-                }
-            }
+                onPictureTaken = hydrantPhotoViewModel::onPictureTaken,
+                photos = photos,
+                deletePhoto = {
+                    coroutineScope.launch {
+                        hydrantPhotoViewModel.deleteHydrantPhoto(it)
+                    }
+                },
+            )
         }
     }
 }
 
 @Composable
-fun StepOne(
+private fun StepOne(
+    onNext: () -> Unit,
     hydrantVisite: HydrantVisiteWithAnomalies,
     onValueChange: (HydrantVisiteWithAnomalies) -> Unit = {},
-    onClick: () -> Unit,
     typeSaisieList: List<TypeHydrantSaisie>,
 ) {
     val context = LocalContext.current
@@ -502,7 +551,7 @@ fun StepOne(
             }
         }
         Row(modifier = Modifier.fillMaxWidth()) {
-            Button(onClick = onClick, enabled = hydrantVisite.hydrantVisite.isValid) {
+            Button(onClick = onNext, enabled = hydrantVisite.hydrantVisite.isValid) {
                 Text("Suivant")
             }
         }
@@ -510,10 +559,11 @@ fun StepOne(
 }
 
 @Composable
-fun StepTwo(
+private fun StepTwo(
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
     hydrantVisite: HydrantVisiteWithAnomalies,
     onValueChange: (HydrantVisiteWithAnomalies) -> Unit = {},
-    onClick: () -> Unit,
     anomalieList: List<ReferentielDao.AnomalieItem>,
     hydrantState: StateFlow<Hydrant?>,
 ) {
@@ -625,7 +675,11 @@ fun StepTwo(
             }
         }
         Row(modifier = Modifier.fillMaxWidth()) {
-            Button(onClick = onClick) {
+            Button(onClick = onPrevious) {
+                Text("Précédent")
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Button(onClick = onNext) {
                 Text("Suivant")
             }
         }
@@ -633,11 +687,47 @@ fun StepTwo(
 }
 
 @Composable
-fun StepThree(
+private fun StepThree(
+    onPrevious: () -> Unit,
+    onNext: () -> Unit,
     hydrantVisite: HydrantVisiteWithAnomalies,
     onValueChange: (HydrantVisiteWithAnomalies) -> Unit = {},
-    onClick: () -> Unit,
+    onPictureTaken: KFunction1<Bitmap, Unit>,
+    photos: List<HydrantPhoto>?,
+    deletePhoto: (HydrantPhoto) -> Unit,
 ) {
+    val context = LocalContext.current
+    val requestPermissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+            onResult = { isGranted: Boolean ->
+                if (isGranted) {
+                    Log.d("appDebug", "Accepted")
+                } else {
+                    Log.d("appDebug", "Denied")
+                }
+            },
+        )
+
+    var showCustomDialog by remember {
+        mutableStateOf(false)
+    }
+
+    if (showCustomDialog) {
+        Dialog(
+            onDismissRequest = { showCustomDialog = false },
+            properties = DialogProperties(
+                dismissOnBackPress = true,
+                dismissOnClickOutside = true,
+                usePlatformDefaultWidth = false,
+            ),
+        ) {
+            CameraCapture(
+                onPictureTaken = onPictureTaken,
+            ) { showCustomDialog = false }
+        }
+    }
+
     Column(
         Modifier
             .fillMaxHeight()
@@ -670,8 +760,61 @@ fun StepThree(
             )
         }
         Row(modifier = Modifier.fillMaxWidth()) {
-            Button(onClick = onClick, enabled = hydrantVisite.hydrantVisite.isValid) {
+            Button(onClick = {
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.CAMERA,
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
+                    showCustomDialog = !showCustomDialog
+                } else {
+                    requestPermissionLauncher.launch(
+                        Manifest.permission.CAMERA,
+                    )
+                }
+            }) {
+                Icon(imageVector = Icons.Filled.CameraAlt, contentDescription = "Photo")
+                Spacer(modifier = Modifier.width(16.dp))
+                Text(
+                    text = "Ajouter",
+                )
+            }
+        }
+        PhotoList(photos ?: listOf(), deletePhoto)
+
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = onPrevious) {
+                Text("Précédent")
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Button(onClick = onNext, enabled = hydrantVisite.hydrantVisite.isValid) {
                 Text("Valider")
+            }
+        }
+    }
+}
+
+@Composable
+private fun PhotoList(photos: List<HydrantPhoto>, deletePhoto: (HydrantPhoto) -> Unit) {
+    LazyRow {
+        items(photos) { photo ->
+            Image(
+                painter = rememberAsyncImagePainter(File(photo.path)),
+                contentDescription = photo.idHydrantPhoto.toString(),
+                modifier = Modifier
+                    .height(150.dp)
+                    .padding(8.dp)
+                    .aspectRatio(1f)
+                    .clipToBounds(),
+            )
+            IconButton(onClick = {
+                deletePhoto(photo)
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Delete,
+                    contentDescription = "EditContact",
+                    Modifier.size(30.dp),
+                )
             }
         }
     }

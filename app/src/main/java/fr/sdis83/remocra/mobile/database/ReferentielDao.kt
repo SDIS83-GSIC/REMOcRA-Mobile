@@ -65,6 +65,9 @@ abstract class ReferentielDao {
     @Query("DELETE FROM hydrantAnomalie")
     abstract fun truncateHydrantAnomalie()
 
+    @Query("DELETE FROM hydrantPhoto")
+    abstract fun truncateHydrantPhoto()
+
     @Query("DELETE FROM hydrantVisite")
     abstract fun truncateHydrantVisite()
 

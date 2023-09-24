@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7c15312df07713d2f1497d37ed83f8f8",
+    "identityHash": "ae6b6ba12ffc50facfa0628863563d35",
     "entities": [
       {
         "tableName": "hydrant",
@@ -1599,6 +1599,75 @@
         "foreignKeys": []
       },
       {
+        "tableName": "hydrantPhoto",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrantPhoto` BLOB NOT NULL, `idHydrant` BLOB NOT NULL, `datePhoto` INTEGER NOT NULL, `path` TEXT NOT NULL, PRIMARY KEY(`idHydrantPhoto`), FOREIGN KEY(`idHydrant`) REFERENCES `hydrant`(`idHydrant`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "idHydrantPhoto",
+            "columnName": "idHydrantPhoto",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "idHydrant",
+            "columnName": "idHydrant",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "datePhoto",
+            "columnName": "datePhoto",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "path",
+            "columnName": "path",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idHydrantPhoto"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_hydrantPhoto_idHydrantPhoto",
+            "unique": false,
+            "columnNames": [
+              "idHydrantPhoto"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantPhoto_idHydrantPhoto` ON `${TABLE_NAME}` (`idHydrantPhoto`)"
+          },
+          {
+            "name": "index_hydrantPhoto_idHydrant",
+            "unique": false,
+            "columnNames": [
+              "idHydrant"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrantPhoto_idHydrant` ON `${TABLE_NAME}` (`idHydrant`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "hydrant",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "idHydrant"
+            ],
+            "referencedColumns": [
+              "idHydrant"
+            ]
+          }
+        ]
+      },
+      {
         "tableName": "hydrantVisiteAnomalie",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrantVisite` BLOB NOT NULL, `idAnomalie` INTEGER NOT NULL, PRIMARY KEY(`idHydrantVisite`, `idAnomalie`), FOREIGN KEY(`idHydrantVisite`) REFERENCES `hydrantVisite`(`idHydrantVisite`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`idAnomalie`) REFERENCES `typeHydrantAnomalie`(`idRemocra`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
@@ -1866,7 +1935,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7c15312df07713d2f1497d37ed83f8f8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ae6b6ba12ffc50facfa0628863563d35')"
     ]
   }
 }

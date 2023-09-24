@@ -60,6 +60,7 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
                 )
             }
         }
+
     suspend fun loadData(idTournee: UUID, idHydrant: UUID) {
         _hydrant.value = hydrantDao.getHydrantByIdHydrant(idHydrant)
         existingAnomalies = hydrantVisiteDao.getExistingVisiteAnomalie(idHydrant)

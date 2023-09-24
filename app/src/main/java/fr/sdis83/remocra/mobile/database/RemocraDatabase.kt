@@ -37,6 +37,7 @@ import java.util.UUID
         TypeHydrantNature::class,
         TypeHydrantNatureDeci::class,
         TypeHydrantSaisie::class,
+        HydrantPhoto::class,
         HydrantVisiteAnomalie::class,
         HydrantAnomalie::class,
         TourneeDispo::class,
@@ -71,6 +72,7 @@ abstract class RemocraDatabase : RoomDatabase() {
     abstract fun synchronisationDao(): SynchronisationDao
 
     abstract fun paramConfDao(): DroitDao
+    abstract fun hydrantPhotoDao(): HydrantPhotoDao
 }
 
 class Converters {

@@ -38,6 +38,7 @@ class ReferentielWorker constructor(
         }
 
         referentielDao.apply {
+            truncateHydrantPhoto()
             truncateHydrantAnomalie()
             truncateHydrantVisite()
             truncateHydrantTournee()

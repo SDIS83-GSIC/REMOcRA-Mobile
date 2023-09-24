@@ -44,4 +44,11 @@ abstract class SynchronisationDao {
         """,
     )
     abstract fun getAllTournee(): List<TourneesDao.TourneeAvancement>
+
+    @Query(
+        """
+        SELECT * FROM hydrantPhoto
+        """,
+    )
+    abstract fun getHydrantPhoto(): List<HydrantPhoto>
 }

@@ -6,6 +6,8 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.SynchronisationService
+import fr.sdis83.remocra.mobile.utils.createImageFormData
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 class SynchroHydrantVisiteWorker constructor(
@@ -20,12 +22,14 @@ class SynchroHydrantVisiteWorker constructor(
 
         val hydrantsVisites = synchronisationDao.getAllHydrantVisite()
         val hydrants = synchronisationDao.getAllHydrant()
+        val hydrantPhotos = synchronisationDao.getHydrantPhoto()
 
         hydrantsVisites.forEach { hydrantVisite ->
+            val idHydrant = hydrants.first { it.idHydrant == hydrantVisite.idHydrant }.idRemocra!!
             val res = retrofitBuilder.postHydrantsVisites(
                 idHydrantVisite = hydrantVisite.idHydrantVisite,
-                idHydrant = hydrants.first { it.idHydrant == hydrantVisite.idHydrant }.idRemocra!!,
-                date = hydrantVisite.dateVisite.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString(),
+                idHydrant = idHydrant,
+                date = hydrantVisite.dateVisite.formatDate(),
                 idTypeVisite = hydrantVisite.idTypeHydrantSaisie!!,
                 ctrDebitPression = hydrantVisite.ctrlDebitPression,
                 agent1 = hydrantVisite.agent1,
@@ -40,10 +44,35 @@ class SynchroHydrantVisiteWorker constructor(
                 200, 201, 409 -> Unit
                 else -> throw IllegalArgumentException(res.message())
             }
+
+            // Puis on s'occupe des photos
+            val photos = hydrantPhotos.filter { hydrantVisite.idHydrant == it.idHydrant }
+            if (photos.isNotEmpty()) {
+                photos.forEach {
+                    val resHydranPhoto = retrofitBuilder.postHydrantPhoto(
+                        idHydrant = idHydrant,
+                        datePhoto = it.datePhoto.formatDate(),
+                        photo = createImageFormData(
+                            "photo",
+                            it.path,
+                        )!!,
+                    ).execute()
+
+                    when (resHydranPhoto.code()) {
+                        200, 201, 409 -> Unit
+                        else -> throw IllegalArgumentException(res.message())
+                    }
+                }
+            }
         }
+
         Result.success()
     } catch (e: Throwable) {
         Log.e(TAG, "Error executing work: " + e.message, e)
         Result.failure()
+    }
+
+    private fun ZonedDateTime.formatDate(): String {
+        return format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toString()
     }
 }
