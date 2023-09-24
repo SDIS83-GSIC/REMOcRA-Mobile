@@ -124,6 +124,9 @@ abstract class ReferentielDao {
     @Query("SELECT thnd.* FROM typeHydrantNatureDeci thnd WHERE thnd.actif = 1")
     abstract fun getTypeHydrantNatureDeciList(): LiveData<List<TypeHydrantNatureDeci>>
 
+    @Query("SELECT th.code FROM typeHydrant th  WHERE idRemocra = :idTypeHydrant")
+    abstract suspend fun getTypeHydrant(idTypeHydrant: Long): String
+
     data class AnomalieItem(
         @Embedded val anomalie: TypeHydrantAnomalie,
         @Relation(parentColumn = "idCritere", entityColumn = "idRemocra") val critere: TypeHydrantCritere,

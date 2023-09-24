@@ -32,7 +32,7 @@ class HydrantInfoWindow(mapView: MapView) : InfoWindow(R.layout.map_bubble, mapV
         try {
             val overlay = item as OverlayWithIW
             val hydrant = overlay.relatedObject as MapViewModel.HydrantGeoPoint
-            (mView.findViewById<View>(mHydrantNumero) as TextView).text = hydrant.numero
+            (mView.findViewById<View>(mHydrantNumero) as TextView).text = "Point d'eau N°${hydrant.numero}"
             (mView.findViewById<View>(mHydrantDisponibilite) as TextView).apply {
                 text = hydrant.dispoTerrestre?.name
                 setTextColor(if (hydrant.dispoTerrestre == Hydrant.Disponibilite.DISPO) Color.rgb(63, 191, 63) else Color.rgb(191, 63, 63))

@@ -31,11 +31,18 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
     val newHydrantList = hydrantDao.getNewHydrantList()
     val tourneeList = hydrantDao.getTourneeMap()
 
+    var showCenter = mutableStateOf(false)
+        private set
+
     var mapCenter = mutableStateOf<IGeoPoint?>(null)
         private set
 
     var mapZoom = mutableStateOf<Double?>(null)
         private set
+
+    fun showCenter(show: Boolean) {
+        showCenter.value = show
+    }
 
     fun setCenter(center: IGeoPoint) {
         mapCenter.value = center

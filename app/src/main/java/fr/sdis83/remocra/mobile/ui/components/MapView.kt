@@ -319,6 +319,13 @@ fun MapView(
             { mapState },
             modifier,
         ) { mapView -> onLoad?.invoke(mapView) }
+        if (mapViewModel.showCenter.value!!) {
+            Icon(
+                imageVector = Icons.Filled.GpsFixed,
+                contentDescription = "Centre",
+                modifier = Modifier.align(Alignment.Center),
+            )
+        }
         Column(
             Modifier
                 .padding(16.dp)

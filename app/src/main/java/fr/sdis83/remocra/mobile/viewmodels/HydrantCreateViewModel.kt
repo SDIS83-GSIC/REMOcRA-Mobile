@@ -35,7 +35,8 @@ class HydrantCreateViewModel(application: Application) : AndroidViewModel(applic
         _hydrantCreateState.asStateFlow()
 
     suspend fun save() {
-        _hydrantCreateState.value.toHydrant()?.let { hydrant ->
+        val code = referentielDao.getTypeHydrant(_hydrantCreateState.value.nature!!.idTypeHydrant!!)
+        _hydrantCreateState.value.toHydrant(hydrantDao.getLatestCreated().plus(1).toString(), code)?.let { hydrant ->
             hydrantDao.insertHydrant(hydrant)
         }
     }
@@ -63,7 +64,7 @@ class HydrantCreateViewModel(application: Application) : AndroidViewModel(applic
                     this.lon != null &&
                     this.lat != null
 
-        fun toHydrant(): Hydrant? =
+        fun toHydrant(numero: String, code: String): Hydrant? =
             if (!this.isValid) {
                 null
             } else {
@@ -78,8 +79,8 @@ class HydrantCreateViewModel(application: Application) : AndroidViewModel(applic
                     y = this.y!!,
                     lon = this.lon!!,
                     lat = this.lat!!,
-                    numero = "NEW",
-                    code = "NEW",
+                    numero = "$numero",
+                    code = code,
                     idCommune = null,
                     complement = null,
                     voie = null,

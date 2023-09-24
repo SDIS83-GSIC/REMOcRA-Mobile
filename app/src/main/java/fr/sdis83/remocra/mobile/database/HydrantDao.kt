@@ -40,6 +40,9 @@ abstract class HydrantDao {
     @Query("SELECT h.* FROM hydrant h WHERE h.idHydrant = :idHydrant ")
     abstract fun getHydrantByIdHydrantLiveData(idHydrant: UUID): LiveData<Hydrant>
 
+    @Query("SELECT IFNULL(MAX(cast(h.numero AS int)), 0) FROM hydrant h WHERE h.idRemocra IS NULL")
+    abstract suspend fun getLatestCreated(): Long
+
     @Insert
     abstract suspend fun insertHydrant(hydrant: Hydrant)
 

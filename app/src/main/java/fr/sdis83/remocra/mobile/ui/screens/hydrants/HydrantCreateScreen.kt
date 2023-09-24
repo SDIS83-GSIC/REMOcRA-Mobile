@@ -1,6 +1,7 @@
 package fr.sdis83.remocra.mobile.ui.screens.hydrants
 
 import android.app.Application
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GpsFixed
+import androidx.compose.material.icons.filled.GpsNotFixed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,12 +23,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -36,10 +45,12 @@ import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.TypeHydrantNature
 import fr.sdis83.remocra.mobile.database.TypeHydrantNatureDeci
+import fr.sdis83.remocra.mobile.ui.components.SearchSpinner
 import fr.sdis83.remocra.mobile.ui.components.Spinner
 import fr.sdis83.remocra.mobile.viewmodels.HydrantCreateViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,6 +72,8 @@ private fun HydrantCreateScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val hydrantForm by hydrantCreateViewModel.hydrantCreateState.collectAsState()
+
+    Log.e("hydrantForm", hydrantForm.toString())
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.fillMaxSize()) {
@@ -114,8 +127,36 @@ private fun HydrantCreateForm(
     val typeHydrantNatureList by hydrantCreateViewModel.typeHydrantNatureList.observeAsState()
     val typeHydrantNatureDeciList by hydrantCreateViewModel.typeHydrantNatureDeciList.observeAsState()
     val gestionnaireList by hydrantCreateViewModel.gestionnaireList.observeAsState()
+    var withGps by remember { mutableStateOf(false) }
+    var x: Double? by remember { mutableStateOf(null) }
+    var y: Double? by remember { mutableStateOf(null) }
 
-    val point = mapViewModel.mapCenter
+    DisposableEffect(LocalLifecycleOwner.current) {
+        onDispose {
+            mapViewModel.showCenter(false)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { mapViewModel.mapCenter.value }
+            .debounce(100).collect {
+                if (withGps && it != null) {
+                    x = it.longitude
+                    y = it.latitude
+                }
+            }
+    }
+
+    if (withGps && hydrantForm.x != x && hydrantForm.y != y) {
+        hydrantCreateViewModel.updateForm(
+            hydrantForm.copy(
+                x = x,
+                y = y,
+                lon = x,
+                lat = y,
+            ),
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -125,9 +166,10 @@ private fun HydrantCreateForm(
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(
-                value = hydrantForm.x?.toString() ?: "",
+                value = if (x != null) x.toString() else "",
                 onValueChange = {
                     it.toDoubleOrNull()?.let { value ->
+                        x = value
                         hydrantCreateViewModel.updateForm(
                             hydrantForm.copy(
                                 x = value,
@@ -146,9 +188,10 @@ private fun HydrantCreateForm(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             )
             OutlinedTextField(
-                value = hydrantForm.y?.toString() ?: "",
+                value = if (y != null) y.toString() else "",
                 onValueChange = {
                     it.toDoubleOrNull()?.let { value ->
+                        y = value
                         hydrantCreateViewModel.updateForm(
                             hydrantForm.copy(
                                 y = value,
@@ -167,18 +210,10 @@ private fun HydrantCreateForm(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             )
             IconButton(onClick = {
-                point.value?.let {
-                    hydrantCreateViewModel.updateForm(
-                        hydrantForm = hydrantForm.copy(
-                            x = it.longitude,
-                            y = it.latitude,
-                            lon = it.longitude,
-                            lat = it.latitude,
-                        ),
-                    )
-                }
+                withGps = !withGps
+                mapViewModel.showCenter(withGps)
             }) {
-                Icon(imageVector = Icons.Filled.GpsFixed, contentDescription = "")
+                Icon(imageVector = if (withGps) Icons.Filled.GpsFixed else Icons.Filled.GpsNotFixed, contentDescription = "")
             }
         }
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -212,7 +247,7 @@ private fun HydrantCreateForm(
             )
         }
         Row(modifier = Modifier.fillMaxWidth()) {
-            Spinner(
+            SearchSpinner(
                 items = gestionnaireList?.sortedBy { it.nom } ?: listOf(),
                 value = gestionnaireList?.find { i -> i.idGestionnaire == hydrantForm.gestionnaire?.idGestionnaire },
                 valueToString = Gestionnaire::nom,
