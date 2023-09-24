@@ -153,7 +153,7 @@ fun HydrantVisiteForm(
     if (hydrantVisite == null) return
 
     val typeSaisieList by hydrantVisiteViewModel.typeSaisieList.observeAsState()
-    val anomalieList by hydrantVisiteViewModel.anomalieList.observeAsState()
+    val anomalieList by hydrantVisiteViewModel.anomalieList.collectAsState(listOf())
 
     HorizontalPager(
         modifier = Modifier
@@ -187,8 +187,8 @@ fun HydrantVisiteForm(
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     }
                 },
-                anomalieList = anomalieList ?: listOf(),
-                hydrantVisiteViewModel.hydrantState,
+                hydrantState = hydrantVisiteViewModel.hydrantState,
+                anomalieList = anomalieList,
             )
 
             2 -> StepThree(
@@ -517,39 +517,40 @@ fun StepTwo(
     anomalieList: List<ReferentielDao.AnomalieItem>,
     hydrantState: StateFlow<Hydrant?>,
 ) {
-    val options = anomalieList.filter { it.anomalieNature.idTypeHydrantNature == hydrantState.value?.idNature }.groupBy { it.critere }.mapValues { entry ->
-        entry.value.map { item ->
-            val checked =
-                remember { mutableStateOf(hydrantVisite.anomalies.contains(item.anomalie)) }
+    val options =
+        anomalieList.groupBy { it.critere }.mapValues { entry ->
+            entry.value.map { item ->
+                val checked =
+                    remember { mutableStateOf(hydrantVisite.anomalies.contains(item.anomalie)) }
 
-            Option(
-                checked = checked.value,
-                onCheckedChange = {
-                    checked.value = it
-                    if (it) {
-                        onValueChange(
-                            hydrantVisite.copy(
-                                anomalies = hydrantVisite.anomalies.apply { add(item.anomalie) },
-                            ),
+                Option(
+                    checked = checked.value,
+                    onCheckedChange = {
+                        checked.value = it
+                        if (it) {
+                            onValueChange(
+                                hydrantVisite.copy(
+                                    anomalies = hydrantVisite.anomalies.apply { add(item.anomalie) },
+                                ),
+                            )
+                        } else {
+                            onValueChange(
+                                hydrantVisite.copy(
+                                    anomalies = hydrantVisite.anomalies.apply { remove(item.anomalie) },
+                                ),
+                            )
+                        }
+                    },
+                    label = {
+                        Text(
+                            text = item.anomalie.nom,
+                            fontWeight = if (item.valIndispoTerrestre >= 5) FontWeight.Bold else null,
                         )
-                    } else {
-                        onValueChange(
-                            hydrantVisite.copy(
-                                anomalies = hydrantVisite.anomalies.apply { remove(item.anomalie) },
-                            ),
-                        )
-                    }
-                },
-                label = {
-                    Text(
-                        text = item.anomalie.nom,
-                        fontWeight = if (item.anomalieNature.valIndispoTerrestre >= 5) FontWeight.Bold else null,
-                    )
-                },
-                enabled = hydrantVisite.hydrantVisite.hasAnomalieChanges,
-            )
+                    },
+                    enabled = hydrantVisite.hydrantVisite.hasAnomalieChanges,
+                )
+            }
         }
-    }
 
     Column(
         modifier = Modifier

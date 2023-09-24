@@ -9,11 +9,16 @@ import fr.sdis83.remocra.mobile.database.HydrantVisite
 import fr.sdis83.remocra.mobile.database.HydrantVisiteDao.HydrantVisiteWithAnomalies
 import fr.sdis83.remocra.mobile.database.ReferentielDao
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
+import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalie
 import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -25,39 +30,61 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
     private val referentielDao = RemocraDatabase.getInstance(application).referentielDao()
 
     val typeSaisieList: LiveData<List<TypeHydrantSaisie>> = referentielDao.getTypeSaisieList()
-    val anomalieList: LiveData<List<ReferentielDao.AnomalieItem>> =
-        referentielDao.getAnomalieItemList()
 
     private val _hydrant: MutableStateFlow<Hydrant?> = MutableStateFlow(null)
     val hydrantState: StateFlow<Hydrant?> =
         _hydrant.asStateFlow()
+
+    private lateinit var existingAnomalies: List<TypeHydrantAnomalie>
 
     private val _hydrantVisiteState = MutableStateFlow(
         HydrantVisiteWithAnomalies(
             hydrantVisite = HydrantVisite(
                 idTournee = idTournee,
                 idHydrant = idHydrant,
+                hasAnomalieChanges = true,
             ),
         ),
     )
     val hydrantVisiteState: StateFlow<HydrantVisiteWithAnomalies> =
         _hydrantVisiteState.asStateFlow()
 
+    val anomalieList: Flow<List<ReferentielDao.AnomalieItem>> =
+        merge(hydrantVisiteState, hydrantState).flatMapLatest {
+            if (hydrantVisiteState.value == null || hydrantState.value == null) {
+                flowOf(listOf())
+            } else {
+                referentielDao.getAnomalieItemList(
+                    hydrantVisiteState.value.hydrantVisite.idTypeHydrantSaisie,
+                    hydrantState.value!!.idNature,
+                )
+            }
+        }
     suspend fun loadData(idTournee: UUID, idHydrant: UUID) {
         _hydrant.value = hydrantDao.getHydrantByIdHydrant(idHydrant)
+        existingAnomalies = hydrantVisiteDao.getExistingVisiteAnomalie(idHydrant)
 
-        val hydrantVisite = hydrantVisiteDao.getCurrentVisite(
-            idTournee = idTournee,
-            idHydrant = idHydrant,
-        ) ?: HydrantVisite(
+        var loadAnomalies = false
+
+        var hydrantVisite = hydrantVisiteDao.getCurrentVisite(
             idTournee = idTournee,
             idHydrant = idHydrant,
         )
+        if (hydrantVisite == null) {
+            hydrantVisite = HydrantVisite(
+                idTournee = idTournee,
+                idHydrant = idHydrant,
+                hasAnomalieChanges = true,
+            )
+            loadAnomalies = true
+        }
 
         _hydrantVisiteState.value = HydrantVisiteWithAnomalies(
             hydrantVisite = hydrantVisite,
             anomalies =
-            if (hydrantVisite.hasAnomalieChanges) {
+            if (loadAnomalies) {
+                hydrantVisiteDao.getExistingVisiteAnomalie(idHydrant).toMutableList()
+            } else if (hydrantVisite.hasAnomalieChanges) {
                 hydrantVisiteDao.getCurrentVisiteAnomalie(idHydrant, idTournee).toMutableList()
             } else {
                 hydrantVisiteDao.getExistingVisiteAnomalie(idHydrant).toMutableList()
@@ -86,7 +113,12 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
     }
 
     fun updateForm(hydrantVisite: HydrantVisiteWithAnomalies) {
-        _hydrantVisiteState.value = hydrantVisite
+        if (!hydrantVisite.hydrantVisite.hasAnomalieChanges) {
+            _hydrantVisiteState.value =
+                hydrantVisite.copy(anomalies = existingAnomalies.toMutableList())
+        } else {
+            _hydrantVisiteState.value = hydrantVisite
+        }
     }
 
     companion object {

@@ -62,9 +62,9 @@ abstract class HydrantVisiteDao {
 
     @Transaction
     open suspend fun upsertHydrantVisite(input: HydrantVisiteWithAnomalies) {
+        truncateAnomalies(input.hydrantVisite.idHydrantVisite)
         insertHydrantVisite(input.hydrantVisite)
         if (input.hydrantVisite.hasAnomalieChanges) {
-            truncateAnomalies(input.hydrantVisite.idHydrantVisite)
             input.anomalies.forEach {
                 insertHydrantVisiteAnomalie(
                     HydrantVisiteAnomalie(

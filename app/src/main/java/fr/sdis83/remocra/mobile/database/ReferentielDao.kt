@@ -6,6 +6,7 @@ import androidx.room.Embedded
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Relation
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class ReferentielDao {
@@ -112,8 +113,18 @@ abstract class ReferentielDao {
     @Query("SELECT ths.* FROM typeHydrantSaisie ths")
     abstract fun getTypeSaisieList(): LiveData<List<TypeHydrantSaisie>>
 
-    @Query("SELECT tha.* FROM typeHydrantAnomalie tha")
-    abstract fun getAnomalieItemList(): LiveData<List<AnomalieItem>>
+    @Query(
+        """
+        SELECT tha.*, than.valIndispoTerrestre FROM typeHydrantAnomalie tha
+        JOIN typeHydrantAnomalieNature than ON than.idTypeHydrantAnomalie = tha.idRemocra
+        WHERE than.idRemocra IN
+          (SELECT thans.idTypeHydrantAnomalieNature FROM typeHydrantAnomalieNatureSaisie thans
+          WHERE thans.idTypeHydrantSaisie = :idTypeHydrantSaisie
+          )
+        AND than.idTypeHydrantNature = :idNature
+        """,
+    )
+    abstract fun getAnomalieItemList(idTypeHydrantSaisie: Long?, idNature: Long?): Flow<List<AnomalieItem>>
 
     @Query("SELECT g.* FROM gestionnaire g WHERE g.actif = 1")
     abstract fun getGestionnaireList(): LiveData<List<Gestionnaire>>
@@ -129,7 +140,7 @@ abstract class ReferentielDao {
 
     data class AnomalieItem(
         @Embedded val anomalie: TypeHydrantAnomalie,
+        val valIndispoTerrestre: Int,
         @Relation(parentColumn = "idCritere", entityColumn = "idRemocra") val critere: TypeHydrantCritere,
-        @Relation(parentColumn = "idRemocra", entityColumn = "idTypeHydrantAnomalie") val anomalieNature: TypeHydrantAnomalieNature,
     )
 }
