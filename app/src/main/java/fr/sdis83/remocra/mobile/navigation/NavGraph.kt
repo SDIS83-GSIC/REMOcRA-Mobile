@@ -60,7 +60,7 @@ fun NavGraph(
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
             }
-            TourneesScreen(navController)
+            TourneesScreen(navController, mapViewModel)
         }
         composable(
             route = Screens.TourneeHydrants.route,

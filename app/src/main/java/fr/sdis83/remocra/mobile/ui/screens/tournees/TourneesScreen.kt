@@ -30,11 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.navigation.Screens
+import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import fr.sdis83.remocra.mobile.viewmodels.TourneesViewModel
 import kotlin.math.roundToInt
 
 @Composable
-fun TourneesScreen(navController: NavController) {
+fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
     val context = LocalContext.current
     val tourneesViewModel = TourneesViewModel(context.applicationContext as Application)
     val tourneeList by tourneesViewModel.tourneeList.observeAsState()
@@ -66,6 +67,8 @@ fun TourneesScreen(navController: NavController) {
                                         .padding(8.dp)
                                         .fillMaxWidth()
                                         .clickable {
+                                            zoomSurTournee(tourneeItem.tournee, mapViewModel)
+
                                             navController.navigate(
                                                 Screens.TourneeHydrants.route
                                                     .replace(

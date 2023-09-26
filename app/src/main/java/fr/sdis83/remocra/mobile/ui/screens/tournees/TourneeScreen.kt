@@ -86,6 +86,8 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                                             inclusive = true
                                         }
                                     }
+
+                                    zoomSurTournee(tourneeItem.tournee, mapViewModel)
                                 },
                                 border = BorderStroke(color = tourneeItem.tournee.getColor(), width = 4.dp),
                                 colors = ButtonDefaults.buttonColors(
@@ -112,13 +114,6 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                         fontWeight = FontWeight.Bold,
                     )
                     Spacer(Modifier.width(16.dp))
-                    Button(onClick = {
-                        tourneeViewModel.tourneeBoundingBox?.let { mapViewModel.scaleToBox(it) }
-                    }) {
-                        Text(
-                            text = "Cadrer sur la zone",
-                        )
-                    }
                 }
                 if (!hydrantList.isNullOrEmpty()) {
                     Row {
