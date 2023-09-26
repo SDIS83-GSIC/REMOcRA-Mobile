@@ -49,13 +49,13 @@
         android:textColor="#000000"
         android:textFontWeight="500"
         android:textSize="18dp" />
-    <!--
+
     <TextView
         android:id="@+id/hydrant_caracteristiques"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="caracteristiques"
+        android:text=""
         android:textColor="#666666"
         android:textSize="18dp" />
-        -->
+
 </LinearLayout>

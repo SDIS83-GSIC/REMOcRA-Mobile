@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9362aff125fedad6094c897fc1f4cbaa",
+    "identityHash": "7c15312df07713d2f1497d37ed83f8f8",
     "entities": [
       {
         "tableName": "hydrant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrant` BLOB NOT NULL, `idRemocra` INTEGER, `idNature` INTEGER, `idNatureDeci` INTEGER, `dispoHbe` TEXT, `dispoTerrestre` TEXT, `x` REAL NOT NULL, `y` REAL NOT NULL, `lon` REAL NOT NULL, `lat` REAL NOT NULL, `numero` TEXT, `code` TEXT, `idCommune` INTEGER, `complement` TEXT, `voie` TEXT, `voie2` TEXT, `suffixeVoie` TEXT, `lieuDit` TEXT, `observation` TEXT, `idGestionnaire` BLOB, `idRemocraGestionnaire` INTEGER, PRIMARY KEY(`idHydrant`), FOREIGN KEY(`idCommune`) REFERENCES `commune`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idNature`) REFERENCES `typeHydrantNature`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idNatureDeci`) REFERENCES `typeHydrantNatureDeci`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idGestionnaire`) REFERENCES `gestionnaire`(`idGestionnaire`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrant` BLOB NOT NULL, `idRemocra` INTEGER, `idNature` INTEGER, `idNatureDeci` INTEGER, `dispoHbe` TEXT, `dispoTerrestre` TEXT, `x` REAL NOT NULL, `y` REAL NOT NULL, `lon` REAL NOT NULL, `lat` REAL NOT NULL, `numero` TEXT, `code` TEXT, `idCommune` INTEGER, `complement` TEXT, `voie` TEXT, `voie2` TEXT, `suffixeVoie` TEXT, `lieuDit` TEXT, `observation` TEXT, `idGestionnaire` BLOB, `idRemocraGestionnaire` INTEGER, `peiCaracteristiques` TEXT, PRIMARY KEY(`idHydrant`), FOREIGN KEY(`idCommune`) REFERENCES `commune`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idNature`) REFERENCES `typeHydrantNature`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idNatureDeci`) REFERENCES `typeHydrantNatureDeci`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idGestionnaire`) REFERENCES `gestionnaire`(`idGestionnaire`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "idHydrant",
@@ -132,6 +132,12 @@
             "fieldPath": "idRemocraGestionnaire",
             "columnName": "idRemocraGestionnaire",
             "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "peiCaracteristiques",
+            "columnName": "peiCaracteristiques",
+            "affinity": "TEXT",
             "notNull": false
           }
         ],
@@ -1860,7 +1866,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9362aff125fedad6094c897fc1f4cbaa')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7c15312df07713d2f1497d37ed83f8f8')"
     ]
   }
 }

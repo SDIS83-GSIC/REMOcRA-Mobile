@@ -66,6 +66,7 @@ interface ReferentielService {
         val typesHydrantSaisie: List<TypeHydrantSaisie>,
         val paramsConf: List<ParamConf>,
         val typesDroit: List<TypeDroit>,
+        val peiCaracteristiques: Map<Long, String>,
     )
 
     data class ContactRoleInput(

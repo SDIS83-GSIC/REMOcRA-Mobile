@@ -141,6 +141,7 @@ class ReferentielWorker constructor(
                         hydrant.copy(
                             idHydrant = idHydrant,
                             idGestionnaire = gestionnaireMap.find { it.second == hydrant.idRemocraGestionnaire }?.first,
+                            peiCaracteristiques = peiCaracteristiques[hydrant.idRemocra],
                         ),
                     )
                 }

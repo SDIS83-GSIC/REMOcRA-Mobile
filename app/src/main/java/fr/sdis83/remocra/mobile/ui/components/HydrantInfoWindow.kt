@@ -1,6 +1,7 @@
 package fr.sdis83.remocra.mobile.ui.components
 
 import android.graphics.Color
+import android.text.Html
 import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
@@ -17,7 +18,7 @@ class HydrantInfoWindow(mapView: MapView) : InfoWindow(R.layout.map_bubble, mapV
     var mHydrantDisponibilite = R.id.hydrant_disponibilite
     var mHydrantAdresse = R.id.hydrant_adresse
     var mHydrantAdresseComplement = R.id.hydrant_adresse_complement
-//    var mHydrantCaracteristiques = R.id.hydrant_caracteristiques
+    var mHydrantCaracteristiques = R.id.hydrant_caracteristiques
 
     init {
         mView.setOnTouchListener { _, motionEvent: MotionEvent ->
@@ -40,7 +41,7 @@ class HydrantInfoWindow(mapView: MapView) : InfoWindow(R.layout.map_bubble, mapV
             (mView.findViewById<View>(mHydrantAdresse) as TextView).text = hydrant.voie
             (mView.findViewById<View>(mHydrantAdresseComplement) as TextView).text =
                 hydrant.observation
-//            (mView.findViewById<View>(mHydrantCaracteristiques) as TextView).text = "TODO" // TODO
+            (mView.findViewById<View>(mHydrantCaracteristiques) as TextView).text = Html.fromHtml(hydrant.peiCaracteristiques, Html.FROM_HTML_MODE_COMPACT)
         } catch (e: Exception) {
         }
     }

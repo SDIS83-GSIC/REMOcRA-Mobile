@@ -177,6 +177,7 @@ fun MapView(
                                 it.suffixeVoie,
                                 it.voie2,
                                 it.observation,
+                                peiCaracteristiques = it.peiCaracteristiques,
                             )
                         },
                     ),
@@ -226,6 +227,7 @@ fun MapView(
                                 it.suffixeVoie,
                                 it.voie2,
                                 it.observation,
+                                it.peiCaracteristiques,
                             )
                         },
                     ),
@@ -274,6 +276,7 @@ fun MapView(
                                     hydrant.suffixeVoie,
                                     hydrant.voie2,
                                     hydrant.observation,
+                                    hydrant.peiCaracteristiques,
                                 )
                             },
                         ),

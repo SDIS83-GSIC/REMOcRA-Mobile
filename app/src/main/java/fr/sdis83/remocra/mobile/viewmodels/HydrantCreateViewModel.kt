@@ -54,6 +54,7 @@ class HydrantCreateViewModel(application: Application) : AndroidViewModel(applic
         val lat: Double? = null,
         val observation: String? = null,
         val gestionnaire: Gestionnaire? = null,
+
     ) {
         val isValid: Boolean
             get() =
@@ -90,6 +91,7 @@ class HydrantCreateViewModel(application: Application) : AndroidViewModel(applic
                     observation = this.observation,
                     idGestionnaire = this.gestionnaire?.idGestionnaire,
                     idRemocraGestionnaire = this.gestionnaire?.idRemocra,
+                    peiCaracteristiques = null,
                 )
             }
     }

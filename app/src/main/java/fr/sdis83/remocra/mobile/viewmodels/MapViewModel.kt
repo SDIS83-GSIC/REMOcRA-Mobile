@@ -71,6 +71,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
                         it.suffixeVoie,
                         it.voie2,
                         it.observation,
+                        it.peiCaracteristiques,
                     ),
                 )
                 mapView?.setExpectedCenter(
@@ -84,6 +85,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
                         it.suffixeVoie,
                         it.voie2,
                         it.observation,
+                        it.peiCaracteristiques,
                     ),
                 )
             }
@@ -100,6 +102,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
         val suffixeVoie: String?,
         val voie2: String?,
         val observation: String?,
+        val peiCaracteristiques: String?,
     ) :
         GeoPoint(lat, lon)
 }
