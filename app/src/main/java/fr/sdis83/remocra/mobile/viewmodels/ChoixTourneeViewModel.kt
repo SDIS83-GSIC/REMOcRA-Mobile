@@ -5,11 +5,13 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.database.TourneeDispo
+import fr.sdis83.remocra.mobile.workers.AnnuleReservationTourneeWorker
 import fr.sdis83.remocra.mobile.workers.ReserveTourneesWorker
 import fr.sdis83.remocra.mobile.workers.TourneesDisposWorker
 
@@ -31,11 +33,15 @@ class ChoixTourneeViewModel(application: Application) : AndroidViewModel(applica
 
     private var tourneesDisponiblesStatus = mutableStateOf(JobStatus.WAITING)
     private var tourneesReserveesStatus = mutableStateOf(JobStatus.WAITING)
+    private var annuleReservationStatus = mutableStateOf(JobStatus.WAITING)
 
     var info = mutableStateOf("")
         private set
 
     var infoReservation = mutableStateOf("")
+        private set
+
+    var infoAnnulation = mutableStateOf("")
         private set
 
     fun getTourneesDisponibles() {
@@ -108,6 +114,46 @@ class ChoixTourneeViewModel(application: Application) : AndroidViewModel(applica
 
                     else -> {
                         tourneesReserveesStatus.value = JobStatus.WAITING
+                    }
+                }
+            }
+        }
+    }
+
+    fun annulerReservationTournee(context: Context, idTournee: Long) {
+        val annuleReservationTourneeWorker = OneTimeWorkRequestBuilder<AnnuleReservationTourneeWorker>()
+            .setInputData(
+                Data.Builder()
+                    .putLong("idTournee", idTournee).build(),
+            ).build()
+
+        WorkManager.getInstance(getApplication()).let { workManager ->
+            workManager
+                .beginWith(annuleReservationTourneeWorker)
+                .enqueue()
+
+            workManager.getWorkInfoByIdLiveData(annuleReservationTourneeWorker.id).observeForever {
+                when (it.state) {
+                    WorkInfo.State.RUNNING -> {
+                        infoAnnulation.value = "Annulation de la réservation en cours..."
+                        Toast.makeText(context, infoReservation.value, Toast.LENGTH_SHORT).show()
+                        annuleReservationStatus.value = JobStatus.LOADING
+                    }
+
+                    WorkInfo.State.SUCCEEDED -> {
+                        infoAnnulation.value = "Annulation de la réservation de la tournée réussie"
+                        Toast.makeText(context, infoAnnulation.value, Toast.LENGTH_SHORT).show()
+                        annuleReservationStatus.value = JobStatus.SUCCESS
+                    }
+
+                    WorkInfo.State.FAILED -> {
+                        infoAnnulation.value = "Impossible d'annuler la réservation de la tournée"
+                        Toast.makeText(context, infoAnnulation.value, Toast.LENGTH_SHORT).show()
+                        annuleReservationStatus.value = JobStatus.ERROR
+                    }
+
+                    else -> {
+                        annuleReservationStatus.value = JobStatus.WAITING
                     }
                 }
             }

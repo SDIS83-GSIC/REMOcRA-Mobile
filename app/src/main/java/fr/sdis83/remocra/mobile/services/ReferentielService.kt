@@ -40,6 +40,12 @@ interface ReferentielService {
         @Field("listIdTournees") listIdTournees: Array<String>,
     ): Call<ReservationTourneesResponse>
 
+    @FormUrlEncoded
+    @POST("synchro/annulereservation")
+    fun annuleReservation(
+        @Field("idTournee") idTournee: Long,
+    ): Call<String>
+
     data class ReferentielResponse(
         val communes: List<Commune>,
         val hydrants: List<Hydrant>,

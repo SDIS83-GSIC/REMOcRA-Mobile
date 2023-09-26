@@ -17,6 +17,8 @@
     <string name="choix_tournees">Choix des tournées</string>
     <string name="synchro_tournees">Synchroniser les tournées</string>
     <string name="historique_synchro">Historique des synchronisations</string>
+    <string name="annuler_reservation">Annuler la réservation de la tournée ?</string>
+    <string name="warning_annuler_reservation">Toutes les données relatives à la tournée seront perdues. Voulez-vous continuer ?</string>
     <string name="retour">Retour</string>
     <string name="valider">Valider</string>
     <string name="oui">Oui</string>

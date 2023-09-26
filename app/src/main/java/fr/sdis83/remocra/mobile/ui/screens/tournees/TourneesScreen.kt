@@ -11,15 +11,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.navigation.Screens
+import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import fr.sdis83.remocra.mobile.viewmodels.TourneesViewModel
 import kotlin.math.roundToInt
@@ -38,7 +47,12 @@ import kotlin.math.roundToInt
 fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
     val context = LocalContext.current
     val tourneesViewModel = TourneesViewModel(context.applicationContext as Application)
+    val choixTourneeViewModel = ChoixTourneeViewModel(context.applicationContext as Application)
     val tourneeList by tourneesViewModel.tourneeList.observeAsState()
+
+    var idTourneeAAnnuler: Long? by remember {
+        mutableStateOf(null)
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.fillMaxSize()) {
@@ -90,6 +104,19 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                             .padding(16.dp)
                                             .fillMaxWidth(),
                                     ) {
+                                        IconButton(
+                                            modifier = Modifier.align(Alignment.TopEnd),
+                                            onClick = {
+                                                idTourneeAAnnuler = tourneeItem.tournee.idRemocra
+                                            },
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Filled.Delete,
+                                                contentDescription = "Centre",
+                                                tint = Color.Red,
+                                                modifier = Modifier.size(30.dp),
+                                            )
+                                        }
                                         Column {
                                             Row {
                                                 Text(
@@ -130,6 +157,11 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                     }
                 }
             }
+        }
+    }
+    if (idTourneeAAnnuler != null) {
+        AnnulerReservationTourneeDialog(choixTourneeViewModel, idTourneeAAnnuler!!) {
+            idTourneeAAnnuler = null
         }
     }
 }
