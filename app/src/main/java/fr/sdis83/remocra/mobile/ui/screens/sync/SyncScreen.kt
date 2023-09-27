@@ -27,7 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.work.Constraints
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -180,41 +179,29 @@ fun SyncScreenPreview() {
 }
 
 private fun synchro(application: Application) {
-    val constraints = Constraints.Builder()
-        .setRequiresBatteryNotLow(true)
-        .build()
-
     // On commence par les gestionnaires
     val synchroGestionnaire = OneTimeWorkRequestBuilder<SynchroGestionnaireWorker>()
-        .setConstraints(constraints)
         .build()
 
     val synchroContact = OneTimeWorkRequestBuilder<SynchroContactWorker>()
-        .setConstraints(constraints)
         .build()
 
     val synchroContactRole = OneTimeWorkRequestBuilder<SynchroContactRoleWorker>()
-        .setConstraints(constraints)
         .build()
 
     val synchroNewHydrants = OneTimeWorkRequestBuilder<SynchroNewHydrantWorker>()
-        .setConstraints(constraints)
         .build()
 
     val synchroHydrantVisiteWorker = OneTimeWorkRequestBuilder<SynchroHydrantVisiteWorker>()
-        .setConstraints(constraints)
         .build()
 
     val synchroHydrantVisiteAnomalieWorker = OneTimeWorkRequestBuilder<SynchroHydrantVisiteAnomalieWorker>()
-        .setConstraints(constraints)
         .build()
 
     val synchroTourneeWorker = OneTimeWorkRequestBuilder<SynchroTourneeWorker>()
-        .setConstraints(constraints)
         .build()
 
     val referentielWorker = OneTimeWorkRequestBuilder<ReferentielWorker>()
-        .setConstraints(constraints)
         .build()
 
     WorkManager.getInstance(application).let { workManager ->
@@ -230,7 +217,7 @@ private fun synchro(application: Application) {
             .then(referentielWorker)
             .enqueue()
 
-        workManager.getWorkInfoByIdLiveData(synchroTourneeWorker.id).observeForever {
+        workManager.getWorkInfoByIdLiveData(referentielWorker.id).observeForever {
             when (it.state) {
                 WorkInfo.State.RUNNING -> {
                     Toast.makeText(application, "Synchronisation en cours...", Toast.LENGTH_LONG)

@@ -27,10 +27,10 @@ object RetrofitBuilder : SingletonHolder<Retrofit>() {
         val client = OkHttpClient.Builder().eventListenerFactory(
             LoggingEventListener.Factory(),
         )
-            .connectTimeout(10, TimeUnit.SECONDS)
-            .writeTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(10, TimeUnit.SECONDS)
-            .callTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(1000, TimeUnit.SECONDS)
+            .callTimeout(1000, TimeUnit.SECONDS)
             .cache(Cache(File(context.cacheDir, "OkHttpCache"), 1024 * 1024))
             .addInterceptor(AuthInterceptor(context))
             .build()

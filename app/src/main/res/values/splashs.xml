@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.Starting" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#FF0000</item>
+        <item name="windowSplashScreenBackground">#2E2B45</item>
         <item name="postSplashScreenTheme">@style/Theme.REMOcRAMobile</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
     </style>
