@@ -1,9 +1,7 @@
 package fr.sdis83.remocra.mobile.ui.screens.sync
 
 import android.app.Application
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -24,30 +22,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkInfo
-import androidx.work.WorkManager
 import fr.sdis83.remocra.mobile.R
-import fr.sdis83.remocra.mobile.synchronisation.SynchroContactRoleWorker
-import fr.sdis83.remocra.mobile.synchronisation.SynchroContactWorker
-import fr.sdis83.remocra.mobile.synchronisation.SynchroGestionnaireWorker
-import fr.sdis83.remocra.mobile.synchronisation.SynchroHydrantVisiteAnomalieWorker
-import fr.sdis83.remocra.mobile.synchronisation.SynchroHydrantVisiteWorker
-import fr.sdis83.remocra.mobile.synchronisation.SynchroNewHydrantWorker
-import fr.sdis83.remocra.mobile.synchronisation.SynchroTourneeWorker
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 import fr.sdis83.remocra.mobile.viewmodels.SyncViewModel
-import fr.sdis83.remocra.mobile.workers.ReferentielWorker
 
 @Composable
-fun SyncScreen() {
+fun SyncScreen(syncViewModel: SyncViewModel) {
     val context = LocalContext.current
 
     val choixTourneeViewModel = ChoixTourneeViewModel(context.applicationContext as Application)
-    val syncViewModel = SyncViewModel(context.applicationContext as Application)
 
     val hydrantVisiteCount by syncViewModel.hydrantVisiteCount.observeAsState()
     val hydrantTourneeCount by syncViewModel.hydrantTourneeCount.observeAsState()
@@ -57,6 +43,8 @@ fun SyncScreen() {
     var showCustomDialog by remember {
         mutableStateOf(false)
     }
+
+    val isBusy by syncViewModel.isBusy.observeAsState()
 
     Column(
         modifier = Modifier
@@ -87,7 +75,7 @@ fun SyncScreen() {
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.5f)
+                    .fillMaxWidth(1f)
                     .fillMaxHeight(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start,
@@ -111,39 +99,45 @@ fun SyncScreen() {
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxWidth(0.5f)
                         .padding(10.dp),
                     horizontalArrangement = Arrangement.SpaceAround,
                 ) {
                     // Bouton pour récupération des tournées
                     Button(
-                        modifier = Modifier.padding(0.dp, 20.dp, 10.dp, 20.dp),
+                        modifier = Modifier
+                            .padding(0.dp, 20.dp, 10.dp, 20.dp)
+                            .fillMaxWidth(0.5f),
                         onClick = {
                             showCustomDialog = !showCustomDialog
                         },
                         shape = RoundedCornerShape(50.dp),
                         contentPadding = PaddingValues(10.dp),
+                        enabled = !isBusy!!,
                     ) {
                         Text(
                             modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 10.dp),
                             text = stringResource(R.string.choix_tournees),
                             fontSize = 20.sp,
+                            textAlign = TextAlign.Center,
                         )
                     }
 
                     // Bouton pour synchroniser les tournées
                     Button(
-                        modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 20.dp),
+                        modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 20.dp).fillMaxWidth(1f),
                         onClick = {
-                            synchro(context.applicationContext as Application)
+                            syncViewModel.synchro(context.applicationContext as Application)
                         },
                         shape = RoundedCornerShape(50.dp),
                         contentPadding = PaddingValues(10.dp),
+                        enabled = !isBusy!!,
                     ) {
                         Text(
                             modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 10.dp),
                             text = stringResource(R.string.synchro_tournees),
                             fontSize = 20.sp,
+                            textAlign = TextAlign.Center,
                         )
                     }
                 }
@@ -166,77 +160,6 @@ fun SyncScreen() {
     if (showCustomDialog) {
         ChoixTourneeDialog(choixTourneeViewModel) {
             showCustomDialog = !showCustomDialog
-        }
-    }
-}
-
-@Preview(showSystemUi = true, device = "spec:width=1280dp,height=800dp,dpi=480")
-@Composable
-fun SyncScreenPreview() {
-    Box {
-        SyncScreen()
-    }
-}
-
-private fun synchro(application: Application) {
-    // On commence par les gestionnaires
-    val synchroGestionnaire = OneTimeWorkRequestBuilder<SynchroGestionnaireWorker>()
-        .build()
-
-    val synchroContact = OneTimeWorkRequestBuilder<SynchroContactWorker>()
-        .build()
-
-    val synchroContactRole = OneTimeWorkRequestBuilder<SynchroContactRoleWorker>()
-        .build()
-
-    val synchroNewHydrants = OneTimeWorkRequestBuilder<SynchroNewHydrantWorker>()
-        .build()
-
-    val synchroHydrantVisiteWorker = OneTimeWorkRequestBuilder<SynchroHydrantVisiteWorker>()
-        .build()
-
-    val synchroHydrantVisiteAnomalieWorker = OneTimeWorkRequestBuilder<SynchroHydrantVisiteAnomalieWorker>()
-        .build()
-
-    val synchroTourneeWorker = OneTimeWorkRequestBuilder<SynchroTourneeWorker>()
-        .build()
-
-    val referentielWorker = OneTimeWorkRequestBuilder<ReferentielWorker>()
-        .build()
-
-    WorkManager.getInstance(application).let { workManager ->
-        workManager
-            .beginWith(synchroGestionnaire)
-            .then(synchroContact)
-            .then(synchroContactRole)
-            .then(synchroNewHydrants)
-            .then(synchroHydrantVisiteWorker)
-            .then(synchroHydrantVisiteAnomalieWorker)
-            .then(synchroTourneeWorker)
-            // On recharge le référentiel à la toute fin pour avoir les données à jour
-            .then(referentielWorker)
-            .enqueue()
-
-        workManager.getWorkInfoByIdLiveData(referentielWorker.id).observeForever {
-            when (it.state) {
-                WorkInfo.State.RUNNING -> {
-                    Toast.makeText(application, "Synchronisation en cours...", Toast.LENGTH_LONG)
-                        .show()
-                }
-                WorkInfo.State.SUCCEEDED -> {
-                    Toast.makeText(application, "Synchronisation terminée.", Toast.LENGTH_LONG)
-                        .show()
-                }
-                WorkInfo.State.FAILED -> {
-                    Toast.makeText(application, "Echec lors de la synchronisation.", Toast.LENGTH_LONG)
-                        .show()
-                }
-
-                else -> {
-                    Toast.makeText(application, "En attente...", Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
         }
     }
 }

@@ -105,7 +105,8 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                             .fillMaxWidth(),
                                     ) {
                                         IconButton(
-                                            modifier = Modifier.align(Alignment.TopEnd),
+                                            modifier = Modifier.align(Alignment.TopEnd)
+                                                .fillMaxWidth(0.2f),
                                             onClick = {
                                                 idTourneeAAnnuler = tourneeItem.tournee.idRemocra
                                             },
@@ -117,7 +118,9 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                                 modifier = Modifier.size(30.dp),
                                             )
                                         }
-                                        Column {
+                                        Column(
+                                            modifier = Modifier.fillMaxWidth(0.8f),
+                                        ) {
                                             Row {
                                                 Text(
                                                     text = tourneeItem.tournee.nom,

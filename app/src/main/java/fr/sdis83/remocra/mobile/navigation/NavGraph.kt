@@ -1,5 +1,6 @@
 package fr.sdis83.remocra.mobile.navigation
 
+import android.app.Application
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -19,6 +20,7 @@ import fr.sdis83.remocra.mobile.ui.screens.sync.SyncScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneeScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneesScreen
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
+import fr.sdis83.remocra.mobile.viewmodels.SyncViewModel
 import java.util.UUID
 
 @Composable
@@ -53,7 +55,7 @@ fun NavGraph(
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
             }
-            SyncScreen()
+            SyncScreen(SyncViewModel(Application()))
         }
 
         composable(route = Screens.Tournees.route) {
