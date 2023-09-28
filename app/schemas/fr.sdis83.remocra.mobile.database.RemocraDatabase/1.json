@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ae6b6ba12ffc50facfa0628863563d35",
+    "identityHash": "63047b41a334c0e9e7c2b368acbacf84",
     "entities": [
       {
         "tableName": "hydrant",
@@ -1930,12 +1930,66 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "agent",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idAgent` BLOB NOT NULL, `nomAgent` TEXT NOT NULL, `numeroAgent` INTEGER NOT NULL, `isLastValue` INTEGER NOT NULL, `isUserConnecte` INTEGER NOT NULL, PRIMARY KEY(`idAgent`))",
+        "fields": [
+          {
+            "fieldPath": "idAgent",
+            "columnName": "idAgent",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nomAgent",
+            "columnName": "nomAgent",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numeroAgent",
+            "columnName": "numeroAgent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isLastValue",
+            "columnName": "isLastValue",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isUserConnecte",
+            "columnName": "isUserConnecte",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idAgent"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_agent_idAgent",
+            "unique": false,
+            "columnNames": [
+              "idAgent"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_agent_idAgent` ON `${TABLE_NAME}` (`idAgent`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ae6b6ba12ffc50facfa0628863563d35')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '63047b41a334c0e9e7c2b368acbacf84')"
     ]
   }
 }

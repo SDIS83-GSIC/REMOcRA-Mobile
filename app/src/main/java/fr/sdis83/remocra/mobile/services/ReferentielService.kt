@@ -67,6 +67,8 @@ interface ReferentielService {
         val paramsConf: List<ParamConf>,
         val typesDroit: List<TypeDroit>,
         val peiCaracteristiques: Map<Long, String>,
+        val gestionAgents: String,
+        val utilisateurConnecte: String,
     )
 
     data class ContactRoleInput(

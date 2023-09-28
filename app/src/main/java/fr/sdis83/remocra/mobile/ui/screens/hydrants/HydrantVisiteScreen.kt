@@ -83,6 +83,8 @@ import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.CameraCapture
 import fr.sdis83.remocra.mobile.ui.components.LabelledCheckbox
 import fr.sdis83.remocra.mobile.ui.components.Spinner
+import fr.sdis83.remocra.mobile.utils.GlobalConstants
+import fr.sdis83.remocra.mobile.viewmodels.AgentViewModel
 import fr.sdis83.remocra.mobile.viewmodels.HydrantPhotoViewModel
 import fr.sdis83.remocra.mobile.viewmodels.HydrantVisiteViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
@@ -108,15 +110,19 @@ fun HydrantVisiteScreen(
     mapViewModel: MapViewModel,
 ) {
     val context = LocalContext.current
+    val agentViewModel = AgentViewModel(context.applicationContext as Application)
+    val gestionAgents by agentViewModel.gestionAgents.observeAsState()
+    val listAgent1 by agentViewModel.listAgent1.observeAsState()
+    val listAgent2 by agentViewModel.listAgent2.observeAsState()
     val hydrantVisiteViewModel =
-        HydrantVisiteViewModel(context.applicationContext as Application, idTournee, idHydrant)
+        HydrantVisiteViewModel(context.applicationContext as Application, idTournee, idHydrant, gestionAgents)
 
     val hydrantPhotoVisiteViewModel = HydrantPhotoViewModel(context.applicationContext as Application, idHydrant)
 
     val photos = hydrantPhotoVisiteViewModel.photos.observeAsState()
 
     mapViewModel.goToHydrant(idHydrant)
-    HydrantVisiteScreenInner(hydrantVisiteViewModel, navController, photos.value, hydrantPhotoVisiteViewModel)
+    HydrantVisiteScreenInner(hydrantVisiteViewModel, navController, photos.value, hydrantPhotoVisiteViewModel, gestionAgents, listAgent1, listAgent2)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -126,6 +132,9 @@ fun HydrantVisiteScreenInner(
     navController: NavController,
     photos: List<HydrantPhoto>?,
     hydrantPhotoVisiteViewModel: HydrantPhotoViewModel,
+    gestionAgents: String?,
+    listAgent1: List<String>?,
+    listAgent2: List<String>?,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState()
@@ -177,6 +186,9 @@ fun HydrantVisiteScreenInner(
                     hydrantVisite = hydrantVisite,
                     photos = photos,
                     hydrantPhotoViewModel = hydrantPhotoVisiteViewModel,
+                    gestionAgents = gestionAgents,
+                    listAgent1 = listAgent1,
+                    listAgent2 = listAgent2,
                 )
             }
         }
@@ -193,6 +205,9 @@ fun HydrantVisiteForm(
     navController: NavController,
     hydrantVisite: HydrantVisiteWithAnomalies?,
     photos: List<HydrantPhoto>?,
+    gestionAgents: String?,
+    listAgent1: List<String>?,
+    listAgent2: List<String>?,
 ) {
     if (hydrantVisite == null) return
 
@@ -220,6 +235,9 @@ fun HydrantVisiteForm(
                 hydrantVisite = hydrantVisite,
                 onValueChange = hydrantVisiteViewModel::updateForm,
                 typeSaisieList = typeSaisieList ?: listOf(),
+                gestionAgents = gestionAgents,
+                listAgent1 = listAgent1,
+                listAgent2 = listAgent2,
             )
 
             1 -> StepTwo(
@@ -273,6 +291,9 @@ private fun StepOne(
     hydrantVisite: HydrantVisiteWithAnomalies,
     onValueChange: (HydrantVisiteWithAnomalies) -> Unit = {},
     typeSaisieList: List<TypeHydrantSaisie>,
+    gestionAgents: String?,
+    listAgent1: List<String>?,
+    listAgent2: List<String>?,
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
@@ -419,8 +440,16 @@ private fun StepOne(
             )
         }
         Row(modifier = Modifier.fillMaxWidth()) {
-            OutlinedTextField(
+            Spinner(
                 value = hydrantVisite.hydrantVisite.agent1 ?: "",
+                items = listAgent1 ?: listOf(),
+                onSelectionChanged = {
+                    onValueChange(
+                        hydrantVisite.copy(
+                            hydrantVisite = hydrantVisite.hydrantVisite.copy(agent1 = it),
+                        ),
+                    )
+                },
                 onValueChange = {
                     onValueChange(
                         hydrantVisite.copy(
@@ -428,17 +457,24 @@ private fun StepOne(
                         ),
                     )
                 },
-                label = {
-                    Text(text = "Agent 1")
-                },
-                placeholder = {
-                    Text(text = "Agent 1")
-                },
+                valueToString = String::toString,
+                label = "Agent 1",
+                placeholder = "Agent 1",
                 singleLine = true,
                 modifier = Modifier.weight(1f),
+                enabled = gestionAgents != GlobalConstants.UTILISATEUR_CONNECTE_OBLIGATOIRE,
+                readOnly = false,
             )
-            OutlinedTextField(
+            Spinner(
                 value = hydrantVisite.hydrantVisite.agent2 ?: "",
+                items = listAgent2 ?: listOf(),
+                onSelectionChanged = {
+                    onValueChange(
+                        hydrantVisite.copy(
+                            hydrantVisite = hydrantVisite.hydrantVisite.copy(agent2 = it),
+                        ),
+                    )
+                },
                 onValueChange = {
                     onValueChange(
                         hydrantVisite.copy(
@@ -446,14 +482,12 @@ private fun StepOne(
                         ),
                     )
                 },
-                label = {
-                    Text(text = "Agent 2")
-                },
-                placeholder = {
-                    Text(text = "Agent 2")
-                },
+                valueToString = String::toString,
+                label = "Agent 2",
+                placeholder = "Agent 2",
                 singleLine = true,
                 modifier = Modifier.weight(1f),
+                readOnly = false,
             )
         }
         if (typeSaisieList.find { it.idRemocra == hydrantVisite.hydrantVisite.idTypeHydrantSaisie }?.code == "CTRL") {

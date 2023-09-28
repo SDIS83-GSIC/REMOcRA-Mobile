@@ -4,10 +4,13 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import fr.sdis83.remocra.mobile.database.Agent
 import fr.sdis83.remocra.mobile.database.ContactRole
 import fr.sdis83.remocra.mobile.database.HydrantAnomalie
+import fr.sdis83.remocra.mobile.database.ParamConf
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.ReferentielService
+import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import java.util.UUID
 
 class ReferentielWorker constructor(
@@ -23,6 +26,7 @@ class ReferentielWorker constructor(
         val retrofitBuilder = ReferentielService.getRetroFitInstance(applicationContext)
         val referentielDao = RemocraDatabase.getInstance(applicationContext).referentielDao()
         val tourneesDao = RemocraDatabase.getInstance(applicationContext).tourneesDao()
+        val agentDao = RemocraDatabase.getInstance(applicationContext).agentDao()
 
         val referentielResponse = retrofitBuilder.getReferentiel().execute()
 
@@ -162,6 +166,21 @@ class ReferentielWorker constructor(
 
             typesDroit.forEach { typeDroit ->
                 referentielDao.insertTypeDroit(typeDroit.copy(idTypeDroit = UUID.randomUUID()))
+            }
+
+            // Gestion des Agents => on récupère la méthode voulue et on stocke l'utilisateur connecté (si méthode 1 ou 2)
+            referentielDao.insertParamConf(ParamConf(UUID.randomUUID(), GlobalConstants.GESTION_AGENT, gestionAgents))
+
+            if (gestionAgents == GlobalConstants.UTILISATEUR_CONNECTE_OBLIGATOIRE || gestionAgents == GlobalConstants.UTILISATEUR_CONNECTE) {
+                agentDao.insertComposantAgent(
+                    Agent(
+                        idAgent = UUID.randomUUID(),
+                        nomAgent = utilisateurConnecte,
+                        numeroAgent = 1,
+                        isLastValue = false,
+                        isUserConnecte = true,
+                    ),
+                )
             }
         }
 

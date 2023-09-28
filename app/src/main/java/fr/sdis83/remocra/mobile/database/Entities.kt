@@ -553,3 +553,15 @@ data class TypeDroit(
     @PrimaryKey val idTypeDroit: UUID = UUID.randomUUID(),
     val code: String,
 )
+
+@Entity(
+    tableName = "agent",
+    indices = [Index("idAgent")],
+)
+data class Agent(
+    @PrimaryKey val idAgent: UUID = UUID.randomUUID(),
+    val nomAgent: String,
+    val numeroAgent: Int,
+    val isLastValue: Boolean = false,
+    val isUserConnecte: Boolean = false,
+)

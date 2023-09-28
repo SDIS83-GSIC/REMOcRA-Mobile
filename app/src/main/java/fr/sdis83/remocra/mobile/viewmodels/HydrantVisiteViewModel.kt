@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import fr.sdis83.remocra.mobile.database.Agent
 import fr.sdis83.remocra.mobile.database.Hydrant
 import fr.sdis83.remocra.mobile.database.HydrantVisite
 import fr.sdis83.remocra.mobile.database.HydrantVisiteDao.HydrantVisiteWithAnomalies
@@ -11,6 +12,7 @@ import fr.sdis83.remocra.mobile.database.ReferentielDao
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalie
 import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
+import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,12 +24,13 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydrant: UUID) :
+class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydrant: UUID, gestionAgents: String?) :
     AndroidViewModel(application) {
 
     private val hydrantVisiteDao = RemocraDatabase.getInstance(application).hydrantVisiteDao()
     private val hydrantDao = RemocraDatabase.getInstance(application).hydrantDao()
     private val referentielDao = RemocraDatabase.getInstance(application).referentielDao()
+    private val agentDao = RemocraDatabase.getInstance(application).agentDao()
 
     val typeSaisieList: LiveData<List<TypeHydrantSaisie>> = referentielDao.getTypeSaisieList()
 
@@ -61,7 +64,7 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
             }
         }
 
-    suspend fun loadData(idTournee: UUID, idHydrant: UUID) {
+    suspend fun loadData(idTournee: UUID, idHydrant: UUID, gestionAgents: String?) {
         _hydrant.value = hydrantDao.getHydrantByIdHydrant(idHydrant)
         existingAnomalies = hydrantVisiteDao.getExistingVisiteAnomalie(idHydrant)
 
@@ -71,11 +74,27 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
             idTournee = idTournee,
             idHydrant = idHydrant,
         )
+
+        // Gestion des agents
+        var agent1: String? = null
+        var agent2: String? = null
+
+        if (gestionAgents == GlobalConstants.UTILISATEUR_CONNECTE_OBLIGATOIRE ||
+            gestionAgents == GlobalConstants.UTILISATEUR_CONNECTE
+        ) {
+            agent1 = agentDao.getUtilisateurConnecte()
+        } else if (gestionAgents == GlobalConstants.VALEUR_PRECEDENTE) {
+            agent1 = agentDao.getAgent1ValeurPrecedente()
+            agent2 = agentDao.getAgent2ValeurPrecedente()
+        }
+
         if (hydrantVisite == null) {
             hydrantVisite = HydrantVisite(
                 idTournee = idTournee,
                 idHydrant = idHydrant,
                 hasAnomalieChanges = true,
+                agent1 = agent1,
+                agent2 = agent2,
             )
             loadAnomalies = true
         }
@@ -95,7 +114,7 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            loadData(idTournee, idHydrant)
+            loadData(idTournee, idHydrant, gestionAgents)
         }
     }
 
@@ -110,6 +129,35 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
                     )
             }
             hydrantVisiteDao.upsertHydrantVisite(_hydrantVisiteState.value)
+
+            // On save les agents aussi
+            val agent1 = _hydrantVisiteState.value.hydrantVisite.agent1
+            val agent2 = _hydrantVisiteState.value.hydrantVisite.agent2
+
+            upsertAgent(agent1, 1)
+            upsertAgent(agent2, 2)
+        }
+    }
+
+    private suspend fun upsertAgent(agentRenseigne: String?, numeroAgent: Int) {
+        if (agentRenseigne != null) {
+            // on regarde si l'agent 1 existe en base
+            val agent = agentDao.checkIfExist(agentRenseigne, numeroAgent)
+            agentDao.updateLastValue(numeroAgent)
+            if (agent == null) {
+                agentDao.insertAgent(
+                    Agent(
+                        UUID.randomUUID(),
+                        nomAgent = agentRenseigne,
+                        numeroAgent = numeroAgent,
+                        isUserConnecte = false,
+                        isLastValue = true,
+                    ),
+                )
+            } else {
+                // on met à jour la dernère valeur
+                agentDao.updateAgent(agent.copy(isLastValue = true))
+            }
         }
     }
 

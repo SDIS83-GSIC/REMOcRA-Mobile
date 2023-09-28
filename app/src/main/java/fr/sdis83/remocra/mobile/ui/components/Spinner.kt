@@ -35,9 +35,15 @@ fun <T> Spinner(
     valueToString: T.() -> String,
     label: String,
     onSelectionChanged: (selection: T) -> Unit,
+    onValueChange: (saisie: String) -> Unit = {},
+    enabled: Boolean = true,
+    placeholder: String? = null,
+    singleLine: Boolean = false,
+    readOnly: Boolean = true,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf(value) }
+    var valeurSaisie by remember { mutableStateOf(value?.toString() ?: "") }
     var textfieldSize by remember { mutableStateOf(Size.Zero) }
 
     val icon = if (expanded) {
@@ -48,30 +54,56 @@ fun <T> Spinner(
 
     Box(modifier = modifier) {
         OutlinedTextField(
-            value = items.find { i -> i == value }?.valueToString() ?: "",
-            onValueChange = { selectedOption?.valueToString() ?: "" },
+            value = items.find { i -> i == value }?.valueToString() ?: valeurSaisie,
+            onValueChange = {
+                valeurSaisie = it
+                onValueChange(it)
+                if (selectedOption != null) {
+                    selectedOption?.valueToString()
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .onGloballyPositioned { coordinates ->
                     textfieldSize = coordinates.size.toSize()
-                }
-                .pointerInput(Unit) {
-                    awaitEachGesture {
-                        awaitFirstDown(pass = PointerEventPass.Initial)
-                        val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
-                        if (upEvent != null) {
-                            expanded = !expanded
+                }.pointerInput(Unit) {
+                    // Si on n'autorise pas la saisie libre, quand l'utilisateur clique sur le spinner, on ouvre la liste
+                    if (readOnly) {
+                        awaitEachGesture {
+                            awaitFirstDown(pass = PointerEventPass.Initial)
+                            val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                            if (upEvent != null) {
+                                expanded = !expanded
+                            }
                         }
                     }
                 },
             label = { Text(label) },
             trailingIcon = {
-                Icon(imageVector = icon, contentDescription = null)
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .pointerInput(Unit) {
+                            awaitEachGesture {
+                                awaitFirstDown(pass = PointerEventPass.Initial)
+                                val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                                if (upEvent != null) {
+                                    expanded = !expanded
+                                }
+                            }
+                        },
+                )
             },
-            readOnly = true,
+            placeholder = {
+                Text(text = placeholder ?: "")
+            },
+            singleLine = singleLine,
+            readOnly = readOnly,
+            enabled = enabled,
         )
         DropdownMenu(
-            expanded = expanded,
+            expanded = expanded && enabled,
             onDismissRequest = { expanded = false },
             modifier = Modifier
                 .width(with(LocalDensity.current) { textfieldSize.width.toDp() }),
@@ -82,6 +114,7 @@ fun <T> Spinner(
                         selectedOption = item
                         onSelectionChanged(item)
                         expanded = false
+                        valeurSaisie = ""
                     },
                     text = { Text(text = item.valueToString()) },
                 )
