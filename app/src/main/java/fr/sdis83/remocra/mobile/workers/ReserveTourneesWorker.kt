@@ -57,6 +57,8 @@ class ReserveTourneesWorker constructor(
                     ),
                 )
             }
+
+            tourneesDao.truncateTourneesDispos()
         }
 
         val outputData = Data.Builder()
