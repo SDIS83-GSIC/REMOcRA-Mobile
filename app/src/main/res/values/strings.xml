@@ -95,4 +95,7 @@
     <string name="noDroitCreationPei">Vous ne possèdez pas les droits de création de PEI</string>
     <string name="noDroitCreationGestionnaire">Vous ne possèdez pas les droits de modification /création de gestionnaires</string>
 
+<!--    Hydrant Visite-->
+    <string name="suivant">Suivant</string>
+    <string name="precedent">Précédent</string>
 </resources>

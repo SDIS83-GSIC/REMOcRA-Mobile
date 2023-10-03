@@ -64,6 +64,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -72,6 +73,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.Hydrant
 import fr.sdis83.remocra.mobile.database.HydrantPhoto
 import fr.sdis83.remocra.mobile.database.HydrantVisiteDao.HydrantVisiteWithAnomalies
@@ -144,7 +146,20 @@ fun HydrantVisiteScreenInner(
                         .padding(10.dp),
                 ) {
                     Button(onClick = {
-                        navController.popBackStack(Screens.TourneeHydrants.route, inclusive = false)
+                        navController.navigate(
+                            Screens.TourneeHydrants.route
+                                .replace(
+                                    oldValue = "{idTournee}",
+                                    newValue = hydrantVisite.hydrantVisite.idTournee.toString(),
+                                ),
+                        ) {
+                            popUpTo(Screens.TourneeHydrants.route) {
+                                inclusive = true
+                            }
+                        }
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                        }
                     }) {
                         Text(text = "Retour")
                     }
@@ -225,7 +240,6 @@ fun HydrantVisiteForm(
                 anomalieList = anomalieList,
                 hydrantState = hydrantVisiteViewModel.hydrantState,
             )
-
             2 -> StepThree(
                 onPrevious = {
                     coroutineScope.launch {
@@ -552,7 +566,7 @@ private fun StepOne(
         }
         Row(modifier = Modifier.fillMaxWidth()) {
             Button(onClick = onNext, enabled = hydrantVisite.hydrantVisite.isValid) {
-                Text("Suivant")
+                Text(stringResource(id = R.string.suivant))
             }
         }
     }
@@ -676,11 +690,11 @@ private fun StepTwo(
         }
         Row(modifier = Modifier.fillMaxWidth()) {
             Button(onClick = onPrevious) {
-                Text("Précédent")
+                Text(stringResource(id = R.string.precedent))
             }
             Spacer(modifier = Modifier.width(16.dp))
             Button(onClick = onNext) {
-                Text("Suivant")
+                Text(stringResource(id = R.string.suivant))
             }
         }
     }
@@ -784,11 +798,11 @@ private fun StepThree(
 
         Row(modifier = Modifier.fillMaxWidth()) {
             Button(onClick = onPrevious) {
-                Text("Précédent")
+                Text(stringResource(id = R.string.precedent))
             }
             Spacer(modifier = Modifier.width(16.dp))
             Button(onClick = onNext, enabled = hydrantVisite.hydrantVisite.isValid) {
-                Text("Valider")
+                Text(stringResource(id = R.string.valider))
             }
         }
     }
