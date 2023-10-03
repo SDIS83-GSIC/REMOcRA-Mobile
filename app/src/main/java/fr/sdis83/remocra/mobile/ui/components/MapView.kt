@@ -21,7 +21,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.GpsFixed
 import androidx.compose.material.icons.filled.GpsNotFixed
 import androidx.compose.material.icons.filled.GpsOff
+import androidx.compose.material.icons.filled.ZoomIn
 import androidx.compose.material.icons.filled.ZoomInMap
+import androidx.compose.material.icons.filled.ZoomOut
 import androidx.compose.material.icons.filled.ZoomOutMap
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -334,6 +336,30 @@ fun MapView(
                 .padding(16.dp)
                 .align(Alignment.BottomStart),
         ) {
+            FloatingActionButton(
+                onClick = {
+                    mapState.controller.zoomIn()
+                },
+                shape = CircleShape,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ZoomIn,
+                    contentDescription = "ZoomIn",
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            FloatingActionButton(
+                onClick = {
+                    mapState.controller.zoomOut()
+                },
+                shape = CircleShape,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ZoomOut,
+                    contentDescription = "ZoomOut",
+                )
+            }
+            Spacer(Modifier.height(16.dp))
             FloatingActionButton(
                 onClick = {
                     checkLocationSetting(
