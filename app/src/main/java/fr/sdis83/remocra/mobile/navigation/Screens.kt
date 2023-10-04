@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.Sync
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class Screens(val route: String, val title: String? = null, val icon: ImageVector? = null) {
-    object Settings : Screens("settings", "Paramètres", Icons.Filled.Settings)
+    object Settings : Screens("settings", "Ajout de données", Icons.Filled.Settings)
     object HydrantList : Screens("settings/hydrants")
     object HydrantCreate : Screens("settings/hydrants/create")
     object Sync : Screens("sync", "Synchronisation", Icons.Filled.Sync)

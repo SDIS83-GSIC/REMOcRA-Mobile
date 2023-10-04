@@ -44,7 +44,7 @@ fun SettingScreen(navController: NavController?) {
         verticalArrangement = Arrangement.Top,
     ) {
         HeaderAppBar(
-            title = stringResource(R.string.parametrage),
+            title = stringResource(R.string.ajoutDonnees),
             returnAction = { navController?.popBackStack(Screens.Tournees.route, inclusive = false) },
         )
         Row(

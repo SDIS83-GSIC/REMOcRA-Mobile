@@ -26,7 +26,7 @@
     <string name="verifier_connexion">Vérifier la connexion au serveur</string>
     <string name="administrer">Administrer</string>
 <!-- SettingsScreen -->
-    <string name="parametrage">Paramétrage</string>
+    <string name="ajoutDonnees">Ajout de données</string>
     <string name="gestionnaireST">Gestionnaire et contact</string> <!-- ST pour Section Title -->
     <string name="gestionnaireSubST">Vous pouvez administrer vos gestionnaires et leurs contacts associés</string>
     <string name="createGestionnaireBTN">Créer un gestionnaire</string>
