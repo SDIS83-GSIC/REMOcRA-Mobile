@@ -125,6 +125,8 @@ interface SynchronisationService {
         pressionDyn: Double?,
         @Field("observations")
         observations: String?,
+        @Field("hasAnomalieChanges")
+        hasAnomalieChange: Boolean,
     ): Call<ResponseBody>
 
     @FormUrlEncoded

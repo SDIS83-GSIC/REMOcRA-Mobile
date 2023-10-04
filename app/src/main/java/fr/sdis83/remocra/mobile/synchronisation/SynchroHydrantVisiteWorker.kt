@@ -38,6 +38,7 @@ class SynchroHydrantVisiteWorker constructor(
                 pression = hydrantVisite.pression,
                 pressionDyn = hydrantVisite.pressionDyn,
                 observations = hydrantVisite.observations,
+                hasAnomalieChange = hydrantVisite.hasAnomalieChanges,
             ).execute()
 
             when (res.code()) {
