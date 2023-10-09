@@ -53,6 +53,7 @@ import com.google.android.gms.tasks.Task
 import fr.sdis83.remocra.mobile.MapViewState
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.Tournee
+import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import org.osmdroid.api.IGeoPoint
 import org.osmdroid.config.Configuration
@@ -107,6 +108,7 @@ fun MapView(
             mapViewModel.mapCenter.value,
             mapViewModel.mapZoom.value,
         ).apply {
+            maxZoomLevel = GlobalConstants.MAX_ZOOM_MAP
             zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
             setMultiTouchControls(true)
         }

@@ -13,4 +13,6 @@ object GlobalConstants {
     const val UTILISATEUR_CONNECTE = "UTILISATEUR_CONNECTE"
     const val COMPOSANT_AGENT_ONLY = "COMPOSANT_AGENT_ONLY"
     const val VALEUR_PRECEDENTE = "VALEUR_PRECEDENTE"
+
+    const val MAX_ZOOM_MAP = 20.0
 }
