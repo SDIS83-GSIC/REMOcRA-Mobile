@@ -1,7 +1,6 @@
 package fr.sdis83.remocra.mobile.workers
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.util.Log
 import androidx.work.Data
 import androidx.work.Worker
@@ -10,6 +9,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import fr.sdis83.remocra.mobile.authn.SessionManager
 import fr.sdis83.remocra.mobile.services.AuthService
+import fr.sdis83.remocra.mobile.utils.getVersionName
 
 @Suppress("DEPRECATION")
 class LoginWorker constructor(
@@ -25,18 +25,7 @@ class LoginWorker constructor(
         val retrofitBuilder = AuthService.getRetroFitInstance(applicationContext)
         val sessionManager = SessionManager(applicationContext)
 
-        val versionName =
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                applicationContext.packageManager.getPackageInfo(
-                    applicationContext.packageName,
-                    PackageManager.PackageInfoFlags.of(0),
-                ).versionName
-            } else {
-                applicationContext.packageManager.getPackageInfo(
-                    applicationContext.packageName,
-                    PackageManager.GET_META_DATA,
-                ).versionName
-            }
+        val versionName = getVersionName(applicationContext)
 
         val loginResponse = retrofitBuilder.doLogin(
             inputData.getString("username") ?: throw Exception(""),

@@ -23,6 +23,7 @@ import fr.sdis83.remocra.mobile.navigation.NavGraph
 import fr.sdis83.remocra.mobile.ui.components.MapView
 import fr.sdis83.remocra.mobile.ui.layout.Layout
 import fr.sdis83.remocra.mobile.ui.theme.REMOcRAMobileTheme
+import fr.sdis83.remocra.mobile.utils.getVersionName
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 
 data class MapViewState(
@@ -35,7 +36,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         val mapViewModel = MapViewModel(applicationContext)
-
         setContent {
             REMOcRAMobileTheme {
                 Surface(
@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val mapViewState = remember { mutableStateOf(MapViewState()) }
-                    Layout(navController) {
+                    Layout(navController, getVersionName(applicationContext)) {
                         Row(modifier = Modifier.fillMaxSize()) {
                             if (mapViewState.value.showMapView) {
                                 Column(
