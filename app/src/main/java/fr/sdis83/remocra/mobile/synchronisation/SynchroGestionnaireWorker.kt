@@ -32,6 +32,7 @@ class SynchroGestionnaireWorker constructor(
                 else -> throw IllegalArgumentException(res.message())
             }
         }
+
         Result.success()
     } catch (e: Throwable) {
         Log.e(TAG, "Error executing work: " + e.message, e)

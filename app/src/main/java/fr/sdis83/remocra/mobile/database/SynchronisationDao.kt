@@ -2,6 +2,7 @@ package fr.sdis83.remocra.mobile.database
 
 import androidx.room.Dao
 import androidx.room.Query
+import java.util.UUID
 
 @Dao
 abstract class SynchronisationDao {
@@ -51,4 +52,44 @@ abstract class SynchronisationDao {
         """,
     )
     abstract fun getHydrantPhoto(): List<HydrantPhoto>
+
+    @Query("DELETE FROM gestionnaire where edited = 1")
+    abstract fun deleteGestionnaireSynchronises()
+
+    @Query("DELETE FROM contact where edited = 1")
+    abstract fun deleteContactsSynchronises()
+
+    @Query(
+        "DELETE FROM contactRole where idContact in " +
+            "(SELECT  idContact from  contact where contact.edited = 1)",
+    )
+    abstract fun deleteContactsRoleSynchronises()
+
+    @Query("DELETE FROM hydrant where idRemocra is null")
+    abstract fun deleteNewHydrantsSynchronises()
+
+    @Query(
+        """
+            DELETE FROM hydrantVisiteAnomalie where idHydrantVisite in (
+                SELECT idHydrantVisite FROM hydrantVisite 
+                WHERE hydrantVisite.statut = :statutFini)
+        """,
+    )
+    abstract fun deleteHydrantVisiteAnomalie(statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE)
+
+    @Query(
+        """
+            DELETE FROM hydrantVisite where idHydrantVisite in (
+                SELECT idHydrantVisite FROM hydrantVisite 
+                WHERE hydrantVisite.statut = :statutFini)
+        """,
+    )
+    abstract fun deleteHydrantVisite(statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE)
+
+    @Query(
+        """
+        DELETE FROM tournee where idTournee in (:idsTournee)       
+        """,
+    )
+    abstract fun deleteTourneesSynchronisees(idsTournee: List<UUID>)
 }

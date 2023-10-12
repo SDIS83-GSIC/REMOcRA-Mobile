@@ -5,12 +5,25 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.Agent
+import fr.sdis83.remocra.mobile.database.Commune
+import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.database.ContactRole
+import fr.sdis83.remocra.mobile.database.Gestionnaire
+import fr.sdis83.remocra.mobile.database.Hydrant
 import fr.sdis83.remocra.mobile.database.HydrantAnomalie
 import fr.sdis83.remocra.mobile.database.ParamConf
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
+import fr.sdis83.remocra.mobile.database.Role
+import fr.sdis83.remocra.mobile.database.TypeDroit
+import fr.sdis83.remocra.mobile.database.TypeHydrant
+import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalie
+import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalieNature
+import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalieNatureSaisie
+import fr.sdis83.remocra.mobile.database.TypeHydrantCritere
+import fr.sdis83.remocra.mobile.database.TypeHydrantNature
+import fr.sdis83.remocra.mobile.database.TypeHydrantNatureDeci
+import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
 import fr.sdis83.remocra.mobile.services.ReferentielService
-import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import java.util.UUID
 
 class ReferentielWorker constructor(
@@ -25,7 +38,6 @@ class ReferentielWorker constructor(
     override fun doWork(): Result {
         val retrofitBuilder = ReferentielService.getRetroFitInstance(applicationContext)
         val referentielDao = RemocraDatabase.getInstance(applicationContext).referentielDao()
-        val tourneesDao = RemocraDatabase.getInstance(applicationContext).tourneesDao()
         val agentDao = RemocraDatabase.getInstance(applicationContext).agentDao()
 
         val referentielResponse = retrofitBuilder.getReferentiel().execute()
@@ -35,143 +47,525 @@ class ReferentielWorker constructor(
             return Result.failure()
         }
 
-        tourneesDao.apply {
-            truncateTourneesDispos()
-            truncateHydrantTournee()
-            truncateTournee()
-        }
-
-        referentielDao.apply {
-            truncateHydrantPhoto()
-            truncateHydrantAnomalie()
-            truncateHydrantVisite()
-            truncateHydrantTournee()
-            truncateTournee()
-            truncateHydrant()
-            truncateContactRole()
-            truncateContact()
-            truncateGestionnaire()
-            truncateRole()
-            truncateCommune()
-            truncateTypeHydrantNature()
-            truncateTypeHydrantNatureDeci()
-            truncateTypeHydrant()
-            truncateTypeHydrantAnomalieNatureSaisie()
-            truncateTypeHydrantAnomalieNature()
-            truncateTypeHydrantAnomalie()
-            truncateTypeHydrantCritere()
-            truncateTypeHydrantSaisie()
-            truncateParamConf()
-            truncateTypeDroit()
-        }
+        Log.i(TAG, "Téléchargement du référentiel")
 
         referentielResponse.body()!!.apply {
-            val hydrantMap = mutableListOf<Pair<UUID, Long>>()
-            val anomalieMap = mutableListOf<Pair<UUID, Long>>()
-            val gestionnaireMap = mutableListOf<Pair<UUID, Long>>()
-            val contactMap = mutableListOf<Pair<UUID, Long>>()
+            // ///////////////////////////////////////////////////////////////////////////////////////////COMMUNE
+            val listeNewUpdateDeleteCommune: ListeNewUpdateDelete<Commune> = gestionReferentiel(
+                dataInRemocra = communes,
+                idPrimaryRemocra = Commune::idRemocra,
+                dataInMobile = referentielDao.getCommunes(),
+                arguments = arrayOf(
+                    Commune::nom,
+                    Commune::code,
+                    Commune::insee,
+                ),
+            )
 
-            communes.forEach { commune ->
-                referentielDao.insertCommune(commune.copy(idCommune = UUID.randomUUID()))
+            val communesToInsert = mutableListOf<Commune>()
+            listeNewUpdateDeleteCommune.nouveauxElements.forEach {
+                communesToInsert.add(it.copy(UUID.randomUUID()))
             }
-            typesHydrant.forEach { typeHydrant ->
-                referentielDao.insertTypeHydrant(typeHydrant.copy(idTypeHydrant = UUID.randomUUID()))
+            referentielDao.insertListCommune(communesToInsert)
+
+            // on modifie celle modifiées
+            if (listeNewUpdateDeleteCommune.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteCommune.elementsModifies.forEach {
+                    referentielDao.updateCommune(
+                        it.idRemocra,
+                        it.nom,
+                        it.insee,
+                        it.code,
+                    )
+                }
             }
-            typesHydrantNature.forEach { typeHydrantNature ->
-                referentielDao.insertTypeHydrantNature(typeHydrantNature.copy(idTypeHydrantNature = UUID.randomUUID()))
-            }
-            typesHydrantNatureDeci.forEach { typeHydrantNatureDeci ->
-                referentielDao.insertTypeHydrantNatureDeci(
-                    typeHydrantNatureDeci.copy(
-                        idTypeHydrantNatureDeci = UUID.randomUUID(),
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////TYPE HYDRANT
+            val listeNewUpdateDeleteTypeHydrant: ListeNewUpdateDelete<TypeHydrant> =
+                gestionReferentiel(
+                    dataInRemocra = typesHydrant,
+                    idPrimaryRemocra = TypeHydrant::idRemocra,
+                    dataInMobile = referentielDao.getListTypeHydrant(),
+                    arguments = arrayOf(
+                        TypeHydrant::code,
+                        TypeHydrant::code,
+                        TypeHydrant::actif,
                     ),
                 )
+            val typeHydrantToInsert = mutableListOf<TypeHydrant>()
+            listeNewUpdateDeleteTypeHydrant.nouveauxElements.forEach {
+                typeHydrantToInsert.add(it.copy(UUID.randomUUID()))
             }
-            typesHydrantSaisie.forEach { typeHydrantSaisie ->
-                referentielDao.insertTypeHydrantSaisie(
-                    typeHydrantSaisie.copy(idTypeHydrantSaisie = UUID.randomUUID()),
+
+            referentielDao.insertListTypeHydrant(typeHydrantToInsert)
+
+            if (listeNewUpdateDeleteTypeHydrant.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteTypeHydrant.elementsModifies.forEach {
+                    referentielDao.updateTypeHydrant(
+                        it.idRemocra,
+                        it.nom,
+                        it.actif,
+                        it.code,
+                    )
+                }
+            }
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////TYPE HYDRANT NATURE
+            val listeNewUpdateDeleteTypeHydrantNature: ListeNewUpdateDelete<TypeHydrantNature> =
+                gestionReferentiel(
+                    dataInRemocra = typesHydrantNature,
+                    idPrimaryRemocra = TypeHydrantNature::idRemocra,
+                    dataInMobile = referentielDao.getListTypeHydrantNature(),
+                    arguments = arrayOf(
+                        TypeHydrantNature::idTypeHydrant,
+                        TypeHydrantNature::actif,
+                        TypeHydrantNature::nom,
+                        TypeHydrantNature::code,
+                    ),
                 )
+
+            val typeHydrantNatureToInsert = mutableListOf<TypeHydrantNature>()
+            listeNewUpdateDeleteTypeHydrantNature.nouveauxElements.forEach {
+                typeHydrantNatureToInsert.add(it.copy(UUID.randomUUID()))
             }
-            typesHydrantCritere.forEach { typeHydrantCritere ->
-                referentielDao.insertTypeHydrantCritere(typeHydrantCritere.copy(idTypeHydrantCritere = UUID.randomUUID()))
-            }
-            typesHydrantAnomalie.forEach { typeHydrantAnomalie ->
-                UUID.randomUUID().let { idTypeHydrantAnomalie ->
-                    anomalieMap.add(Pair(idTypeHydrantAnomalie, typeHydrantAnomalie.idRemocra))
-                    referentielDao.insertTypeHydrantAnomalie(
-                        typeHydrantAnomalie.copy(
-                            idTypeHydrantAnomalie = idTypeHydrantAnomalie,
-                        ),
+            referentielDao.insertListTypeHydrantNature(typeHydrantNatureToInsert)
+
+            if (listeNewUpdateDeleteTypeHydrantNature.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteTypeHydrantNature.elementsModifies.forEach {
+                    referentielDao.updateTypeHydrantNature(
+                        it.idRemocra,
+                        it.nom,
+                        it.actif,
+                        it.code,
                     )
                 }
             }
-            typesHydrantAnomalieNature.forEach { typeHydrantAnomalieNature ->
-                referentielDao.insertTypeHydrantAnomalieNature(typeHydrantAnomalieNature.copy(idTypeHydrantAnomalieNature = UUID.randomUUID()))
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////TYPE HYDRANT NATURE DECI
+            val listeNewUpdateDeleteTypeHydrantNatureDeci: ListeNewUpdateDelete<TypeHydrantNatureDeci> =
+                gestionReferentiel(
+                    dataInRemocra = typesHydrantNatureDeci,
+                    idPrimaryRemocra = TypeHydrantNatureDeci::idRemocra,
+                    dataInMobile = referentielDao.getListTypeHydrantNatureDeci(),
+                    arguments = arrayOf(
+                        TypeHydrantNatureDeci::actif,
+                        TypeHydrantNatureDeci::code,
+                        TypeHydrantNatureDeci::nom,
+                    ),
+                )
+            val typeHydrantNatureDeciToInsert = mutableListOf<TypeHydrantNatureDeci>()
+            listeNewUpdateDeleteTypeHydrantNatureDeci.nouveauxElements.forEach {
+                typeHydrantNatureDeciToInsert.add(it.copy(UUID.randomUUID()))
             }
-            typesHydrantAnomalieNatureSaisie.forEach { typeHydrantAnomalieNatureSaisie ->
-                referentielDao.insertTypeHydrantAnomalieNatureSaisie(typeHydrantAnomalieNatureSaisie.copy(idTypeHydrantAnomalieNatureSaisie = UUID.randomUUID()))
-            }
-            roles.forEach { role ->
-                referentielDao.insertRole(role.copy(idRole = UUID.randomUUID()))
-            }
-            gestionnaires.forEach { gestionnaire ->
-                UUID.randomUUID().let { idGestionnaire ->
-                    gestionnaireMap.add(Pair(idGestionnaire, gestionnaire.idRemocra!!))
-                    referentielDao.insertGestionnaire(gestionnaire.copy(idGestionnaire = idGestionnaire))
-                }
-            }
-            contacts.forEach { contact ->
-                UUID.randomUUID().let { idContact ->
-                    contactMap.add(Pair(idContact, contact.idRemocra!!))
-                    referentielDao.insertContact(
-                        contact.copy(
-                            idContact = idContact,
-                            idGestionnaire = gestionnaireMap.find { it.second == contact.idRemocraGestionnaire }?.first,
-                        ),
+            referentielDao.insertListTypeHydrantNatureDeci(typeHydrantNatureDeciToInsert)
+
+            if (listeNewUpdateDeleteTypeHydrantNatureDeci.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteTypeHydrantNatureDeci.elementsModifies.forEach {
+                    referentielDao.updateTypeHydrantNatureDeci(
+                        it.idRemocra,
+                        it.nom,
+                        it.actif,
+                        it.code,
                     )
                 }
             }
-            contactsRoles.forEach { contactRole ->
-                referentielDao.insertContactRole(
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////TYPE HYDRANT SAISIE
+            val listeNewUpdateDeleteTypeHydrantSaisie: ListeNewUpdateDelete<TypeHydrantSaisie> =
+                gestionReferentiel(
+                    dataInRemocra = typesHydrantSaisie,
+                    idPrimaryRemocra = TypeHydrantSaisie::idRemocra,
+                    dataInMobile = referentielDao.getListTypeHydrantSaisie(),
+                    arguments = arrayOf(
+                        TypeHydrantSaisie::actif,
+                        TypeHydrantSaisie::code,
+                        TypeHydrantSaisie::nom,
+                    ),
+                )
+            val typeHydrantSaisieToInsert = mutableListOf<TypeHydrantSaisie>()
+            listeNewUpdateDeleteTypeHydrantSaisie.nouveauxElements.forEach {
+                typeHydrantSaisieToInsert.add(it.copy(UUID.randomUUID()))
+            }
+            referentielDao.insertListTypeHydrantSaisie(typeHydrantSaisieToInsert)
+
+            if (listeNewUpdateDeleteTypeHydrantSaisie.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteTypeHydrantSaisie.elementsModifies.forEach {
+                    referentielDao.updateTypeHydrantSaisie(
+                        it.idRemocra,
+                        it.nom,
+                        it.actif,
+                        it.code,
+                    )
+                }
+            }
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////TYPE HYDRANT CRITERE
+            val listeNewUpdateDeleteTypeHydrantCritere: ListeNewUpdateDelete<TypeHydrantCritere> =
+                gestionReferentiel(
+                    dataInRemocra = typesHydrantCritere,
+                    idPrimaryRemocra = TypeHydrantCritere::idRemocra,
+                    dataInMobile = referentielDao.getListTypeHydrantCritere(),
+                    arguments = arrayOf(
+                        TypeHydrantCritere::actif,
+                        TypeHydrantCritere::code,
+                        TypeHydrantCritere::nom,
+                    ),
+                )
+
+            val typeHydrantCritereToInsert = mutableListOf<TypeHydrantCritere>()
+            listeNewUpdateDeleteTypeHydrantCritere.nouveauxElements.forEach {
+                typeHydrantCritereToInsert.add(it.copy(UUID.randomUUID()))
+            }
+            referentielDao.insertListTypeHydrantCritere(typeHydrantCritereToInsert)
+
+            if (listeNewUpdateDeleteTypeHydrantCritere.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteTypeHydrantCritere.elementsModifies.forEach {
+                    referentielDao.updateTypeHydrantCritere(
+                        it.idRemocra,
+                        it.nom,
+                        it.actif,
+                        it.code,
+                    )
+                }
+            }
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////TYPE HYDRANT ANOMALIE
+            val listeNewUpdateDeleteTypeHydrantAnomalie: ListeNewUpdateDelete<TypeHydrantAnomalie> =
+                gestionReferentiel(
+                    dataInRemocra = typesHydrantAnomalie,
+                    idPrimaryRemocra = TypeHydrantAnomalie::idRemocra,
+                    dataInMobile = referentielDao.getListTypeHydrantAnomalie(),
+                    arguments = arrayOf(
+                        TypeHydrantAnomalie::actif,
+                        TypeHydrantAnomalie::code,
+                        TypeHydrantAnomalie::nom,
+                        TypeHydrantAnomalie::idCritere,
+                    ),
+                )
+            val typeHydrantAnomalieToInsert = mutableListOf<TypeHydrantAnomalie>()
+            listeNewUpdateDeleteTypeHydrantAnomalie.nouveauxElements.forEach {
+                typeHydrantAnomalieToInsert.add(it.copy(UUID.randomUUID()))
+            }
+            referentielDao.insertListTypeHydrantAnomalie(typeHydrantAnomalieToInsert)
+
+            if (listeNewUpdateDeleteTypeHydrantAnomalie.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteTypeHydrantAnomalie.elementsModifies.forEach {
+                    referentielDao.updateTypeHydrantAnomalie(
+                        it.idRemocra,
+                        it.nom,
+                        it.actif,
+                        it.idCritere,
+                        it.code,
+                    )
+                }
+            }
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////TYPE HYDRANT ANOMALIE NATURE
+            val listeNewUpdateDeleteTypeHydrantAnomalieNature: ListeNewUpdateDelete<TypeHydrantAnomalieNature> =
+                gestionReferentiel(
+                    dataInRemocra = typesHydrantAnomalieNature,
+                    idPrimaryRemocra = TypeHydrantAnomalieNature::idRemocra,
+                    dataInMobile = referentielDao.getListTypeHydrantAnomalieNature(),
+                    arguments = arrayOf(
+                        TypeHydrantAnomalieNature::valIndispoHbe,
+                        TypeHydrantAnomalieNature::valIndispoTerrestre,
+                        TypeHydrantAnomalieNature::valIndispoAdmin,
+                        TypeHydrantAnomalieNature::idTypeHydrantAnomalie,
+                        TypeHydrantAnomalieNature::idTypeHydrantNature,
+                    ),
+                )
+
+            val typeHydrantAnomalieNatureToInsert = mutableListOf<TypeHydrantAnomalieNature>()
+            listeNewUpdateDeleteTypeHydrantAnomalieNature.nouveauxElements.forEach {
+                typeHydrantAnomalieNatureToInsert.add(it.copy(UUID.randomUUID()))
+            }
+            referentielDao.insertListTypeHydrantAnomalieNature(typeHydrantAnomalieNatureToInsert)
+
+            if (listeNewUpdateDeleteTypeHydrantAnomalieNature.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteTypeHydrantAnomalieNature.elementsModifies.forEach {
+                    referentielDao.updateTypeHydrantAnomalieNature(
+                        it.idRemocra,
+                        it.idTypeHydrantNature,
+                        it.idTypeHydrantAnomalie,
+                        it.valIndispoTerrestre,
+                        it.valIndispoHbe,
+                        it.valIndispoAdmin,
+                    )
+                }
+            }
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////TYPE ANOMALIE NATURE SAISIE
+
+            referentielDao.truncateTypeHydrantAnomalieNatureSaisie()
+
+            val typeHydrantAnomalieNatureSaisieToInsert = mutableListOf<TypeHydrantAnomalieNatureSaisie>()
+            typesHydrantAnomalieNatureSaisie.forEach {
+                typeHydrantAnomalieNatureSaisieToInsert.add(it.copy(UUID.randomUUID()))
+            }
+            referentielDao.insertListTypeHydrantAnomalieNatureSaisie(typeHydrantAnomalieNatureSaisieToInsert)
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////ROLE
+            val listeNewUpdateDeleteRole: ListeNewUpdateDelete<Role> = gestionReferentiel(
+                dataInRemocra = roles,
+                idPrimaryRemocra = Role::idRemocra,
+                dataInMobile = referentielDao.getListRole(),
+                arguments = arrayOf(Role::actif, Role::code, Role::nom),
+            )
+
+            val roleToInsert = mutableListOf<Role>()
+            listeNewUpdateDeleteRole.nouveauxElements.forEach {
+                roleToInsert.add(it.copy(UUID.randomUUID()))
+            }
+            referentielDao.insertListRole(roleToInsert)
+
+            if (listeNewUpdateDeleteRole.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteRole.elementsModifies.forEach {
+                    referentielDao.updateRole(
+                        it.idRemocra,
+                        it.nom,
+                        it.actif,
+                        it.code,
+                    )
+                }
+            }
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////GESTIONNAIRE
+            val listeNewUpdateDeleteGestionnaire: ListeNewUpdateDelete<Gestionnaire> =
+                gestionReferentiel(
+                    dataInRemocra = gestionnaires,
+                    idPrimaryRemocra = Gestionnaire::idRemocra,
+                    dataInMobile = referentielDao.getListGestionnaire(),
+                    arguments = arrayOf(
+                        Gestionnaire::actif,
+                        Gestionnaire::code,
+                        Gestionnaire::nom,
+                    ),
+                )
+            val gestionnaireToInsert = mutableListOf<Gestionnaire>()
+            listeNewUpdateDeleteGestionnaire.nouveauxElements.forEach {
+                gestionnaireToInsert.add(it.copy(UUID.randomUUID()))
+            }
+            referentielDao.insertListGestionnaire(gestionnaireToInsert)
+
+            if (listeNewUpdateDeleteGestionnaire.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteGestionnaire.elementsModifies.forEach {
+                    referentielDao.updateGestionnaire(
+                        it.idRemocra!!,
+                        it.nom,
+                        it.actif,
+                        it.code,
+                    )
+                }
+            }
+
+            val listeGestionnaire = referentielDao.getListGestionnaire()
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////CONTACT
+            val listeNewUpdateDeleteContact: ListeNewUpdateDelete<Contact> = gestionReferentiel(
+                dataInRemocra = contacts,
+                idPrimaryRemocra = Contact::idRemocra,
+                dataInMobile = referentielDao.getListContact(),
+                arguments = arrayOf(
+                    Contact::idRemocraGestionnaire,
+                    Contact::civilite,
+                    Contact::nom,
+                    Contact::prenom,
+                    Contact::fonction,
+                    Contact::email,
+                    Contact::numeroVoie,
+                    Contact::suffixeVoie,
+                    Contact::voie,
+                    Contact::codePostal,
+                    Contact::ville,
+                    Contact::lieuDit,
+                    Contact::pays,
+                    Contact::telephone,
+                ),
+            )
+            val contactToInsert = mutableListOf<Contact>()
+            listeNewUpdateDeleteContact.nouveauxElements.forEach {
+                contactToInsert.add(it.copy(UUID.randomUUID()))
+            }
+            referentielDao.insertListContact(contactToInsert)
+
+            if (listeNewUpdateDeleteContact.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteContact.elementsModifies.forEach {
+                    referentielDao.updateContact(
+                        idRemocra = it.idRemocra!!,
+                        idRemocraGestionnaire = it.idRemocraGestionnaire!!,
+                        idGestionnaire = listeGestionnaire.first { gestionnaire -> gestionnaire.idRemocra == it.idRemocraGestionnaire }.idGestionnaire,
+                        fonction = it.fonction,
+                        civilite = it.civilite,
+                        nom = it.nom,
+                        prenom = it.prenom,
+                        numeroVoie = it.numeroVoie,
+                        suffixeVoie = it.suffixeVoie,
+                        voie = it.voie,
+                        lieuDit = it.lieuDit,
+                        codePostal = it.codePostal,
+                        ville = it.ville,
+                        pays = it.pays,
+                        telephone = it.telephone,
+                        email = it.email,
+                    )
+                }
+            }
+
+            val listeContact = referentielDao.getListContact()
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////CONTACT ROLE
+            referentielDao.truncateContactRole()
+            val contactRoleToInsert = mutableListOf<ContactRole>()
+            contactsRoles.forEach {
+                contactRoleToInsert.add(
                     ContactRole(
-                        idContact = contactMap.find { it.second == contactRole.idContact }!!.first,
-                        idRole = contactRole.idRole,
+                        listeContact.first { c -> c.idRemocra == it.idContact }.idContact,
+                        it.idRole,
                     ),
                 )
             }
-            hydrants.forEach { hydrant ->
-                UUID.randomUUID().let { idHydrant ->
-                    hydrantMap.add(Pair(idHydrant, hydrant.idRemocra!!))
-                    referentielDao.insertHydrant(
-                        hydrant.copy(
-                            idHydrant = idHydrant,
-                            idGestionnaire = gestionnaireMap.find { it.second == hydrant.idRemocraGestionnaire }?.first,
-                            peiCaracteristiques = peiCaracteristiques[hydrant.idRemocra],
-                        ),
+            referentielDao.insertListContactRole(contactRoleToInsert.toSet().toList())
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////HYDRANT
+            referentielDao.deleteHydrantsNonUtilises()
+            val listeNewUpdateDeleteHydrant: ListeNewUpdateDelete<Hydrant> = gestionReferentiel(
+                dataInRemocra = hydrants,
+                idPrimaryRemocra = Hydrant::idRemocra,
+                dataInMobile = referentielDao.getListHydrant(),
+                arguments = arrayOf(
+                    Hydrant::idNature,
+                    Hydrant::idRemocraGestionnaire,
+                    Hydrant::idNatureDeci,
+                    Hydrant::idCommune,
+                    Hydrant::lat,
+                    Hydrant::lon,
+                    Hydrant::x,
+                    Hydrant::y,
+                    Hydrant::numero,
+                    Hydrant::voie,
+                    Hydrant::voie2,
+                    Hydrant::lieuDit,
+                    Hydrant::dispoHbe,
+                    Hydrant::dispoTerrestre,
+                    Hydrant::complement,
+                    Hydrant::peiCaracteristiques,
+                    Hydrant::suffixeVoie,
+                ),
+            )
+
+            val hydrantToInsert = mutableListOf<Hydrant>()
+            listeNewUpdateDeleteHydrant.nouveauxElements.forEach {
+                hydrantToInsert.add(it.copy(UUID.randomUUID()))
+            }
+            referentielDao.insertListHydrant(hydrantToInsert)
+
+            if (listeNewUpdateDeleteHydrant.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteHydrant.elementsModifies.forEach {
+                    referentielDao.updateHydrant(
+                        idRemocra = it.idRemocra!!,
+                        idNatureDeci = it.idNatureDeci,
+                        idNature = it.idNature,
+                        dispoHbe = it.dispoHbe,
+                        dispoTerrestre = it.dispoTerrestre,
+                        x = it.x,
+                        y = it.y,
+                        lon = it.lon,
+                        lat = it.lat,
+                        numero = it.numero,
+                        code = it.code,
+                        idCommune = it.idCommune,
+                        complement = it.complement,
+                        voie = it.voie,
+                        voie2 = it.voie2,
+                        suffixeVoie = it.suffixeVoie,
+                        lieuDit = it.lieuDit,
+                        observation = it.observation,
+                        idRemocraGestionnaire = it.idRemocraGestionnaire,
+                        idGestionnaire = if (it.idRemocraGestionnaire != null) {
+                            listeGestionnaire.first { gestionnaire -> gestionnaire.idRemocra == it.idRemocraGestionnaire }.idGestionnaire
+                        } else {
+                            null
+                        },
+                        peiCaracteristiques = it.peiCaracteristiques,
                     )
                 }
             }
-            hydrantsAnomalies.forEach { hydrantAnomalie ->
-                referentielDao.insertHydrantAnomalie(
+
+            val listHydrant = referentielDao.getListHydrant()
+
+            // ///////////////////////////////////////////////////////////////////////////////////////////HYDRANT ANOMALIE
+            referentielDao.truncateHydrantAnomalie()
+            val hydrantAnomalieToInsert = mutableListOf<HydrantAnomalie>()
+            hydrantsAnomalies.forEach {
+                hydrantAnomalieToInsert.add(
                     HydrantAnomalie(
-                        idHydrant = hydrantMap.find { it.second == hydrantAnomalie.idHydrant }!!.first,
-                        idAnomalie = hydrantAnomalie.idAnomalie,
+                        listHydrant.first { h -> h.idRemocra == it.idHydrant }.idHydrant,
+                        it.idAnomalie,
                     ),
                 )
             }
+            referentielDao.insertListHydrantAnomalie(hydrantAnomalieToInsert)
 
-            paramsConf.forEach { paramConf ->
-                referentielDao.insertParamConf(paramConf.copy(idParamConf = UUID.randomUUID()))
+            // ///////////////////////////////////////////////////////////////////////////////////////////PARAM CONF
+            val listeNewUpdateDeleteParamConf: ListeNewUpdateDelete<ParamConf> =
+                gestionReferentiel(
+                    dataInRemocra = paramsConf,
+                    idPrimaryRemocra = null,
+                    cle = ParamConf::cle,
+                    dataInMobile = referentielDao.getListParamConf(),
+                    arguments = arrayOf(ParamConf::cle, ParamConf::valeur),
+                )
+            val paramConfToInsert = mutableListOf<ParamConf>()
+            listeNewUpdateDeleteParamConf.nouveauxElements.forEach {
+                paramConfToInsert.add(it.copy(UUID.randomUUID()))
+            }
+            referentielDao.insertListParamConf(paramConfToInsert)
+
+            if (listeNewUpdateDeleteParamConf.elementsModifies.isNotEmpty()) {
+                listeNewUpdateDeleteParamConf.elementsModifies.forEach {
+                    referentielDao.updateParamConf(
+                        it.cle,
+                        it.valeur,
+                    )
+                }
             }
 
-            typesDroit.forEach { typeDroit ->
-                referentielDao.insertTypeDroit(typeDroit.copy(idTypeDroit = UUID.randomUUID()))
+            // ///////////////////////////////////////////////////////////////////////////////////////////TYPE DROIT
+            val listeNewUpdateDeleteTypeDroit: ListeNewUpdateDelete<TypeDroit> =
+                gestionReferentiel(
+                    dataInRemocra = typesDroit,
+                    cle = TypeDroit::code,
+                    idPrimaryRemocra = null,
+                    dataInMobile = referentielDao.getListTypeDroit(),
+                    arguments = arrayOf(TypeDroit::code),
+                )
+
+            val typeDroitToInsert = mutableListOf<TypeDroit>()
+            listeNewUpdateDeleteTypeDroit.nouveauxElements.forEach {
+                typeDroitToInsert.add(it.copy(UUID.randomUUID()))
+            }
+            referentielDao.insertListTypeDroit(typeDroitToInsert)
+
+            // //////////////////////////////////////////////////////////////////////////////////////// Gestion des suppressions
+
+            referentielDao.apply {
+                deleteHydrant(listeNewUpdateDeleteHydrant.elementsSupprimes.map { it.idRemocra!! })
+                deleteContact(listeNewUpdateDeleteContact.elementsSupprimes.map { it.idRemocra!! })
+                deleteGestionnaire(listeNewUpdateDeleteGestionnaire.elementsSupprimes.map { it.idRemocra!! })
+                deleteRole(listeNewUpdateDeleteRole.elementsSupprimes.map { it.idRemocra })
+                deleteCommunes(listeNewUpdateDeleteCommune.elementsSupprimes.map { it.idRemocra })
+                deleteTypeHydrantNature(listeNewUpdateDeleteTypeHydrantNature.elementsSupprimes.map { it.idRemocra })
+                deleteTypeHydrantNatureDeci(listeNewUpdateDeleteTypeHydrantNatureDeci.elementsSupprimes.map { it.idRemocra })
+                deleteTypeHydrant(listeNewUpdateDeleteTypeHydrant.elementsSupprimes.map { it.idRemocra })
+                deleteTypeHydrantAnomalieNature(listeNewUpdateDeleteTypeHydrantAnomalieNature.elementsSupprimes.map { it.idRemocra })
+                deleteTypeHydrantAnomalie(listeNewUpdateDeleteTypeHydrantAnomalie.elementsSupprimes.map { it.idRemocra })
+                deleteTypeHydrantCritere(listeNewUpdateDeleteTypeHydrantCritere.elementsSupprimes.map { it.idRemocra })
+                deleteTypeHydrantSaisie(listeNewUpdateDeleteTypeHydrantSaisie.elementsSupprimes.map { it.idRemocra })
+                deleteParamConf(listeNewUpdateDeleteParamConf.elementsSupprimes.map { it.cle })
             }
 
-            // Gestion des Agents => on récupère la méthode voulue et on stocke l'utilisateur connecté (si méthode 1 ou 2)
-            referentielDao.insertParamConf(ParamConf(UUID.randomUUID(), GlobalConstants.GESTION_AGENT, gestionAgents))
-
-            if (gestionAgents == GlobalConstants.UTILISATEUR_CONNECTE_OBLIGATOIRE || gestionAgents == GlobalConstants.UTILISATEUR_CONNECTE) {
+            // On regarde les agents
+            if (referentielDao.getAgentConnecte() == null) {
                 agentDao.insertComposantAgent(
                     Agent(
                         idAgent = UUID.randomUUID(),
@@ -185,5 +579,44 @@ class ReferentielWorker constructor(
         }
 
         return Result.success()
+    }
+
+    private fun <T> gestionReferentiel(
+        dataInRemocra: List<T>,
+        idPrimaryRemocra: (T.() -> Long?)?,
+        cle: (T.() -> String)? = null,
+        dataInMobile: List<T>,
+        vararg arguments: T.() -> Any?,
+    ): ListeNewUpdateDelete<T> {
+        val property = idPrimaryRemocra ?: cle!!
+
+        val nouveauxElements = dataInRemocra.filterNot { data -> dataInMobile.map { it.property() }.contains(data.property()) }
+
+        // Get suprimées
+        val elementsSupprimes = dataInMobile.filterNot { data -> dataInRemocra.map { it.property() }.contains(data.property()) }
+
+        // Get modifiées
+        val elementsModifies = dataInRemocra.minus(nouveauxElements).filter { data ->
+            dataInMobile.none { t -> t.property() == data.property() && equalIn(data, t, *arguments) }
+        }
+
+        return ListeNewUpdateDelete(
+            nouveauxElements = nouveauxElements,
+            elementsModifies = elementsModifies,
+            elementsSupprimes = elementsSupprimes,
+        )
+    }
+
+    class ListeNewUpdateDelete<T>(
+        val nouveauxElements: List<T>,
+        val elementsModifies: List<T>,
+        val elementsSupprimes: List<T>,
+    )
+
+    fun <T> equalIn(t: T, t2: T, vararg arguments: T.() -> Any?): Boolean {
+        val argumentsList = arguments.toList()
+        return argumentsList.all {
+            it(t) == it(t2)
+        }
     }
 }

@@ -31,6 +31,17 @@ class SynchroTourneeWorker constructor(
             }
         }
 
+        // On supprime les données
+        synchronisationDao.apply {
+            deleteNewHydrantsSynchronises()
+            deleteContactsRoleSynchronises()
+            deleteContactsSynchronises()
+            deleteGestionnaireSynchronises()
+            deleteHydrantVisiteAnomalie()
+            deleteHydrantVisite()
+            deleteTourneesSynchronisees(tournees.map { it.idTournee })
+        }
+
         retrofitBuilder.incomingToRemocra().execute()
         Result.success()
     } catch (e: Throwable) {
