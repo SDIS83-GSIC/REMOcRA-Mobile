@@ -21,7 +21,6 @@ import java.util.UUID
     version = 1,
     entities = [
         Hydrant::class,
-        Commune::class,
         Gestionnaire::class,
         Role::class,
         ContactRole::class,

@@ -19,7 +19,6 @@ class HydrantInfoWindow(mapView: MapView) : InfoWindow(R.layout.map_bubble, mapV
     val mOpenGps = R.id.open_gps
     var mHydrantDisponibilite = R.id.hydrant_disponibilite
     var mHydrantAdresse = R.id.hydrant_adresse
-    var mHydrantAdresseComplement = R.id.hydrant_adresse_complement
     var mHydrantCaracteristiques = R.id.hydrant_caracteristiques
 
     init {
@@ -50,9 +49,7 @@ class HydrantInfoWindow(mapView: MapView) : InfoWindow(R.layout.map_bubble, mapV
                 Html.FROM_HTML_MODE_COMPACT,
             )
 
-            getTextView(mHydrantAdresse).text = hydrant.voie
-            getTextView(mHydrantAdresseComplement).text =
-                hydrant.observation
+            getTextView(mHydrantAdresse).text = if (hydrant.adresseComplete != null) Html.fromHtml(hydrant.adresseComplete, Html.FROM_HTML_MODE_COMPACT) else ""
 
             getTextView(mHydrantCaracteristiques).text = Html.fromHtml(hydrant.peiCaracteristiques, Html.FROM_HTML_MODE_COMPACT)
         } catch (e: Exception) {

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "63047b41a334c0e9e7c2b368acbacf84",
+    "identityHash": "388014f5de6de83df563b6ee29f383d9",
     "entities": [
       {
         "tableName": "hydrant",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrant` BLOB NOT NULL, `idRemocra` INTEGER, `idNature` INTEGER, `idNatureDeci` INTEGER, `dispoHbe` TEXT, `dispoTerrestre` TEXT, `x` REAL NOT NULL, `y` REAL NOT NULL, `lon` REAL NOT NULL, `lat` REAL NOT NULL, `numero` TEXT, `code` TEXT, `idCommune` INTEGER, `complement` TEXT, `voie` TEXT, `voie2` TEXT, `suffixeVoie` TEXT, `lieuDit` TEXT, `observation` TEXT, `idGestionnaire` BLOB, `idRemocraGestionnaire` INTEGER, `peiCaracteristiques` TEXT, PRIMARY KEY(`idHydrant`), FOREIGN KEY(`idCommune`) REFERENCES `commune`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idNature`) REFERENCES `typeHydrantNature`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idNatureDeci`) REFERENCES `typeHydrantNatureDeci`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idGestionnaire`) REFERENCES `gestionnaire`(`idGestionnaire`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idHydrant` BLOB NOT NULL, `idRemocra` INTEGER, `idNature` INTEGER, `idNatureDeci` INTEGER, `dispoHbe` TEXT, `dispoTerrestre` TEXT, `x` REAL NOT NULL, `y` REAL NOT NULL, `lon` REAL NOT NULL, `lat` REAL NOT NULL, `numero` TEXT, `code` TEXT, `adresseComplete` TEXT, `observation` TEXT, `idGestionnaire` BLOB, `idRemocraGestionnaire` INTEGER, `peiCaracteristiques` TEXT, PRIMARY KEY(`idHydrant`), FOREIGN KEY(`idNature`) REFERENCES `typeHydrantNature`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idNatureDeci`) REFERENCES `typeHydrantNatureDeci`(`idRemocra`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`idGestionnaire`) REFERENCES `gestionnaire`(`idGestionnaire`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "idHydrant",
@@ -81,38 +81,8 @@
             "notNull": false
           },
           {
-            "fieldPath": "idCommune",
-            "columnName": "idCommune",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
-          {
-            "fieldPath": "complement",
-            "columnName": "complement",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "voie",
-            "columnName": "voie",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "voie2",
-            "columnName": "voie2",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "suffixeVoie",
-            "columnName": "suffixeVoie",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "lieuDit",
-            "columnName": "lieuDit",
+            "fieldPath": "adresseComplete",
+            "columnName": "adresseComplete",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -167,15 +137,6 @@
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_hydrant_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
           },
           {
-            "name": "index_hydrant_idCommune",
-            "unique": false,
-            "columnNames": [
-              "idCommune"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_hydrant_idCommune` ON `${TABLE_NAME}` (`idCommune`)"
-          },
-          {
             "name": "index_hydrant_idNature",
             "unique": false,
             "columnNames": [
@@ -204,17 +165,6 @@
           }
         ],
         "foreignKeys": [
-          {
-            "table": "commune",
-            "onDelete": "SET NULL",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "idCommune"
-            ],
-            "referencedColumns": [
-              "idRemocra"
-            ]
-          },
           {
             "table": "typeHydrantNature",
             "onDelete": "SET NULL",
@@ -249,69 +199,6 @@
             ]
           }
         ]
-      },
-      {
-        "tableName": "commune",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idCommune` BLOB NOT NULL, `idRemocra` INTEGER NOT NULL, `code` TEXT, `nom` TEXT NOT NULL, `insee` TEXT NOT NULL, PRIMARY KEY(`idCommune`))",
-        "fields": [
-          {
-            "fieldPath": "idCommune",
-            "columnName": "idCommune",
-            "affinity": "BLOB",
-            "notNull": true
-          },
-          {
-            "fieldPath": "idRemocra",
-            "columnName": "idRemocra",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "code",
-            "columnName": "code",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
-            "fieldPath": "nom",
-            "columnName": "nom",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "insee",
-            "columnName": "insee",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "idCommune"
-          ]
-        },
-        "indices": [
-          {
-            "name": "index_commune_idCommune",
-            "unique": false,
-            "columnNames": [
-              "idCommune"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_commune_idCommune` ON `${TABLE_NAME}` (`idCommune`)"
-          },
-          {
-            "name": "index_commune_idRemocra",
-            "unique": true,
-            "columnNames": [
-              "idRemocra"
-            ],
-            "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_commune_idRemocra` ON `${TABLE_NAME}` (`idRemocra`)"
-          }
-        ],
-        "foreignKeys": []
       },
       {
         "tableName": "gestionnaire",
@@ -1989,7 +1876,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '63047b41a334c0e9e7c2b368acbacf84')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '388014f5de6de83df563b6ee29f383d9')"
     ]
   }
 }

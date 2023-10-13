@@ -14,9 +14,6 @@ import java.util.UUID
 abstract class ReferentielDao {
 
     @Insert
-    abstract fun insertListCommune(communes: List<Commune>)
-
-    @Insert
     abstract fun insertListTypeHydrant(listTypeHydrant: List<TypeHydrant>)
 
     @Insert
@@ -94,9 +91,6 @@ abstract class ReferentielDao {
     @Query("DELETE FROM role")
     abstract fun truncateRole()
 
-    @Query("DELETE FROM commune")
-    abstract fun truncateCommune()
-
     @Query("DELETE FROM typeHydrantNature")
     abstract fun truncateTypeHydrantNature()
 
@@ -126,15 +120,6 @@ abstract class ReferentielDao {
 
     @Query("DELETE FROM typeDroit")
     abstract fun truncateTypeDroit()
-
-    @Query("DELETE FROM commune where idRemocra in (:listIdRemocra)")
-    abstract fun deleteCommunes(listIdRemocra: List<Long>)
-
-    @Query("UPDATE commune set nom = :nom, insee = :insee, code = :code  where idRemocra = :idRemocra")
-    abstract fun updateCommune(idRemocra: Long, nom: String, insee: String, code: String?)
-
-    @Query("SELECT * FROM commune")
-    abstract fun getCommunes(): List<Commune>
 
     @Query("SELECT * FROM typeHydrant")
     abstract fun getListTypeHydrant(): List<TypeHydrant>
@@ -290,8 +275,8 @@ abstract class ReferentielDao {
         "UPDATE hydrant set idNatureDeci = :idNatureDeci, " +
             "idNature =:idNature, dispoHbe = :dispoHbe, dispoTerrestre = :dispoTerrestre, x = :x, " +
             "y = :y, lon = :lon, lat = :lat, " +
-            "numero = :numero, code = :code, idCommune = :idCommune, complement = :complement, " +
-            "voie = :voie, voie2 = :voie2, suffixeVoie = :suffixeVoie, lieuDit = :lieuDit, idGestionnaire = :idGestionnaire, " +
+            "numero = :numero, code = :code, " +
+            "adresseComplete = :adresseComplete, idGestionnaire = :idGestionnaire, " +
             "observation = :observation, idRemocraGestionnaire = :idRemocraGestionnaire, peiCaracteristiques = :peiCaracteristiques " +
             "where idRemocra = :idRemocra",
     )
@@ -307,12 +292,7 @@ abstract class ReferentielDao {
         lat: Double,
         numero: String?,
         code: String?,
-        idCommune: Long?,
-        complement: String?,
-        voie: String?,
-        voie2: String?,
-        suffixeVoie: String?,
-        lieuDit: String?,
+        adresseComplete: String?,
         observation: String?,
         idRemocraGestionnaire: Long?,
         idGestionnaire: UUID?,

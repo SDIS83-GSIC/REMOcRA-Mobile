@@ -38,17 +38,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="hydrant_adresse"
+        android:text=""
         android:textColor="#000000"
         android:textFontWeight="500"
-        android:textSize="18dp" />
-
-    <TextView
-        android:id="@+id/hydrant_adresse_complement"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="hydrant_adresse_complement"
-        android:textColor="#666666"
         android:textSize="18dp" />
 
     <TextView

@@ -15,16 +15,10 @@ import java.util.UUID
         Index("idHydrant"), Index(
             "idRemocra",
             unique = true,
-        ), Index("idCommune"), Index("idNature"),
+        ), Index("idNature"),
         Index("idNatureDeci"), Index("idGestionnaire"),
     ],
     foreignKeys = [
-        ForeignKey(
-            entity = Commune::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idCommune"],
-            onDelete = ForeignKey.SET_NULL,
-        ),
         ForeignKey(
             entity = TypeHydrantNature::class,
             parentColumns = ["idRemocra"],
@@ -58,12 +52,7 @@ data class Hydrant(
     val lat: Double,
     val numero: String?,
     val code: String?,
-    val idCommune: Long?,
-    val complement: String?,
-    val voie: String?,
-    val voie2: String?,
-    val suffixeVoie: String?,
-    val lieuDit: String?,
+    val adresseComplete: String?,
     val observation: String?,
     val idGestionnaire: UUID?,
     val idRemocraGestionnaire: Long?,
@@ -361,18 +350,6 @@ data class TypeHydrantAnomalieNatureSaisie(
     @PrimaryKey val idTypeHydrantAnomalieNatureSaisie: UUID = UUID.randomUUID(),
     val idTypeHydrantAnomalieNature: Long,
     val idTypeHydrantSaisie: Long,
-)
-
-@Entity(
-    tableName = "commune",
-    indices = [Index("idCommune"), Index("idRemocra", unique = true)],
-)
-data class Commune(
-    @PrimaryKey val idCommune: UUID = UUID.randomUUID(),
-    val idRemocra: Long,
-    val code: String?,
-    val nom: String,
-    val insee: String,
 )
 
 @Entity(

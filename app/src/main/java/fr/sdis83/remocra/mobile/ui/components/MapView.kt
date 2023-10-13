@@ -177,9 +177,7 @@ fun MapView(
                                 it.idHydrant,
                                 it.numero,
                                 it.dispoTerrestre,
-                                it.voie,
-                                it.suffixeVoie,
-                                it.voie2,
+                                it.adresseComplete,
                                 it.observation,
                                 peiCaracteristiques = it.peiCaracteristiques,
                             )
@@ -227,9 +225,7 @@ fun MapView(
                                 it.idHydrant,
                                 it.numero,
                                 it.dispoTerrestre,
-                                it.voie,
-                                it.suffixeVoie,
-                                it.voie2,
+                                it.adresseComplete,
                                 it.observation,
                                 it.peiCaracteristiques,
                             )
@@ -276,9 +272,7 @@ fun MapView(
                                     hydrant.idHydrant,
                                     hydrant.numero,
                                     hydrant.dispoTerrestre,
-                                    hydrant.voie,
-                                    hydrant.suffixeVoie,
-                                    hydrant.voie2,
+                                    hydrant.adresseComplete,
                                     hydrant.observation,
                                     hydrant.peiCaracteristiques,
                                 )
@@ -326,7 +320,7 @@ fun MapView(
             { mapState },
             modifier,
         ) { mapView -> onLoad?.invoke(mapView) }
-        if (mapViewModel.showCenter.value!!) {
+        if (mapViewModel.showCenter.value) {
             Icon(
                 imageVector = Icons.Filled.GpsFixed,
                 contentDescription = "Centre",

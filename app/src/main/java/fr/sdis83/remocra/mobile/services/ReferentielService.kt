@@ -1,7 +1,6 @@
 package fr.sdis83.remocra.mobile.services
 
 import android.content.Context
-import fr.sdis83.remocra.mobile.database.Commune
 import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.Hydrant
@@ -49,7 +48,6 @@ interface ReferentielService {
     ): Call<String>
 
     data class ReferentielResponse(
-        val communes: List<Commune>,
         val hydrants: List<Hydrant>,
         val hydrantsAnomalies: List<HydrantAnomalieInput>,
         val gestionnaires: List<Gestionnaire>,

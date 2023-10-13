@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.Agent
-import fr.sdis83.remocra.mobile.database.Commune
 import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.database.ContactRole
 import fr.sdis83.remocra.mobile.database.Gestionnaire
@@ -50,36 +49,6 @@ class ReferentielWorker constructor(
         Log.i(TAG, "Téléchargement du référentiel")
 
         referentielResponse.body()!!.apply {
-            // ///////////////////////////////////////////////////////////////////////////////////////////COMMUNE
-            val listeNewUpdateDeleteCommune: ListeNewUpdateDelete<Commune> = gestionReferentiel(
-                dataInRemocra = communes,
-                idPrimaryRemocra = Commune::idRemocra,
-                dataInMobile = referentielDao.getCommunes(),
-                arguments = arrayOf(
-                    Commune::nom,
-                    Commune::code,
-                    Commune::insee,
-                ),
-            )
-
-            val communesToInsert = mutableListOf<Commune>()
-            listeNewUpdateDeleteCommune.nouveauxElements.forEach {
-                communesToInsert.add(it.copy(UUID.randomUUID()))
-            }
-            referentielDao.insertListCommune(communesToInsert)
-
-            // on modifie celle modifiées
-            if (listeNewUpdateDeleteCommune.elementsModifies.isNotEmpty()) {
-                listeNewUpdateDeleteCommune.elementsModifies.forEach {
-                    referentielDao.updateCommune(
-                        it.idRemocra,
-                        it.nom,
-                        it.insee,
-                        it.code,
-                    )
-                }
-            }
-
             // ///////////////////////////////////////////////////////////////////////////////////////////TYPE HYDRANT
             val listeNewUpdateDeleteTypeHydrant: ListeNewUpdateDelete<TypeHydrant> =
                 gestionReferentiel(
@@ -436,20 +405,15 @@ class ReferentielWorker constructor(
                     Hydrant::idNature,
                     Hydrant::idRemocraGestionnaire,
                     Hydrant::idNatureDeci,
-                    Hydrant::idCommune,
+                    Hydrant::adresseComplete,
                     Hydrant::lat,
                     Hydrant::lon,
                     Hydrant::x,
                     Hydrant::y,
                     Hydrant::numero,
-                    Hydrant::voie,
-                    Hydrant::voie2,
-                    Hydrant::lieuDit,
                     Hydrant::dispoHbe,
                     Hydrant::dispoTerrestre,
-                    Hydrant::complement,
                     Hydrant::peiCaracteristiques,
-                    Hydrant::suffixeVoie,
                 ),
             )
 
@@ -473,12 +437,7 @@ class ReferentielWorker constructor(
                         lat = it.lat,
                         numero = it.numero,
                         code = it.code,
-                        idCommune = it.idCommune,
-                        complement = it.complement,
-                        voie = it.voie,
-                        voie2 = it.voie2,
-                        suffixeVoie = it.suffixeVoie,
-                        lieuDit = it.lieuDit,
+                        adresseComplete = it.adresseComplete,
                         observation = it.observation,
                         idRemocraGestionnaire = it.idRemocraGestionnaire,
                         idGestionnaire = if (it.idRemocraGestionnaire != null) {
@@ -553,7 +512,6 @@ class ReferentielWorker constructor(
                 deleteContact(listeNewUpdateDeleteContact.elementsSupprimes.map { it.idRemocra!! })
                 deleteGestionnaire(listeNewUpdateDeleteGestionnaire.elementsSupprimes.map { it.idRemocra!! })
                 deleteRole(listeNewUpdateDeleteRole.elementsSupprimes.map { it.idRemocra })
-                deleteCommunes(listeNewUpdateDeleteCommune.elementsSupprimes.map { it.idRemocra })
                 deleteTypeHydrantNature(listeNewUpdateDeleteTypeHydrantNature.elementsSupprimes.map { it.idRemocra })
                 deleteTypeHydrantNatureDeci(listeNewUpdateDeleteTypeHydrantNatureDeci.elementsSupprimes.map { it.idRemocra })
                 deleteTypeHydrant(listeNewUpdateDeleteTypeHydrant.elementsSupprimes.map { it.idRemocra })
