@@ -1,7 +1,6 @@
 package fr.sdis83.remocra.mobile.ui.layout
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -31,8 +31,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.navigation.Screens
 import kotlinx.coroutines.launch
@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 fun Layout(
     navController: NavController?,
     versionName: String,
+    logout: () -> Unit,
     content: @Composable (PaddingValues) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
@@ -58,7 +59,7 @@ fun Layout(
             ModalDrawerSheet {
                 Spacer(Modifier.height(12.dp))
                 Column(
-                    Modifier.fillMaxHeight(0.9f),
+                    Modifier.fillMaxHeight(0.8f),
                 ) {
                     items.forEach { item ->
                         NavigationDrawerItem(
@@ -73,6 +74,23 @@ fun Layout(
                                 }
                             },
                             modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                        )
+                    }
+                }
+                Column(
+                    Modifier.fillMaxHeight(0.5f).fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Button(
+                        modifier = Modifier
+                            .padding(all = 16.dp),
+                        onClick = logout,
+                    ) {
+                        Text(
+                            text = "Se déconnecter",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            textAlign = TextAlign.Center,
                         )
                     }
                 }
@@ -108,13 +126,5 @@ fun Layout(
             },
             content = content,
         )
-    }
-}
-
-@Preview(showSystemUi = true, device = "spec:width=1280dp,height=800dp,dpi=480")
-@Composable
-fun homeScreenPreview() {
-    Box {
-        Layout(null, versionName = "1.0")
     }
 }

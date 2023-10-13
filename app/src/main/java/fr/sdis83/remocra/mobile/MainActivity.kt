@@ -1,8 +1,10 @@
 package fr.sdis83.remocra.mobile
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -24,6 +26,7 @@ import fr.sdis83.remocra.mobile.ui.components.MapView
 import fr.sdis83.remocra.mobile.ui.layout.Layout
 import fr.sdis83.remocra.mobile.ui.theme.REMOcRAMobileTheme
 import fr.sdis83.remocra.mobile.utils.getVersionName
+import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 
 data class MapViewState(
@@ -32,9 +35,10 @@ data class MapViewState(
 )
 
 class MainActivity : ComponentActivity() {
+
+    private val loginViewModel: LoginViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val mapViewModel = MapViewModel(applicationContext)
         setContent {
             REMOcRAMobileTheme {
@@ -44,7 +48,19 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val mapViewState = remember { mutableStateOf(MapViewState()) }
-                    Layout(navController, getVersionName(applicationContext)) {
+                    Layout(
+                        navController,
+                        getVersionName(applicationContext),
+                        logout = {
+                            loginViewModel.sessionManager.invalidateAuthToken()
+                            startActivity(
+                                Intent(
+                                    this@MainActivity,
+                                    LoginActivity::class.java,
+                                ),
+                            )
+                        },
+                    ) {
                         Row(modifier = Modifier.fillMaxSize()) {
                             if (mapViewState.value.showMapView) {
                                 Column(
