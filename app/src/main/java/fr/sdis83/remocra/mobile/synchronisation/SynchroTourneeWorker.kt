@@ -32,14 +32,15 @@ class SynchroTourneeWorker constructor(
         }
 
         // On supprime les données
+        val idsTournee = tournees.map { it.idTournee }
         synchronisationDao.apply {
             deleteNewHydrantsSynchronises()
             deleteContactsRoleSynchronises()
             deleteContactsSynchronises()
             deleteGestionnaireSynchronises()
-            deleteHydrantVisiteAnomalie()
-            deleteHydrantVisite()
-            deleteTourneesSynchronisees(tournees.map { it.idTournee })
+            deleteHydrantVisiteAnomalie(idsTournee)
+            deleteHydrantVisite(idsTournee)
+            deleteTourneesSynchronisees(idsTournee)
         }
 
         retrofitBuilder.incomingToRemocra().execute()

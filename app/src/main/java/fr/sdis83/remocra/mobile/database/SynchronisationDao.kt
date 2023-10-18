@@ -71,20 +71,22 @@ abstract class SynchronisationDao {
     @Query(
         """
             DELETE FROM hydrantVisiteAnomalie where idHydrantVisite in (
-                SELECT idHydrantVisite FROM hydrantVisite 
-                WHERE hydrantVisite.statut = :statutFini)
+                SELECT idHydrantVisite FROM hydrantVisite
+                join tournee on tournee.idTournee = hydrantVisite.idTournee 
+                WHERE hydrantVisite.statut = :statutFini and tournee.idRemocra in (:idsTournee))
         """,
     )
-    abstract fun deleteHydrantVisiteAnomalie(statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE)
+    abstract fun deleteHydrantVisiteAnomalie(idsTournee: List<UUID>, statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE)
 
     @Query(
         """
             DELETE FROM hydrantVisite where idHydrantVisite in (
-                SELECT idHydrantVisite FROM hydrantVisite 
-                WHERE hydrantVisite.statut = :statutFini)
+                SELECT idHydrantVisite FROM hydrantVisite  
+                join tournee on tournee.idTournee = hydrantVisite.idTournee
+                WHERE hydrantVisite.statut = :statutFini and tournee.idRemocra in (:idsTournee))
         """,
     )
-    abstract fun deleteHydrantVisite(statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE)
+    abstract fun deleteHydrantVisite(idsTournee: List<UUID>, statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE)
 
     @Query(
         """
