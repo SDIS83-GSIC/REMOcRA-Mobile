@@ -43,7 +43,6 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
     private var referentielStatus = mutableStateOf(JobStatus.WAITING)
 
     fun synchro(application: Application) {
-        // On commence par les gestionnaires
         val synchroGestionnaire = OneTimeWorkRequestBuilder<SynchroGestionnaireWorker>()
             .build()
 
@@ -59,8 +58,9 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
         val synchroHydrantVisiteWorker = OneTimeWorkRequestBuilder<SynchroHydrantVisiteWorker>()
             .build()
 
-        val synchroHydrantVisiteAnomalieWorker = OneTimeWorkRequestBuilder<SynchroHydrantVisiteAnomalieWorker>()
-            .build()
+        val synchroHydrantVisiteAnomalieWorker =
+            OneTimeWorkRequestBuilder<SynchroHydrantVisiteAnomalieWorker>()
+                .build()
 
         val synchroTourneeWorker = OneTimeWorkRequestBuilder<SynchroTourneeWorker>()
             .build()
@@ -85,19 +85,33 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
                 when (it.state) {
                     WorkInfo.State.RUNNING -> {
                         referentielStatus.value = JobStatus.LOADING
-                        Toast.makeText(application, "Synchronisation en cours...", Toast.LENGTH_LONG)
+                        Toast.makeText(
+                            application,
+                            "Synchronisation en cours...",
+                            Toast.LENGTH_LONG,
+                        )
                             .show()
                         isBusy.value = true
                     }
+
                     WorkInfo.State.SUCCEEDED -> {
                         referentielStatus.value = JobStatus.SUCCESS
-                        Toast.makeText(application, "Synchronisation terminée.", Toast.LENGTH_LONG)
+                        Toast.makeText(
+                            application,
+                            "Synchronisation terminée.",
+                            Toast.LENGTH_LONG,
+                        )
                             .show()
                         isBusy.value = false
                     }
+
                     WorkInfo.State.FAILED -> {
                         referentielStatus.value = JobStatus.ERROR
-                        Toast.makeText(application, "Echec lors de la synchronisation.", Toast.LENGTH_LONG)
+                        Toast.makeText(
+                            application,
+                            "Echec lors de la synchronisation.",
+                            Toast.LENGTH_LONG,
+                        )
                             .show()
                         isBusy.value = false
                     }

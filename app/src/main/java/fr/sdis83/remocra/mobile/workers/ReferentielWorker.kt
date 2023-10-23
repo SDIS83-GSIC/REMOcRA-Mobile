@@ -2,7 +2,6 @@ package fr.sdis83.remocra.mobile.workers
 
 import android.content.Context
 import android.util.Log
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.Agent
 import fr.sdis83.remocra.mobile.database.Contact
@@ -28,13 +27,13 @@ import java.util.UUID
 class ReferentielWorker constructor(
     context: Context,
     workerParams: WorkerParameters,
-) : Worker(context, workerParams) {
+) : WorkerRemocra(context, workerParams) {
 
     companion object {
         private const val TAG: String = "ReferentielWorker"
     }
 
-    override fun doWork(): Result {
+    override fun doExecute(): Result {
         val retrofitBuilder = ReferentielService.getRetroFitInstance(applicationContext)
         val referentielDao = RemocraDatabase.getInstance(applicationContext).referentielDao()
         val agentDao = RemocraDatabase.getInstance(applicationContext).agentDao()

@@ -45,7 +45,8 @@ class ChoixTourneeViewModel(application: Application) : AndroidViewModel(applica
         private set
 
     fun getTourneesDisponibles() {
-        val tourneesDisponiblesWorker = OneTimeWorkRequestBuilder<TourneesDisposWorker>().build()
+        val tourneesDisponiblesWorker =
+            OneTimeWorkRequestBuilder<TourneesDisposWorker>().build()
 
         WorkManager.getInstance(getApplication()).let { workManager ->
             workManager
@@ -78,6 +79,7 @@ class ChoixTourneeViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun reserveTournees(context: Context) {
+        // On vérifie que le token est valide avant de faire l'appel au serveur
         val reserveTourneesWorker = OneTimeWorkRequestBuilder<ReserveTourneesWorker>().build()
 
         WorkManager.getInstance(getApplication()).let { workManager ->
@@ -89,7 +91,8 @@ class ChoixTourneeViewModel(application: Application) : AndroidViewModel(applica
                 when (it.state) {
                     WorkInfo.State.RUNNING -> {
                         infoReservation.value = "Réservation des tournées en cours..."
-                        Toast.makeText(context, infoReservation.value, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, infoReservation.value, Toast.LENGTH_SHORT)
+                            .show()
                         tourneesReserveesStatus.value = JobStatus.LOADING
                     }
 
@@ -102,13 +105,15 @@ class ChoixTourneeViewModel(application: Application) : AndroidViewModel(applica
                                 "Tournées réservées"
                             }
 
-                        Toast.makeText(context, infoReservation.value, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, infoReservation.value, Toast.LENGTH_SHORT)
+                            .show()
                         tourneesReserveesStatus.value = JobStatus.SUCCESS
                     }
 
                     WorkInfo.State.FAILED -> {
                         infoReservation.value = "Impossible de réserver les tournées"
-                        Toast.makeText(context, infoReservation.value, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, infoReservation.value, Toast.LENGTH_SHORT)
+                            .show()
                         tourneesReserveesStatus.value = JobStatus.ERROR
                     }
 
@@ -121,11 +126,12 @@ class ChoixTourneeViewModel(application: Application) : AndroidViewModel(applica
     }
 
     fun annulerReservationTournee(context: Context, idTournee: Long) {
-        val annuleReservationTourneeWorker = OneTimeWorkRequestBuilder<AnnuleReservationTourneeWorker>()
-            .setInputData(
-                Data.Builder()
-                    .putLong("idTournee", idTournee).build(),
-            ).build()
+        val annuleReservationTourneeWorker =
+            OneTimeWorkRequestBuilder<AnnuleReservationTourneeWorker>()
+                .setInputData(
+                    Data.Builder()
+                        .putLong("idTournee", idTournee).build(),
+                ).build()
 
         WorkManager.getInstance(getApplication()).let { workManager ->
             workManager
@@ -136,19 +142,24 @@ class ChoixTourneeViewModel(application: Application) : AndroidViewModel(applica
                 when (it.state) {
                     WorkInfo.State.RUNNING -> {
                         infoAnnulation.value = "Annulation de la réservation en cours..."
-                        Toast.makeText(context, infoReservation.value, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, infoReservation.value, Toast.LENGTH_SHORT)
+                            .show()
                         annuleReservationStatus.value = JobStatus.LOADING
                     }
 
                     WorkInfo.State.SUCCEEDED -> {
-                        infoAnnulation.value = "Annulation de la réservation de la tournée réussie"
-                        Toast.makeText(context, infoAnnulation.value, Toast.LENGTH_SHORT).show()
+                        infoAnnulation.value =
+                            "Annulation de la réservation de la tournée réussie"
+                        Toast.makeText(context, infoAnnulation.value, Toast.LENGTH_SHORT)
+                            .show()
                         annuleReservationStatus.value = JobStatus.SUCCESS
                     }
 
                     WorkInfo.State.FAILED -> {
-                        infoAnnulation.value = "Impossible d'annuler la réservation de la tournée"
-                        Toast.makeText(context, infoAnnulation.value, Toast.LENGTH_SHORT).show()
+                        infoAnnulation.value =
+                            "Impossible d'annuler la réservation de la tournée"
+                        Toast.makeText(context, infoAnnulation.value, Toast.LENGTH_SHORT)
+                            .show()
                         annuleReservationStatus.value = JobStatus.ERROR
                     }
 

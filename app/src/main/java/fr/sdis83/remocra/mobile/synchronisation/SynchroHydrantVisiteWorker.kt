@@ -2,21 +2,21 @@ package fr.sdis83.remocra.mobile.synchronisation
 
 import android.content.Context
 import android.util.Log
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.SynchronisationService
 import fr.sdis83.remocra.mobile.utils.createImageFormData
+import fr.sdis83.remocra.mobile.workers.WorkerRemocra
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 class SynchroHydrantVisiteWorker constructor(
     context: Context,
     workerParams: WorkerParameters,
-) : Worker(context, workerParams) {
+) : WorkerRemocra(context, workerParams) {
     private val TAG = "SynchroHydrantVisiteWorker"
 
-    override fun doWork(): Result = try {
+    override fun doExecute(): Result = try {
         val synchronisationDao = RemocraDatabase.getInstance(applicationContext).synchronisationDao()
         val retrofitBuilder = SynchronisationService.getRetroFitInstance(applicationContext)
 

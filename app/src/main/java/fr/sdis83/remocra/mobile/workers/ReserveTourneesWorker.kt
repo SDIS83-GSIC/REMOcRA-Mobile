@@ -3,7 +3,6 @@ package fr.sdis83.remocra.mobile.workers
 import android.content.Context
 import android.util.Log
 import androidx.work.Data
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.HydrantTournee
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
@@ -14,13 +13,13 @@ import java.util.UUID
 class ReserveTourneesWorker constructor(
     context: Context,
     workerParams: WorkerParameters,
-) : Worker(context, workerParams) {
+) : WorkerRemocra(context, workerParams) {
 
     companion object {
         private const val TAG: String = "ReserveTourneesWorker"
     }
 
-    override fun doWork(): Result {
+    override fun doExecute(): Result {
         val retrofitBuilder = ReferentielService.getRetroFitInstance(applicationContext)
         val tourneesDao = RemocraDatabase.getInstance(applicationContext).tourneesDao()
 
