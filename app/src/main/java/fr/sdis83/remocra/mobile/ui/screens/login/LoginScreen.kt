@@ -1,7 +1,9 @@
 package fr.sdis83.remocra.mobile.ui.screens.login
 
+import android.app.Application
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,27 +23,38 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.utils.getVersionName
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
 import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: AdministrationViewModel) {
+fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: AdministrationViewModel, application: Application) {
     var username: String by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    Button(
-        modifier = Modifier.padding(20.dp, 20.dp),
-        onClick = {
-            administrationViewModel.setAdministrationScreen(true)
-        },
-        enabled = !viewModel.isBusy,
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(stringResource(R.string.administrer))
+        Button(
+            modifier = Modifier.padding(20.dp, 20.dp),
+            onClick = {
+                administrationViewModel.setAdministrationScreen(true)
+            },
+            enabled = !viewModel.isBusy,
+        ) {
+            Text(stringResource(R.string.administrer))
+        }
+        Text(
+            text = "Version : ${getVersionName(applicationContext = application)}",
+            fontWeight = FontWeight.Bold,
+        )
     }
     Column(
         modifier = Modifier

@@ -63,7 +63,7 @@ class LoginActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background,
                 ) {
                     Scaffold {
-                        LoginScreen(viewModel = loginViewModel, administrationViewModel)
+                        LoginScreen(viewModel = loginViewModel, administrationViewModel, application)
                     }
                 }
             }
