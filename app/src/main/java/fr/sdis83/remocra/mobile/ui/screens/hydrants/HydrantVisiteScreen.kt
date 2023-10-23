@@ -84,6 +84,7 @@ import fr.sdis83.remocra.mobile.ui.components.CameraCapture
 import fr.sdis83.remocra.mobile.ui.components.LabelledCheckbox
 import fr.sdis83.remocra.mobile.ui.components.Spinner
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
+import fr.sdis83.remocra.mobile.utils.deleteFile
 import fr.sdis83.remocra.mobile.viewmodels.AgentViewModel
 import fr.sdis83.remocra.mobile.viewmodels.HydrantPhotoViewModel
 import fr.sdis83.remocra.mobile.viewmodels.HydrantVisiteViewModel
@@ -276,6 +277,7 @@ fun HydrantVisiteForm(
                 onPictureTaken = hydrantPhotoViewModel::onPictureTaken,
                 photos = photos,
                 deletePhoto = {
+                    deleteFile(listOf(it.path))
                     coroutineScope.launch {
                         hydrantPhotoViewModel.deleteHydrantPhoto(it)
                     }

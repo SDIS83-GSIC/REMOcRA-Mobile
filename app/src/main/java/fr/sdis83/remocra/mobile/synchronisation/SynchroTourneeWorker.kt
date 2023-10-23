@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.SynchronisationService
+import fr.sdis83.remocra.mobile.utils.deleteFile
 import fr.sdis83.remocra.mobile.workers.WorkerRemocra
 
 class SynchroTourneeWorker constructor(
@@ -38,7 +39,13 @@ class SynchroTourneeWorker constructor(
             deleteContactsRoleSynchronises()
             deleteContactsSynchronises()
             deleteGestionnaireSynchronises()
+
             deleteHydrantVisiteAnomalie(idsTournee)
+
+            val photos = getHydrantPhotoFini()
+            deleteFile(photos)
+            deleteHydrantPhoto(photos)
+
             deleteHydrantVisite(idsTournee)
             deleteTourneesSynchronisees(idsTournee)
         }

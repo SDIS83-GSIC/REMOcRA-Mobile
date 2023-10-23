@@ -26,3 +26,12 @@ fun getVersionName(applicationContext: Context): String =
             PackageManager.GET_META_DATA,
         ).versionName
     }
+
+fun deleteFile(listeFile: List<String>) {
+    listeFile.forEach {
+        val photo = File(it)
+        if (photo.exists()) {
+            photo.delete()
+        }
+    }
+}

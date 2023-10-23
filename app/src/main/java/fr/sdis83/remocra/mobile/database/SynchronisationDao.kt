@@ -80,6 +80,22 @@ abstract class SynchronisationDao {
 
     @Query(
         """
+            SELECT path FROM hydrantPhoto where idHydrant in (
+                SELECT idHydrant FROM hydrantVisite 
+                WHERE hydrantVisite.statut = :statutFini)
+        """,
+    )
+    abstract fun getHydrantPhotoFini(statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE): List<String>
+
+    @Query(
+        """
+            DELETE FROM hydrantPhoto where path in (:listPath)
+        """,
+    )
+    abstract fun deleteHydrantPhoto(listPath: List<String>)
+
+    @Query(
+        """
             DELETE FROM hydrantVisite where idHydrantVisite in (
                 SELECT idHydrantVisite FROM hydrantVisite  
                 join tournee on tournee.idTournee = hydrantVisite.idTournee
