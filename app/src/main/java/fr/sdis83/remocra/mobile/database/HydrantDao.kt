@@ -6,6 +6,7 @@ import androidx.room.Embedded
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Relation
+import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import java.util.UUID
 
 @Dao
@@ -27,15 +28,28 @@ abstract class HydrantDao {
 
     @Query(
         """
-        SELECT h.*, t.* FROM tournee t
+        SELECT h.lat, h.lon, h.lat as mLatitude, h.lon as mLongitude, 1 as mAltitude,
+            h.idHydrant, h.numero, h.dispoTerrestre, h.adresseComplete, h.observation,
+            h.peiCaracteristiques, hv.statut as statutVisite, t.* FROM tournee t
         JOIN hydrantTournee ht ON ht.idRemocraTournee = t.idRemocra
         JOIN hydrant h ON h.idRemocra = ht.idRemocraHydrant
+        LEFT JOIN hydrantVisite hv ON hv.idHydrant = h.idHydrant
         """,
     )
-    abstract fun getTourneeMap(): LiveData<Map<Tournee, List<Hydrant>>>
+    abstract fun getTourneeMap(): LiveData<Map<Tournee, List<MapViewModel.HydrantGeoPoint>>>
 
     @Query("SELECT h.* FROM hydrant h WHERE h.idHydrant = :idHydrant ")
     abstract fun getHydrantByIdHydrant(idHydrant: UUID): Hydrant
+
+    @Query(
+        """
+        SELECT h.lat, h.lon, h.lat as mLatitude, h.lon as mLongitude, 1 as mAltitude,
+            h.idHydrant, h.numero, h.dispoTerrestre, h.adresseComplete, h.observation,
+            h.peiCaracteristiques, hv.statut as statutVisite FROM hydrant h
+        LEFT JOIN hydrantVisite hv ON hv.idHydrant = h.idHydrant
+        WHERE h.idHydrant = :idHydrant """,
+    )
+    abstract fun getHydrantGeoPointByIdHydrant(idHydrant: UUID): MapViewModel.HydrantGeoPoint
 
     @Query("SELECT h.* FROM hydrant h WHERE h.idHydrant = :idHydrant ")
     abstract fun getHydrantByIdHydrantLiveData(idHydrant: UUID): LiveData<Hydrant>

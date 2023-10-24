@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import fr.sdis83.remocra.mobile.database.Hydrant
+import fr.sdis83.remocra.mobile.database.HydrantVisite
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -58,18 +59,19 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
 
     fun goToHydrant(idhydrant: UUID) {
         CoroutineScope(Dispatchers.IO).launch {
-            val hydrant = hydrantDao.getHydrantByIdHydrant(idhydrant)
+            val hydrant = hydrantDao.getHydrantGeoPointByIdHydrant(idhydrant)
             hydrant.let {
                 setCenter(
                     HydrantGeoPoint(
                         it.lat,
                         it.lon,
                         UUID.randomUUID(),
-                        it.code,
+                        it.numero,
                         it.dispoTerrestre,
                         it.adresseComplete,
                         it.observation,
                         it.peiCaracteristiques,
+                        it.statutVisite,
                     ),
                 )
                 mapView?.setExpectedCenter(
@@ -77,11 +79,12 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
                         it.lat,
                         it.lon,
                         it.idHydrant,
-                        it.code,
+                        it.numero,
                         it.dispoTerrestre,
                         it.adresseComplete,
                         it.observation,
                         it.peiCaracteristiques,
+                        it.statutVisite,
                     ),
                 )
             }
@@ -97,6 +100,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
         val adresseComplete: String?,
         val observation: String?,
         val peiCaracteristiques: String?,
+        val statutVisite: HydrantVisite.HydrantVisiteStatut?,
     ) :
         GeoPoint(lat, lon)
 }
