@@ -122,7 +122,17 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                 if (!hydrantList.isNullOrEmpty()) {
                     Row {
                         LazyColumn {
-                            items(hydrantList!!) { hydrantItem ->
+                            items(
+                                hydrantList!!.sortedWith(
+                                    compareBy {
+                                        if (it.statut == HydrantVisite.HydrantVisiteStatut.TERMINE.toString()) {
+                                            it.statut
+                                        } else {
+                                            null
+                                        }
+                                    },
+                                ),
+                            ) { hydrantItem ->
                                 val estTerminee = hydrantItem.statut == HydrantVisite.HydrantVisiteStatut.TERMINE.toString()
                                 Row(
                                     Modifier
