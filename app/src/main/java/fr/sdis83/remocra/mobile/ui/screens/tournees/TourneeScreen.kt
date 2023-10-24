@@ -2,6 +2,7 @@ package fr.sdis83.remocra.mobile.ui.screens.tournees
 
 import android.app.Application
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,9 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.database.HydrantVisite
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import fr.sdis83.remocra.mobile.viewmodels.TourneeViewModel
@@ -119,6 +123,7 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                     Row {
                         LazyColumn {
                             items(hydrantList!!) { hydrantItem ->
+                                val estTerminee = hydrantItem.statut == HydrantVisite.HydrantVisiteStatut.TERMINE.toString()
                                 Row(
                                     Modifier
                                         .padding(8.dp)
@@ -143,7 +148,7 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                                         modifier =
                                         Modifier
                                             .clip(RoundedCornerShape(8.dp))
-                                            .background(Color(0xDDE9F3FF))
+                                            .background(Color(if (estTerminee) 0xDDE9F2DE else 0xDDE9F3FF))
                                             .padding(16.dp)
                                             .fillMaxWidth(),
                                     ) {
@@ -151,7 +156,18 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(text = hydrantItem.hydrant.numero ?: "N/A")
                                                 Spacer(modifier = Modifier.width(16.dp))
-                                                Text(text = hydrantItem.statut ?: "À faire")
+                                                Text(
+                                                    text = hydrantItem.statut ?: "À faire",
+                                                    color = if (estTerminee) Color(0xDD31861E) else Color.Black,
+                                                    fontWeight = if (estTerminee) FontWeight.Bold else FontWeight.Normal,
+                                                )
+                                                Spacer(modifier = Modifier.width(16.dp))
+                                                if (estTerminee) {
+                                                    Image(
+                                                        painterResource(id = R.drawable.baseline_check_24),
+                                                        contentDescription = "check",
+                                                    )
+                                                }
                                             }
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(
