@@ -69,7 +69,7 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                     }
                     Spacer(Modifier.height(10.dp))
                     Text(
-                        text = "Liste des points d'eaux",
+                        text = "Liste des points d'eau",
                         fontSize = MaterialTheme.typography.headlineLarge.fontSize,
                         fontWeight = FontWeight.Bold,
                     )
