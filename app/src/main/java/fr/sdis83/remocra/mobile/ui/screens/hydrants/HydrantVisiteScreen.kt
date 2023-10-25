@@ -122,7 +122,7 @@ fun HydrantVisiteScreen(
 
     val photos = hydrantPhotoVisiteViewModel.photos.observeAsState()
 
-    mapViewModel.goToHydrant(idHydrant)
+    mapViewModel.goToHydrant(idHydrant, false)
     HydrantVisiteScreenInner(hydrantVisiteViewModel, navController, photos.value, hydrantPhotoVisiteViewModel, gestionAgents, listAgent1, listAgent2)
 }
 

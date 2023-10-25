@@ -2,6 +2,7 @@ package fr.sdis83.remocra.mobile.viewmodels
 
 import android.content.Context
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import fr.sdis83.remocra.mobile.database.Hydrant
 import fr.sdis83.remocra.mobile.database.HydrantVisite
@@ -21,6 +22,9 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
     }
 
     private var mapView: MapView? = null
+
+    var hydrantTourneeSelected: MutableLiveData<HydrantGeoPoint?> = MutableLiveData()
+    var hydrantNewSelected: MutableLiveData<HydrantGeoPoint?> = MutableLiveData()
 
     fun register(mapView: MapView) {
         this.mapView = mapView
@@ -57,7 +61,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
         mapView?.zoomToBoundingBox(boundingBox, true)
     }
 
-    fun goToHydrant(idhydrant: UUID) {
+    fun goToHydrant(idhydrant: UUID, isNew: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
             val hydrant = hydrantDao.getHydrantGeoPointByIdHydrant(idhydrant)
             hydrant.let {
@@ -87,6 +91,13 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
                         it.statutVisite,
                     ),
                 )
+                if (isNew) {
+                    hydrantTourneeSelected.postValue(null)
+                    hydrantNewSelected.postValue(hydrant)
+                } else {
+                    hydrantNewSelected.postValue(null)
+                    hydrantTourneeSelected.postValue(hydrant)
+                }
             }
         }
     }

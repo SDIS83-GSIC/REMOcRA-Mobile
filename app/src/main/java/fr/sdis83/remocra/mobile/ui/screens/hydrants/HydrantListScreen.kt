@@ -135,7 +135,7 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                                                 Text(text = hydrantItem.hydrant.numero ?: "N/A")
                                                 Spacer(modifier = Modifier.width(16.dp))
                                                 IconButton(onClick = {
-                                                    mapViewModel.goToHydrant(hydrantItem.hydrant.idHydrant)
+                                                    mapViewModel.goToHydrant(hydrantItem.hydrant.idHydrant, true)
                                                 }) {
                                                     Icon(
                                                         imageVector = Icons.Filled.GpsFixed,

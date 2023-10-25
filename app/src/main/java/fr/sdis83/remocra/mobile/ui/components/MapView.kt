@@ -127,7 +127,7 @@ fun MapView(
     }
 
     val newHydrantOverlay = remember {
-        mutableStateOf(SimpleFastPointOverlay(SimplePointTheme(listOf<MapViewModel.HydrantGeoPoint>())))
+        mutableStateOf(SimpleFastPointOverlayCustom(SimplePointTheme(listOf<MapViewModel.HydrantGeoPoint>()), listOf(), SimpleFastPointOverlayOptions(), null))
     }
 
     val tourneeOverlay = remember {
@@ -166,6 +166,19 @@ fun MapView(
                 },
             )
         }
+
+        mapViewModel.hydrantTourneeSelected.observeForever { hydrant ->
+            if (hydrant != null && tourneeOverlay.value.values.firstOrNull { it.listHydrantGeoPoint.contains(hydrant) } != null) {
+                tourneeOverlay.value.values.first { it.listHydrantGeoPoint.contains(hydrant) }.selectedPoint =
+                    tourneeOverlay.value.values.first { it.listHydrantGeoPoint.contains(hydrant) }.listHydrantGeoPoint.indexOf(hydrant)
+            }
+        }
+        mapViewModel.hydrantNewSelected.observeForever { hydrant ->
+            if (hydrant != null) {
+                newHydrantOverlay.value.selectedPoint = newHydrantOverlay.value.listHydrantGeoPoint.indexOf(hydrant)
+            }
+        }
+
         mapViewModel.hydrantList.observeForever {
             hydrantOverlay.value =
                 SimpleFastPointOverlay(
@@ -216,8 +229,21 @@ fun MapView(
             Log.e("hydrantOverlay", mapState.overlays.size.toString())
         }
         mapViewModel.newHydrantList.observeForever {
+            val listeHydrantGeoPoint = it.map {
+                MapViewModel.HydrantGeoPoint(
+                    it.lat,
+                    it.lon,
+                    it.idHydrant,
+                    it.numero,
+                    it.dispoTerrestre,
+                    it.adresseComplete,
+                    it.observation,
+                    it.peiCaracteristiques,
+                    null,
+                )
+            }
             newHydrantOverlay.value =
-                SimpleFastPointOverlay(
+                SimpleFastPointOverlayCustom(
                     SimplePointTheme(
                         it.map {
                             MapViewModel.HydrantGeoPoint(
@@ -233,6 +259,7 @@ fun MapView(
                             )
                         },
                     ),
+                    listeHydrantGeoPoint,
                     SimpleFastPointOverlayOptions.getDefaultStyle().apply {
                         pointStyle.color = Color.rgb(255, 0, 0)
                         selectedPointStyle.strokeWidth = 8f
@@ -241,6 +268,7 @@ fun MapView(
                         setRadius(8f)
                         setSelectedRadius(16f)
                     },
+                    null,
                 ).apply {
                     setOnClickListener { points, point ->
                         InfoWindow.closeAllInfoWindowsOn(mapState)

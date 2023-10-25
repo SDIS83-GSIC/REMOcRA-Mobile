@@ -13,9 +13,9 @@ import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions
 
 class SimpleFastPointOverlayCustom(
     pointList: PointAdapter,
-    private val listHydrantGeoPoint: List<HydrantGeoPoint>,
+    val listHydrantGeoPoint: List<HydrantGeoPoint>,
     private val style: SimpleFastPointOverlayOptions,
-    private val drawableCheck: Drawable,
+    private val drawableCheck: Drawable?,
 ) : SimpleFastPointOverlay(pointList, style) {
 
     /**
@@ -45,7 +45,7 @@ class SimpleFastPointOverlayCustom(
                     mapView,
                 )
                 if (pt1.statutVisite == HydrantVisite.HydrantVisiteStatut.TERMINE) {
-                    val bitmap = drawableCheck.toBitmap()
+                    val bitmap = drawableCheck!!.toBitmap()
                     canvas?.drawBitmap(
                         bitmap,
                         mPositionPixels.x.toFloat() - bitmap.width / 4,
