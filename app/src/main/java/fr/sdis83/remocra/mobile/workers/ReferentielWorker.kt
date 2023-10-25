@@ -396,6 +396,9 @@ class ReferentielWorker constructor(
 
             // ///////////////////////////////////////////////////////////////////////////////////////////HYDRANT
             referentielDao.deleteHydrantsNonUtilises()
+            hydrants.forEach {
+                it.peiCaracteristiques = peiCaracteristiques[it.idRemocra]
+            }
             val listeNewUpdateDeleteHydrant: ListeNewUpdateDelete<Hydrant> = gestionReferentiel(
                 dataInRemocra = hydrants,
                 idPrimaryRemocra = Hydrant::idRemocra,
@@ -421,7 +424,6 @@ class ReferentielWorker constructor(
                 hydrantToInsert.add(it.copy(UUID.randomUUID()))
             }
             referentielDao.insertListHydrant(hydrantToInsert)
-
             if (listeNewUpdateDeleteHydrant.elementsModifies.isNotEmpty()) {
                 listeNewUpdateDeleteHydrant.elementsModifies.forEach {
                     referentielDao.updateHydrant(
@@ -444,7 +446,7 @@ class ReferentielWorker constructor(
                         } else {
                             null
                         },
-                        peiCaracteristiques = it.peiCaracteristiques,
+                        peiCaracteristiques = peiCaracteristiques[it.idRemocra],
                     )
                 }
             }

@@ -56,7 +56,7 @@ data class Hydrant(
     val observation: String?,
     val idGestionnaire: UUID?,
     val idRemocraGestionnaire: Long?,
-    val peiCaracteristiques: String?,
+    var peiCaracteristiques: String?,
 ) {
     enum class Disponibilite {
         DISPO,
