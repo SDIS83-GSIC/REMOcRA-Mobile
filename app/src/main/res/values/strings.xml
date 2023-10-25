@@ -98,4 +98,8 @@
 <!--    Hydrant Visite-->
     <string name="suivant">Suivant</string>
     <string name="precedent">Précédent</string>
+
+<!--    Export Screen-->
+    <string name="exporter">Exporter les données</string>
+    <string name="exporterLogs">Exporter les logs</string>
 </resources>

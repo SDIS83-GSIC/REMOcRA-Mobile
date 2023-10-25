@@ -49,6 +49,7 @@ fun Layout(
         Screens.Tournees,
         Screens.Sync,
         Screens.Settings,
+        Screens.Export,
     )
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val selectedItem = remember { mutableStateOf(items[0]) }

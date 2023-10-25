@@ -2,6 +2,8 @@ package fr.sdis83.remocra.mobile
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -40,6 +42,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val mapViewModel = MapViewModel(applicationContext)
+
+        // A l'ouverture de l'appli, on demande à l'utilisateur d'autoriser l'accès aux fichiers
+        if (!Environment.isExternalStorageManager()) {
+            val getpermission = Intent()
+            getpermission.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+            startActivity(getpermission)
+        }
         setContent {
             REMOcRAMobileTheme {
                 Surface(

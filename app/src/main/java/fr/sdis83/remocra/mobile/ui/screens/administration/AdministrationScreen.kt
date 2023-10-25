@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
+import fr.sdis83.remocra.mobile.viewmodels.ExportViewModel
 
 @Composable
 fun AdministrationScreen(viewModel: AdministrationViewModel) {
@@ -32,16 +34,27 @@ fun AdministrationScreen(viewModel: AdministrationViewModel) {
     )
 
     val administrationViewModel = AdministrationViewModel(context.applicationContext as Application)
+    val exportViewModel = ExportViewModel(context.applicationContext as Application)
 
     var urlSaisie: String? by remember { mutableStateOf(null) }
 
-    Button(
-        modifier = Modifier.padding(20.dp, 20.dp),
-        onClick = {
-            viewModel.setAdministrationScreen(true)
-        },
-    ) {
-        Text(stringResource(R.string.retour))
+    Row(Modifier.padding(20.dp, 20.dp)) {
+        Button(
+            modifier = Modifier.padding(10.dp, 0.dp),
+            onClick = {
+                viewModel.setAdministrationScreen(true)
+            },
+        ) {
+            Text(stringResource(R.string.retour))
+        }
+        Button(
+            modifier = Modifier.padding(10.dp, 0.dp),
+            onClick = {
+                exportViewModel.exportLogs(context)
+            },
+        ) {
+            Text(stringResource(R.string.exporterLogs))
+        }
     }
 
     Column(
