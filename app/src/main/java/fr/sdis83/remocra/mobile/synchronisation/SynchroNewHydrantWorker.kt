@@ -26,6 +26,7 @@ class SynchroNewHydrantWorker constructor(
                 lon = hydrant.lon,
                 code = hydrant.code!!,
                 idGestionnaire = hydrant.idGestionnaire,
+                idGestionnaireRemocra = hydrant.idRemocraGestionnaire,
                 idNature = hydrant.idNature!!,
                 idNatureDeci = hydrant.idNatureDeci!!,
                 observations = hydrant.observation,

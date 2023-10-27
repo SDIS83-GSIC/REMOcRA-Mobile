@@ -92,6 +92,8 @@ interface SynchronisationService {
         code: String,
         @Field("idGestionnaire")
         idGestionnaire: UUID?,
+        @Field("idGestionnaireRemocra")
+        idGestionnaireRemocra: Long?,
         @Field("idNatureDeci")
         idNatureDeci: Long,
         @Field("idNature")
