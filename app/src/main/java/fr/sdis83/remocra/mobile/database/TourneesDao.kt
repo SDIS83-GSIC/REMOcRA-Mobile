@@ -69,4 +69,12 @@ abstract class TourneesDao {
 
     @Query("SELECT count(*) FROM tournee t")
     abstract fun getTourneeCount(): LiveData<Int>
+
+    @Query(
+        """
+        SELECT count(*) FROM hydrant
+        WHERE hydrant.idRemocra is null
+         """,
+    )
+    abstract fun getHydrantsCreesCount(): LiveData<Int>
 }

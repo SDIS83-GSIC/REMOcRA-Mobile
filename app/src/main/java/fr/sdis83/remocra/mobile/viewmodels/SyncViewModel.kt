@@ -38,6 +38,7 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
     val hydrantTourneeCount = hydrantVisiteDao.getHydrantTourneeCount()
     val tourneeNotDoneCount = tourneesDao.getTourneeNotDoneCount()
     val tourneeCount = tourneesDao.getTourneeCount()
+    val hydrantsCreesCount = tourneesDao.getHydrantsCreesCount()
     val isBusy = MutableLiveData(false)
 
     private var referentielStatus = mutableStateOf(JobStatus.WAITING)

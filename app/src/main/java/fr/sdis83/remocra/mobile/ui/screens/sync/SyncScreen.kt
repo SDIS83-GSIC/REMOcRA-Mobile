@@ -39,6 +39,7 @@ fun SyncScreen(syncViewModel: SyncViewModel) {
     val hydrantTourneeCount by syncViewModel.hydrantTourneeCount.observeAsState()
     val tourneeNotDoneCount by syncViewModel.tourneeNotDoneCount.observeAsState()
     val tourneeCount by syncViewModel.tourneeCount.observeAsState()
+    val hydrantsCreesCount by syncViewModel.hydrantsCreesCount.observeAsState()
 
     var showCustomDialog by remember {
         mutableStateOf(false)
@@ -80,12 +81,6 @@ fun SyncScreen(syncViewModel: SyncViewModel) {
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start,
             ) {
-//                Text(
-//                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 20.dp),
-//                    text = stringResource(R.string.derniere_synchro),
-//                    fontWeight = FontWeight.Bold,
-//                    fontSize = 20.sp,
-//                )
                 Text(
                     text = stringResource(R.string.visites_finies, hydrantVisiteCount ?: 0, hydrantTourneeCount ?: 0),
                     fontWeight = FontWeight.Normal,
@@ -93,6 +88,11 @@ fun SyncScreen(syncViewModel: SyncViewModel) {
                 )
                 Text(
                     text = stringResource(R.string.tournees_finies, tourneeNotDoneCount ?: 0, tourneeCount ?: 0),
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 18.sp,
+                )
+                Text(
+                    text = stringResource(R.string.hydrants_crees, 0, hydrantsCreesCount ?: 0),
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
                 )
