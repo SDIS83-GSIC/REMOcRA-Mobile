@@ -25,12 +25,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 import fr.sdis83.remocra.mobile.viewmodels.SyncViewModel
 
 @Composable
-fun SyncScreen(syncViewModel: SyncViewModel) {
+fun SyncScreen(syncViewModel: SyncViewModel, navController: NavController) {
     val context = LocalContext.current
 
     val choixTourneeViewModel = ChoixTourneeViewModel(context.applicationContext as Application)
@@ -158,7 +159,7 @@ fun SyncScreen(syncViewModel: SyncViewModel) {
     }
 
     if (showCustomDialog) {
-        ChoixTourneeDialog(choixTourneeViewModel) {
+        ChoixTourneeDialog(choixTourneeViewModel, navController = navController) {
             showCustomDialog = !showCustomDialog
         }
     }

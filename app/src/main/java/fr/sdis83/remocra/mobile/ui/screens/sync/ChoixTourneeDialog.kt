@@ -32,13 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.TourneeDispo
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, onDismiss: () -> Unit) {
+fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, navController: NavController, onDismiss: () -> Unit) {
     val context = LocalContext.current
 
     val listeTourneesDispo = choixTourneeViewModel.tourneesDisponibles.observeAsState(listOf())
@@ -94,7 +95,7 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, onDismiss: 
                         Button(
                             onClick = {
                                 // Fait un appel pour réserver les tournées selectionnées
-                                choixTourneeViewModel.reserveTournees(context)
+                                choixTourneeViewModel.reserveTournees(context, navController = navController)
                                 onDismiss()
                             },
                             Modifier

@@ -62,7 +62,7 @@ fun NavGraph(
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
             }
-            SyncScreen(SyncViewModel(Application()))
+            SyncScreen(SyncViewModel(Application()), navController)
         }
 
         composable(route = Screens.Tournees.route) {
