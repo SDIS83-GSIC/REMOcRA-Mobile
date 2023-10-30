@@ -1,6 +1,7 @@
 package fr.sdis83.remocra.mobile
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -33,6 +34,13 @@ class LoginActivity : ComponentActivity() {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
 
+        val preferences = applicationContext.getSharedPreferences(
+            applicationContext.getString(R.string.app_name),
+            Context.MODE_PRIVATE,
+        )
+
+        val mdm = preferences.getString(applicationContext.resources.getString(R.string.preference_mdm), "false").toBoolean()
+
         splashScreen.setKeepOnScreenCondition { splashViewModel.isLoading.value }
 
         splashViewModel.goToMainActivity.observe(this) {
@@ -50,7 +58,7 @@ class LoginActivity : ComponentActivity() {
         }
 
         administrationViewModel.administrationScreen.observe(this) {
-            if (it) {
+            if (it && !mdm) {
                 startActivity(Intent(this@LoginActivity, AdministrationActivity::class.java))
                 finish()
             }
@@ -63,7 +71,7 @@ class LoginActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background,
                 ) {
                     Scaffold {
-                        LoginScreen(viewModel = loginViewModel, administrationViewModel, application)
+                        LoginScreen(viewModel = loginViewModel, administrationViewModel, application, mdm)
                     }
                 }
             }

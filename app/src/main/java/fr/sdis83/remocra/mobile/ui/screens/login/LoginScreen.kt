@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,27 +32,44 @@ import androidx.compose.ui.unit.dp
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.utils.getVersionName
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
+import fr.sdis83.remocra.mobile.viewmodels.ExportViewModel
 import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: AdministrationViewModel, application: Application) {
+fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: AdministrationViewModel, application: Application, isMdm: Boolean) {
     var username: String by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+    val exportViewModel = ExportViewModel(context.applicationContext as Application)
+
     Row(
+        modifier = Modifier.padding(20.dp, 20.dp),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Button(
-            modifier = Modifier.padding(20.dp, 20.dp),
-            onClick = {
-                administrationViewModel.setAdministrationScreen(true)
-            },
-            enabled = !viewModel.isBusy,
-        ) {
-            Text(stringResource(R.string.administrer))
+        if (!isMdm) {
+            Button(
+                onClick = {
+                    administrationViewModel.setAdministrationScreen(true)
+                },
+                enabled = !viewModel.isBusy,
+            ) {
+                Text(stringResource(R.string.administrer))
+            }
+        } else {
+            Button(
+                modifier = Modifier.padding(10.dp, 0.dp),
+                onClick = {
+                    exportViewModel.exportLogs(context)
+                },
+            ) {
+                Text(stringResource(R.string.exporterLogs))
+            }
         }
         Text(
+            modifier = Modifier.padding(10.dp, 0.dp),
             text = "Version : ${getVersionName(applicationContext = application)}",
             fontWeight = FontWeight.Bold,
         )

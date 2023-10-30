@@ -4,6 +4,7 @@
     <string name="username">Utilisateur</string>
     <string name="password">Mot de passe</string>
     <string name="url_api">preference_url_api</string>
+    <string name="preference_mdm">preference_mdm</string>
     <string name="server">Adresse du serveur de synchronisation</string>
     <string name="server_placeholder">https://nomduserver.com</string>
 
