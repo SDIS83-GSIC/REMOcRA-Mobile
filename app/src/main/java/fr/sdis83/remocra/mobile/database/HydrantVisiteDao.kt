@@ -49,6 +49,7 @@ abstract class HydrantVisiteDao {
     data class HydrantVisiteWithAnomalies(
         val hydrantVisite: HydrantVisite,
         val anomalies: MutableList<TypeHydrantAnomalie> = mutableListOf(),
+        val numeroHydrant: String?,
     )
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

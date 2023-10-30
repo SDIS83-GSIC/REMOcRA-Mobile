@@ -47,6 +47,7 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
                 idHydrant = idHydrant,
                 hasAnomalieChanges = true,
             ),
+            numeroHydrant = hydrantState.value?.numero,
         ),
     )
     val hydrantVisiteState: StateFlow<HydrantVisiteWithAnomalies> =
@@ -109,6 +110,7 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
             } else {
                 hydrantVisiteDao.getExistingVisiteAnomalie(idHydrant).toMutableList()
             },
+            numeroHydrant = hydrantState.value?.numero,
         )
     }
 

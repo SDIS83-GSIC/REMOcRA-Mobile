@@ -68,6 +68,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
@@ -174,9 +175,11 @@ fun HydrantVisiteScreenInner(
                         Text(text = "Retour")
                     }
                     Text(
-                        text = "Visite d'un point d'eau : ${pagerState.currentPage + 1} / $nbSteps",
+                        modifier = Modifier.padding(10.dp, 0.dp),
+                        text = "Visite du point d'eau n°${hydrantVisite.numeroHydrant} : ${pagerState.currentPage + 1} / $nbSteps",
                         fontSize = MaterialTheme.typography.headlineLarge.fontSize,
                         fontWeight = FontWeight.Bold,
+                        lineHeight = 35.sp,
                     )
                 }
                 HydrantVisiteForm(
