@@ -57,6 +57,7 @@ import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import org.osmdroid.api.IGeoPoint
 import org.osmdroid.config.Configuration
+import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.events.MapListener
 import org.osmdroid.events.ScrollEvent
 import org.osmdroid.events.ZoomEvent
@@ -64,6 +65,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
@@ -142,6 +144,21 @@ fun MapView(
             isOptionsMenuEnabled = true
         }
     }
+    mapState.overlays.add(
+        MapEventsOverlay(object : MapEventsReceiver {
+            override fun singleTapConfirmedHelper(p: GeoPoint): Boolean {
+                if (iwOverlay.relatedObject != null) {
+                    InfoWindow.closeAllInfoWindowsOn(mapState)
+                    iwOverlay.setVisible(false)
+                }
+                return false
+            }
+
+            override fun longPressHelper(p: GeoPoint): Boolean {
+                return false
+            }
+        }),
+    )
 
     LaunchedEffect(Unit) {
         mapViewModel.register(mapState)
@@ -152,7 +169,8 @@ fun MapView(
                     iwOverlay,
                 ),
             )
-            mapState.addMapListener(
+
+            addMapListener(
                 object : MapListener {
                     override fun onScroll(event: ScrollEvent?): Boolean {
                         mapViewModel.setCenter(mapCenter)
@@ -211,12 +229,14 @@ fun MapView(
                     setOnClickListener { points, point ->
                         InfoWindow.closeAllInfoWindowsOn(mapState)
                         val selected = points.get(point) as MapViewModel.HydrantGeoPoint
+                        iwOverlay.setVisible(true)
                         mapState.controller.animateTo(selected)
                         iwOverlay.position = selected
                         iwOverlay.relatedObject = selected
                         iwOverlay.showInfoWindow()
                     }
                 }
+
             mapState.overlays.retainAll(
                 listOf(
                     locationOverlay,
@@ -274,6 +294,7 @@ fun MapView(
                         InfoWindow.closeAllInfoWindowsOn(mapState)
                         val selected = points.get(point) as MapViewModel.HydrantGeoPoint
                         mapState.controller.animateTo(selected)
+                        iwOverlay.setVisible(true)
                         iwOverlay.position = selected
                         iwOverlay.relatedObject = selected
                         iwOverlay.showInfoWindow()
@@ -330,6 +351,7 @@ fun MapView(
                             InfoWindow.closeAllInfoWindowsOn(mapState)
                             val selected = points.get(point) as MapViewModel.HydrantGeoPoint
                             mapState.controller.animateTo(selected)
+                            iwOverlay.setVisible(true)
                             iwOverlay.position = selected
                             iwOverlay.relatedObject = selected
                             iwOverlay.showInfoWindow()
