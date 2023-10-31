@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import fr.sdis83.remocra.mobile.workers.ExportCaracteristiquesTabletteWorker
 import fr.sdis83.remocra.mobile.workers.ExportLogWorker
 
 class ExportViewModel(application: Application) : AndroidViewModel(application) {
@@ -15,19 +16,24 @@ class ExportViewModel(application: Application) : AndroidViewModel(application) 
         private const val TAG: String = "ExportViewModel"
     }
 
-    fun exportLogs(context: Context) {
+    fun exportDiagnostics(context: Context) {
         val exportLogWorker = OneTimeWorkRequestBuilder<ExportLogWorker>().build()
+        val exportCaracteristiquesTabletteWorker =
+            OneTimeWorkRequestBuilder<ExportCaracteristiquesTabletteWorker>().build()
 
         WorkManager.getInstance(getApplication()).let { workManager ->
-            workManager.enqueue(exportLogWorker)
+            workManager.beginWith(exportLogWorker)
+                .then(exportCaracteristiquesTabletteWorker)
+                .enqueue()
+
             workManager.getWorkInfoByIdLiveData(exportLogWorker.id).observeForever {
                 when (it.state) {
                     WorkInfo.State.RUNNING -> {
-                        Toast.makeText(context, "Export des logs en cours", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Export en cours", Toast.LENGTH_SHORT).show()
                     }
 
                     WorkInfo.State.SUCCEEDED -> {
-                        Toast.makeText(context, "Export des logs réussi", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Export réussi", Toast.LENGTH_SHORT).show()
                     }
 
                     WorkInfo.State.FAILED -> {

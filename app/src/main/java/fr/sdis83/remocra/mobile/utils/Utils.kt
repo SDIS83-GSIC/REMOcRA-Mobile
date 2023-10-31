@@ -27,6 +27,19 @@ fun getVersionName(applicationContext: Context): String =
         ).versionName
     }
 
+fun getVersionCode(applicationContext: Context): Long =
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+        applicationContext.packageManager.getPackageInfo(
+            applicationContext.packageName,
+            PackageManager.PackageInfoFlags.of(0),
+        ).longVersionCode
+    } else {
+        applicationContext.packageManager.getPackageInfo(
+            applicationContext.packageName,
+            PackageManager.GET_META_DATA,
+        ).longVersionCode
+    }
+
 fun deleteFile(listeFile: List<String>) {
     listeFile.forEach {
         val photo = File(it)

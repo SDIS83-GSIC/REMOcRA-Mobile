@@ -76,6 +76,9 @@ abstract class RemocraDatabase : RoomDatabase() {
     abstract fun hydrantPhotoDao(): HydrantPhotoDao
 
     abstract fun agentDao(): AgentDao
+
+    fun getRoomVersion() =
+        openHelper.readableDatabase.version
 }
 
 class Converters {

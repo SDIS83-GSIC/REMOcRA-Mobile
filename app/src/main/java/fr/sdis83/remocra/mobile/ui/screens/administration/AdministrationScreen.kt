@@ -50,7 +50,7 @@ fun AdministrationScreen(viewModel: AdministrationViewModel) {
         Button(
             modifier = Modifier.padding(10.dp, 0.dp),
             onClick = {
-                exportViewModel.exportLogs(context)
+                exportViewModel.exportDiagnostics(context)
             },
         ) {
             Text(stringResource(R.string.exporterLogs))

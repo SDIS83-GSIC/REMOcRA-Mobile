@@ -102,6 +102,6 @@
     <string name="precedent">Précédent</string>
 
 <!--    Export Screen-->
-    <string name="exporter">Exporter les données</string>
+    <string name="diagnostics">Diagnostics</string>
     <string name="exporterLogs">Exporter les logs</string>
 </resources>
