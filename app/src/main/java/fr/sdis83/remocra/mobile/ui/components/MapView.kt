@@ -42,6 +42,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.navigation.NavController
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -78,6 +79,7 @@ import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
 fun MapView(
     mapViewModel: MapViewModel,
     mapViewState: MutableState<MapViewState>,
+    navController: NavController,
     modifier: Modifier = Modifier,
     onLoad: ((map: MapView) -> Unit)? = null,
 ) {
@@ -119,7 +121,7 @@ fun MapView(
         Marker(mapState).apply {
             icon = context.getDrawable(R.drawable.baseline_arrow_drop_down_24)
             infoWindow = HydrantInfoWindow(
-                mapState,
+                mapState, navController,
             )
         }
     }
@@ -325,6 +327,7 @@ fun MapView(
                             hydrant.observation,
                             hydrant.peiCaracteristiques,
                             hydrant.statutVisite,
+                            it.key.idTournee,
                         )
                     }
                     SimpleFastPointOverlayCustom(

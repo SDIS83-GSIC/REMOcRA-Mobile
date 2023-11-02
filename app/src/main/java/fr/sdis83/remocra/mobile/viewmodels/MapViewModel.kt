@@ -112,6 +112,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
         val observation: String?,
         val peiCaracteristiques: String?,
         val statutVisite: HydrantVisite.HydrantVisiteStatut?,
+        val idTournee: UUID? = null,
     ) :
         GeoPoint(lat, lon)
 }

@@ -91,7 +91,7 @@ class MainActivity : ComponentActivity() {
                                             ),
                                         ),
                                 ) {
-                                    MapView(mapViewModel, mapViewState)
+                                    MapView(mapViewModel, mapViewState, navController)
                                 }
                             }
                             Column(
