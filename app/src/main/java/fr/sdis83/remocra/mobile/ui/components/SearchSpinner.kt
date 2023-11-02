@@ -25,9 +25,9 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
 import androidx.compose.ui.window.PopupProperties
+import fr.sdis83.remocra.mobile.utils.pxToDp
 
 @Composable
 fun <T> SearchSpinner(
@@ -107,18 +107,18 @@ private fun <T> Options(
         expanded = expanded.value,
         onDismissRequest = { expanded.value = false },
         modifier = Modifier
-            .requiredSizeIn(maxHeight = 200.dp)
+            .requiredSizeIn(maxHeight = 200.pxToDp)
             .width(with(LocalDensity.current) { textfieldSize.width.toDp() }),
     ) {
         if (!search.value.isNullOrBlank()) {
             if (search.value!!.length < 2) {
-                Text(modifier = Modifier.padding(12.dp), text = "Entrez au moins 2 lettres")
+                Text(modifier = Modifier.padding(12.pxToDp), text = "Entrez au moins 2 lettres")
             } else {
                 items.filter {
                     it.valueToString().lowercase().contains(search.value!!.lowercase())
                 }.let {
                     if (it.isNullOrEmpty()) {
-                        Text(modifier = Modifier.padding(12.dp), text = "Aucun résultat")
+                        Text(modifier = Modifier.padding(12.pxToDp), text = "Aucun résultat")
                     } else {
                         it.forEach { item ->
                             DropdownMenuItem(

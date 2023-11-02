@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.GpsNotFixed
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,7 +38,7 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.Gestionnaire
@@ -47,6 +46,7 @@ import fr.sdis83.remocra.mobile.database.TypeHydrantNature
 import fr.sdis83.remocra.mobile.database.TypeHydrantNatureDeci
 import fr.sdis83.remocra.mobile.ui.components.SearchSpinner
 import fr.sdis83.remocra.mobile.ui.components.Spinner
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.HydrantCreateViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -85,7 +85,7 @@ private fun HydrantCreateScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
+                        .padding(10.pxToDp),
                 ) {
                     Button(onClick = { navController.popBackStack() }) {
                         Text(
@@ -94,14 +94,14 @@ private fun HydrantCreateScreen(
                     }
                     Text(
                         text = stringResource(id = R.string.creationHydrant),
-                        fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                        fontSize = 5.em,
                         fontWeight = FontWeight.Bold,
                     )
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
+                        .padding(10.pxToDp),
                 ) {
                     HydrantCreateForm(
                         coroutineScope = coroutineScope,
@@ -161,7 +161,7 @@ private fun HydrantCreateForm(
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .padding(10.dp)
+            .padding(10.pxToDp)
             .verticalScroll(rememberScrollState()),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -265,7 +265,7 @@ private fun HydrantCreateForm(
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .defaultMinSize(minHeight = 128.dp),
+                    .defaultMinSize(minHeight = 128.pxToDp),
                 value = hydrantForm.observation ?: "",
                 onValueChange = {
                     hydrantCreateViewModel.updateForm(

@@ -39,9 +39,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import kotlinx.coroutines.launch
 import java.io.File
 import java.util.concurrent.Executor
@@ -121,7 +121,7 @@ fun CameraCapture(
         }
         Row(
             modifier = Modifier
-                .padding(32.dp)
+                .padding(32.pxToDp)
                 .align(Alignment.BottomCenter),
         ) {
             FloatingActionButton(

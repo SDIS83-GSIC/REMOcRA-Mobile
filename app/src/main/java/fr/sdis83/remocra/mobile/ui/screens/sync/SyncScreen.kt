@@ -23,10 +23,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.navigation.Screens
+import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 import fr.sdis83.remocra.mobile.viewmodels.SyncViewModel
 
@@ -55,24 +57,21 @@ fun SyncScreen(syncViewModel: SyncViewModel, navController: NavController) {
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(30.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start,
-        ) {
-            Text(
-                text = stringResource(R.string.synchronisation),
-                fontWeight = FontWeight.Bold,
-                fontSize = 30.sp,
-            )
-        }
+        HeaderAppBar(
+            title = stringResource(R.string.synchronisation),
+            returnAction = {
+                navController.popBackStack(
+                    Screens.Tournees.route,
+                    inclusive = false,
+                )
+            },
+        )
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .padding(30.dp),
+                .padding(30.pxToDp),
             horizontalArrangement = Arrangement.Start,
         ) {
             Column(
@@ -85,75 +84,82 @@ fun SyncScreen(syncViewModel: SyncViewModel, navController: NavController) {
                 Text(
                     text = stringResource(R.string.visites_finies, hydrantVisiteCount ?: 0, hydrantTourneeCount ?: 0),
                     fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
+                    fontSize = 3.em,
                 )
                 Text(
                     text = stringResource(R.string.tournees_finies, tourneeNotDoneCount ?: 0, tourneeCount ?: 0),
                     fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
+                    fontSize = 3.em,
                 )
                 Text(
                     text = stringResource(R.string.hydrants_crees, 0, hydrantsCreesCount ?: 0),
                     fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
+                    fontSize = 3.em,
                 )
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(0.5f)
-                        .padding(10.dp),
+                        .fillMaxWidth(1f)
+                        .padding(10.pxToDp),
                     horizontalArrangement = Arrangement.SpaceAround,
                 ) {
-                    // Bouton pour récupération des tournées
-                    Button(
+                    Column(
                         modifier = Modifier
-                            .padding(0.dp, 20.dp, 10.dp, 20.dp)
-                            .fillMaxWidth(0.5f),
-                        onClick = {
-                            showCustomDialog = !showCustomDialog
-                        },
-                        shape = RoundedCornerShape(50.dp),
-                        contentPadding = PaddingValues(10.dp),
-                        enabled = !isBusy!!,
+                            .padding(20.pxToDp)
+                            .fillMaxWidth(0.5f)
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.Start,
                     ) {
-                        Text(
-                            modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 10.dp),
-                            text = stringResource(R.string.choix_tournees),
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Center,
-                        )
+                        // Bouton pour récupération des tournées
+                        Button(
+                            modifier = Modifier
+                                .padding(0.pxToDp, 20.pxToDp)
+                                .fillMaxWidth(0.8f),
+                            onClick = {
+                                showCustomDialog = !showCustomDialog
+                            },
+                            shape = RoundedCornerShape(50.pxToDp),
+                            contentPadding = PaddingValues(10.pxToDp),
+                            enabled = !isBusy!!,
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(10.pxToDp),
+                                text = stringResource(R.string.choix_tournees),
+                                fontSize = 3.em,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
                     }
-
-                    // Bouton pour synchroniser les tournées
-                    Button(
-                        modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 20.dp).fillMaxWidth(1f),
-                        onClick = {
-                            syncViewModel.synchro(context.applicationContext as Application)
-                        },
-                        shape = RoundedCornerShape(50.dp),
-                        contentPadding = PaddingValues(10.dp),
-                        enabled = !isBusy!!,
+                    Column(
+                        modifier = Modifier
+                            .padding(20.pxToDp)
+                            .fillMaxWidth(1f)
+                            .fillMaxHeight(),
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.Start,
                     ) {
-                        Text(
-                            modifier = Modifier.padding(10.dp, 10.dp, 10.dp, 10.dp),
-                            text = stringResource(R.string.synchro_tournees),
-                            fontSize = 20.sp,
-                            textAlign = TextAlign.Center,
-                        )
+                        // Bouton pour synchroniser les tournées
+                        Button(
+                            modifier = Modifier
+                                .padding(0.pxToDp, 20.pxToDp)
+                                .fillMaxWidth(.8f),
+                            onClick = {
+                                syncViewModel.synchro(context.applicationContext as Application)
+                            },
+                            shape = RoundedCornerShape(50.pxToDp),
+                            contentPadding = PaddingValues(10.pxToDp),
+                            enabled = !isBusy!!,
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(10.pxToDp),
+                                text = stringResource(R.string.synchro_tournees),
+                                fontSize = 3.em,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
                     }
                 }
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start,
-            ) {
-                Text(
-                    text = stringResource(R.string.historique_synchro),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                )
             }
         }
     }

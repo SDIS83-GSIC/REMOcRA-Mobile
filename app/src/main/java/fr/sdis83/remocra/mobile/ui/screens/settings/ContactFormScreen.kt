@@ -28,12 +28,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ContactsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -83,7 +83,7 @@ fun ContactFormScreenInner(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .padding(10.pxToDp),
         verticalArrangement = Arrangement.Top,
     ) {
         HeaderAppBar(
@@ -101,7 +101,7 @@ fun ContactFormScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(all = 15.dp),
+                        .padding(all = 15.pxToDp),
                 ) {
                     Text(
                         text = stringResource(R.string.persoInfoSubST),
@@ -111,7 +111,7 @@ fun ContactFormScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
+                        .padding(horizontal = 20.pxToDp),
                 ) {
                     OutlinedTextField(
                         modifier = Modifier
@@ -133,7 +133,7 @@ fun ContactFormScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp)
+                        .padding(horizontal = 20.pxToDp)
                         .selectableGroup(),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
@@ -155,7 +155,7 @@ fun ContactFormScreenInner(
                             verticalArrangement = Arrangement.Center,
                         ) {
                             Row(
-                                modifier = Modifier.padding(end = 5.dp),
+                                modifier = Modifier.padding(end = 5.pxToDp),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 RadioButton(
@@ -177,7 +177,7 @@ fun ContactFormScreenInner(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(.5f)
-                            .padding(start = 5.dp, end = 5.dp),
+                            .padding(start = 5.pxToDp, end = 5.pxToDp),
                         value = currentContact.contact.nom ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
@@ -194,7 +194,7 @@ fun ContactFormScreenInner(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 5.dp),
+                            .padding(start = 5.pxToDp),
                         value = currentContact.contact.prenom ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
@@ -212,7 +212,7 @@ fun ContactFormScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(all = 15.dp),
+                        .padding(all = 15.pxToDp),
                 ) {
                     Text(
                         text = stringResource(R.string.addressSubST),
@@ -222,12 +222,12 @@ fun ContactFormScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
+                        .padding(horizontal = 20.pxToDp),
                 ) {
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(.15f)
-                            .padding(end = 5.dp),
+                            .padding(end = 5.pxToDp),
                         value = currentContact.contact.numeroVoie ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
@@ -244,7 +244,7 @@ fun ContactFormScreenInner(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(.15f)
-                            .padding(start = 5.dp, end = 5.dp),
+                            .padding(start = 5.pxToDp, end = 5.pxToDp),
                         value = currentContact.contact.suffixeVoie ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
@@ -261,7 +261,7 @@ fun ContactFormScreenInner(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 5.dp),
+                            .padding(start = 5.pxToDp),
                         value = currentContact.contact.voie ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
@@ -279,12 +279,12 @@ fun ContactFormScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
+                        .padding(horizontal = 20.pxToDp),
                 ) {
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(.15f)
-                            .padding(end = 5.dp),
+                            .padding(end = 5.pxToDp),
                         value = currentContact.contact.codePostal ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
@@ -301,7 +301,7 @@ fun ContactFormScreenInner(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(.50f)
-                            .padding(start = 5.dp, end = 5.dp),
+                            .padding(start = 5.pxToDp, end = 5.pxToDp),
                         value = currentContact.contact.ville ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
@@ -318,7 +318,7 @@ fun ContactFormScreenInner(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 5.dp),
+                            .padding(start = 5.pxToDp),
                         value = currentContact.contact.pays ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
@@ -336,7 +336,7 @@ fun ContactFormScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(all = 15.dp),
+                        .padding(all = 15.pxToDp),
                 ) {
                     Text(
                         text = stringResource(R.string.contactInfoSubST),
@@ -346,12 +346,12 @@ fun ContactFormScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 20.dp),
+                        .padding(horizontal = 20.pxToDp),
                 ) {
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(.3f)
-                            .padding(end = 5.dp),
+                            .padding(end = 5.pxToDp),
                         value = currentContact.contact.telephone ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
@@ -368,7 +368,7 @@ fun ContactFormScreenInner(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(.50f)
-                            .padding(start = 5.dp, end = 5.dp),
+                            .padding(start = 5.pxToDp, end = 5.pxToDp),
                         value = currentContact.contact.email ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
@@ -386,7 +386,7 @@ fun ContactFormScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(all = 15.dp),
+                        .padding(all = 15.pxToDp),
                 ) {
                     Text(
                         text = stringResource(R.string.roleSubST),
@@ -418,7 +418,7 @@ fun ContactFormScreenInner(
                                     },
                                 )
                                 Text(
-                                    modifier = Modifier.padding(start = 2.dp),
+                                    modifier = Modifier.padding(start = 2.pxToDp),
                                     text = role.nom.toString(),
                                 )
                             }
@@ -427,7 +427,7 @@ fun ContactFormScreenInner(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(all = 20.dp),
+                            .padding(all = 20.pxToDp),
                         verticalArrangement = Arrangement.Top,
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {

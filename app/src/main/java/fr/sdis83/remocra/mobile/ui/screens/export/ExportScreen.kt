@@ -15,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ExportViewModel
 
 @Composable
@@ -41,7 +41,7 @@ fun ExportScreen(navController: NavController?) {
             },
         )
         Column(
-            modifier = Modifier.padding(20.dp, 20.dp),
+            modifier = Modifier.padding(20.pxToDp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -50,9 +50,9 @@ fun ExportScreen(navController: NavController?) {
                     " 2 fichiers seront exportés à la racine de votre appareil (caracteristiques_remocra.log et logcat_remocra.log).",
                 textAlign = TextAlign.Center,
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(16.pxToDp))
             Button(
-                modifier = Modifier.padding(20.dp, 20.dp),
+                modifier = Modifier.padding(20.pxToDp, 20.pxToDp),
                 onClick = {
                     // Export worker
                     exportViewModel.exportDiagnostics(context)

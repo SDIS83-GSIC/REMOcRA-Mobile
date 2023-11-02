@@ -23,12 +23,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.DroitViewModel
 
 @Composable
@@ -50,7 +50,7 @@ fun SettingScreen(navController: NavController?) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(50.dp),
+                .padding(50.pxToDp),
             verticalAlignment = Alignment.Top,
         ) {
             if (listTypeDroit?.firstOrNull { it.code == GlobalConstants.CREATION_GESTIONNAIRE_MOBILE_DROIT } != null) {
@@ -72,7 +72,7 @@ fun SettingScreen(navController: NavController?) {
                         Button(
                             modifier = Modifier
                                 .fillMaxWidth(.5f)
-                                .padding(20.dp),
+                                .padding(20.pxToDp),
                             onClick = { navController?.navigate(Screens.CreateGestionnaire.route) },
                         ) {
                             Text(text = stringResource(R.string.createGestionnaireBTN))
@@ -80,7 +80,7 @@ fun SettingScreen(navController: NavController?) {
                         Button(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(20.dp),
+                                .padding(20.pxToDp),
                             onClick = { navController?.navigate(Screens.ListGestionnaire.route) },
                         ) {
                             Text(text = stringResource(R.string.manageGestionnaireBTN))
@@ -102,11 +102,11 @@ fun SettingScreen(navController: NavController?) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth(0.1f)
-                            .padding(10.dp),
+                            .padding(10.pxToDp),
                     ) {
                         Spacer(
                             modifier = Modifier
-                                .width(2.dp)
+                                .width(2.pxToDp)
                                 .fillMaxHeight(.9f)
                                 .background(MaterialTheme.colorScheme.primaryContainer),
                         )

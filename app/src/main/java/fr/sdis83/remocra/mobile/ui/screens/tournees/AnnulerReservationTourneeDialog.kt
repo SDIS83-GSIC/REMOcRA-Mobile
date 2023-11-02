@@ -18,11 +18,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 
 @Composable
@@ -37,8 +37,9 @@ fun AnnulerReservationTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel
         ),
     ) {
         Card(
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier.size(1600.dp, 300.dp),
+            shape = RoundedCornerShape(10.pxToDp),
+            modifier = Modifier.size(2000.pxToDp, 600.pxToDp)
+                .padding(50.pxToDp),
         ) {
             Column(
                 Modifier
@@ -48,26 +49,27 @@ fun AnnulerReservationTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel
             ) {
                 Text(
                     text = stringResource(R.string.annuler_reservation),
-                    modifier = Modifier.padding(10.dp),
-                    fontSize = 25.sp,
+                    modifier = Modifier.padding(10.pxToDp),
+                    fontSize = 5.em,
                     fontWeight = FontWeight.Bold,
+                    lineHeight = 1.em,
                 )
 
                 Row(
                     Modifier
-                        .padding(15.dp)
+                        .padding(15.pxToDp)
                         .fillMaxHeight(0.5f),
                 ) {
                     Text(
                         text = stringResource(id = R.string.warning_annuler_reservation),
                     )
                 }
-                Row(Modifier.padding(top = 10.dp)) {
+                Row(Modifier.padding(top = 10.pxToDp)) {
                     OutlinedButton(
                         onClick = { onDismiss() },
                         Modifier
                             .fillMaxWidth()
-                            .padding(8.dp)
+                            .padding(8.pxToDp)
                             .weight(1F),
                     ) {
                         Text(text = stringResource(R.string.non))
@@ -80,7 +82,7 @@ fun AnnulerReservationTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel
                             onDismiss()
                         },
                         Modifier
-                            .padding(8.dp)
+                            .padding(8.pxToDp)
                             .weight(1F),
                     ) {
                         Text(

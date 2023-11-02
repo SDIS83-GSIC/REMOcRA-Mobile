@@ -20,7 +20,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,10 +33,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.navigation.Screens
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import fr.sdis83.remocra.mobile.viewmodels.TourneesViewModel
@@ -64,11 +63,11 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
+                        .padding(20.pxToDp),
                 ) {
                     Text(
                         text = "Liste des tournées",
-                        fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                        fontSize = 5.em,
                         fontWeight = FontWeight.Bold,
                     )
                 }
@@ -78,7 +77,7 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                             items(tourneeList!!) { tourneeItem ->
                                 Row(
                                     Modifier
-                                        .padding(8.dp)
+                                        .padding(10.pxToDp)
                                         .fillMaxWidth()
                                         .clickable {
                                             zoomSurTournee(tourneeItem.tournee, mapViewModel)
@@ -95,17 +94,18 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                     Box(
                                         modifier =
                                         Modifier
-                                            .clip(RoundedCornerShape(8.dp))
+                                            .clip(RoundedCornerShape(10.pxToDp))
                                             .background(
                                                 tourneeItem.tournee
                                                     .getColor()
                                                     .copy(alpha = 0.5f),
                                             )
-                                            .padding(16.dp)
+                                            .padding(16.pxToDp)
                                             .fillMaxWidth(),
                                     ) {
                                         IconButton(
-                                            modifier = Modifier.align(Alignment.TopEnd)
+                                            modifier = Modifier
+                                                .align(Alignment.TopEnd)
                                                 .fillMaxWidth(0.2f),
                                             onClick = {
                                                 idTourneeAAnnuler = tourneeItem.tournee.idRemocra
@@ -115,7 +115,7 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                                 imageVector = Icons.Filled.Delete,
                                                 contentDescription = "Centre",
                                                 tint = Color.Red,
-                                                modifier = Modifier.size(30.dp),
+                                                modifier = Modifier.size(40.pxToDp),
                                             )
                                         }
                                         Column(
@@ -125,7 +125,7 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                                 Text(
                                                     text = tourneeItem.tournee.nom,
                                                     fontWeight = FontWeight.Bold,
-                                                    fontSize = 18.sp,
+                                                    fontSize = 3.em,
                                                 )
                                             }
                                             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -133,20 +133,22 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                                     Text(
                                                         text = "${tourneeItem.tournee.hydrantCount} point(s) d'eau",
                                                         fontWeight = FontWeight.Bold,
+                                                        fontSize = 2.5.em,
                                                     )
                                                 }
                                                 Column(Modifier.weight(1f)) {
                                                     Text(
                                                         text = "${(tourneeItem.progression * 100).roundToInt()}%",
                                                         fontWeight = FontWeight.Bold,
+                                                        fontSize = 2.5.em,
                                                     )
                                                 }
                                                 Column(Modifier.weight(5f)) {
                                                     LinearProgressIndicator(
                                                         progress = tourneeItem.progression,
                                                         modifier = Modifier
-                                                            .height(12.dp)
-                                                            .clip(RoundedCornerShape(16.dp)),
+                                                            .height(12.pxToDp)
+                                                            .clip(RoundedCornerShape(16.pxToDp)),
                                                         color = Color(0.1f, 0.33f, 1f, 1f),
                                                         trackColor = Color(0.5f, 0.5f, 0.5f, 0.25f),
                                                     )

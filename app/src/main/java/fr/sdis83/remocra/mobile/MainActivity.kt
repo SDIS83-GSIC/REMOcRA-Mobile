@@ -21,7 +21,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -31,6 +30,7 @@ import fr.sdis83.remocra.mobile.ui.components.MapView
 import fr.sdis83.remocra.mobile.ui.layout.Layout
 import fr.sdis83.remocra.mobile.ui.theme.REMOcRAMobileTheme
 import fr.sdis83.remocra.mobile.utils.getVersionName
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 
@@ -98,9 +98,9 @@ class MainActivity : ComponentActivity() {
                                 modifier =
                                 if (mapViewState.value.isFullscreen) {
                                     Modifier
-                                        .padding(8.dp)
+                                        .padding(8.pxToDp)
                                         .fillMaxHeight()
-                                        .width(0.dp)
+                                        .width(0.pxToDp)
                                         .animateContentSize(
                                             animationSpec = tween(
                                                 durationMillis = 500,
@@ -109,7 +109,7 @@ class MainActivity : ComponentActivity() {
                                         )
                                 } else {
                                     Modifier
-                                        .padding(8.dp)
+                                        .padding(8.pxToDp)
                                         .fillMaxHeight()
                                         .weight(1f)
                                         .animateContentSize(

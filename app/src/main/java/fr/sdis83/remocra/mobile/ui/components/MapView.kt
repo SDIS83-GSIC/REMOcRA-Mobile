@@ -37,7 +37,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
@@ -54,6 +53,7 @@ import fr.sdis83.remocra.mobile.MapViewState
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.Tournee
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import org.osmdroid.api.IGeoPoint
 import org.osmdroid.config.Configuration
@@ -385,7 +385,7 @@ fun MapView(
         }
         Column(
             Modifier
-                .padding(16.dp)
+                .padding(16.pxToDp)
                 .align(Alignment.BottomStart),
         ) {
             FloatingActionButton(
@@ -399,7 +399,7 @@ fun MapView(
                     contentDescription = "ZoomIn",
                 )
             }
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.pxToDp))
             FloatingActionButton(
                 onClick = {
                     mapState.controller.zoomOut()
@@ -411,7 +411,7 @@ fun MapView(
                     contentDescription = "ZoomOut",
                 )
             }
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.pxToDp))
             FloatingActionButton(
                 onClick = {
                     checkLocationSetting(
@@ -451,7 +451,7 @@ fun MapView(
                     contentDescription = "GPS",
                 )
             }
-            Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.pxToDp))
             FloatingActionButton(
                 onClick = {
                     mapViewState.value = mapViewState.value.copy(

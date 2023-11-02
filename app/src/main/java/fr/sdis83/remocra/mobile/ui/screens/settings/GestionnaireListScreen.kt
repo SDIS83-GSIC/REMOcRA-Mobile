@@ -32,11 +32,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.GestionnaireListViewModel
 
 @Composable
@@ -70,7 +70,7 @@ fun GestionnaireList(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 80.dp),
+                .padding(horizontal = 80.pxToDp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             OutlinedTextField(
@@ -80,24 +80,24 @@ fun GestionnaireList(
                 placeholder = { Text(text = "Recherche") },
                 singleLine = true,
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(16.pxToDp))
             Text(text = "${gestionnairesList.value.size} résultats")
         }
         LazyColumn(
-            Modifier.padding(horizontal = 80.dp),
+            Modifier.padding(horizontal = 80.pxToDp),
         ) {
             items(gestionnairesList.value.sortedBy { it.nom }) { gestionnaire ->
                 Row(
                     Modifier
-                        .padding(8.dp)
+                        .padding(8.pxToDp)
                         .fillMaxWidth(),
                 ) {
                     Box(
                         modifier =
                         Modifier
-                            .clip(RoundedCornerShape(8.dp))
+                            .clip(RoundedCornerShape(8.pxToDp))
                             .background(Color(0xDDE9F3FF))
-                            .padding(16.dp)
+                            .padding(16.pxToDp)
                             .fillMaxWidth(),
                     ) {
                         Column {
@@ -117,7 +117,7 @@ fun GestionnaireList(
                                 Column {
                                     IconButton(
                                         onClick = {
-                                            navController?.navigate(
+                                            navController.navigate(
                                                 Screens.EditGestionnaire.route
                                                     .replace(
                                                         oldValue = "{idGestionnaire}",
@@ -129,7 +129,7 @@ fun GestionnaireList(
                                         Icon(
                                             imageVector = Icons.Filled.Edit,
                                             contentDescription = "EditGestionnaire",
-                                            Modifier.size(30.dp),
+                                            Modifier.size(30.pxToDp),
                                         )
                                     }
                                 }

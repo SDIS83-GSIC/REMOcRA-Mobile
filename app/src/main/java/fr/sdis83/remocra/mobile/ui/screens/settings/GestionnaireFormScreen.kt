@@ -41,12 +41,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.GestionnaireViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -100,7 +100,7 @@ fun GestionnaireFormScreenInner(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(10.dp),
+                .padding(10.pxToDp),
             verticalAlignment = Alignment.Top,
         ) {
             Column(
@@ -109,12 +109,12 @@ fun GestionnaireFormScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 10.dp, horizontal = 20.dp),
+                        .padding(vertical = 10.pxToDp, horizontal = 20.pxToDp),
                 ) {
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(.5f)
-                            .padding(end = 5.dp),
+                            .padding(end = 5.pxToDp),
                         value = currentGestionnaire.nom ?: "",
                         onValueChange = { it: String ->
                             gestionnaireViewModel.updateForm(
@@ -134,7 +134,7 @@ fun GestionnaireFormScreenInner(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 5.dp),
+                            .padding(start = 5.pxToDp),
                         value = currentGestionnaire.code ?: "",
                         onValueChange = { it: String ->
                             gestionnaireViewModel.updateForm(
@@ -150,7 +150,7 @@ fun GestionnaireFormScreenInner(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 20.dp),
+                            .padding(horizontal = 20.pxToDp),
                     ) {
                         Column(modifier = Modifier.fillMaxWidth()) {
                             Row(
@@ -165,7 +165,7 @@ fun GestionnaireFormScreenInner(
                                         modifier = Modifier.fillMaxWidth(),
                                         text = stringResource(R.string.associatedContactSubST),
                                         fontWeight = FontWeight.Bold,
-                                        fontSize = 25.sp,
+                                        fontSize = 4.em,
                                     )
                                 }
                                 Column(
@@ -199,29 +199,29 @@ fun GestionnaireFormScreenInner(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .height(250.dp),
+                                    .height(250.pxToDp),
                             ) {
                                 if (contactsList.value.isEmpty()) {
-                                    Column(Modifier.padding(horizontal = 80.dp)) {
+                                    Column(Modifier.padding(horizontal = 80.pxToDp)) {
                                         Text(text = stringResource(R.string.noContact))
                                     }
                                 } else {
                                     LazyColumn(
-                                        Modifier.padding(horizontal = 80.dp),
+                                        Modifier.padding(horizontal = 80.pxToDp),
                                     ) {
                                         items(contactsList.value) { contact ->
                                             if (navController != null) {
                                                 Row(
                                                     Modifier
-                                                        .padding(8.dp)
+                                                        .padding(8.pxToDp)
                                                         .fillMaxWidth(),
                                                 ) {
                                                     Box(
                                                         modifier =
                                                         Modifier
-                                                            .clip(RoundedCornerShape(8.dp))
+                                                            .clip(RoundedCornerShape(8.pxToDp))
                                                             .background(Color(0xDDE9F3FF))
-                                                            .padding(16.dp)
+                                                            .padding(16.pxToDp)
                                                             .fillMaxWidth(),
                                                     ) {
                                                         Column {
@@ -257,7 +257,7 @@ fun GestionnaireFormScreenInner(
                                                                         Icon(
                                                                             imageVector = Icons.Filled.Edit,
                                                                             contentDescription = "EditContact",
-                                                                            Modifier.size(30.dp),
+                                                                            Modifier.size(30.pxToDp),
                                                                         )
                                                                     }
                                                                 }
@@ -276,7 +276,7 @@ fun GestionnaireFormScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(all = 20.dp),
+                        .padding(all = 10.pxToDp),
                     verticalAlignment = Alignment.Bottom,
                 ) {
                     Button(
@@ -299,7 +299,7 @@ fun GestionnaireFormScreenInner(
                         Text(text = stringResource(R.string.saveGestionnaireBTN))
                     }
                     if (contextCreation) {
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(16.pxToDp))
                         Button(
                             enabled = gestionnaireViewModel.gestionnaireValidState.value.isValid,
                             onClick = {

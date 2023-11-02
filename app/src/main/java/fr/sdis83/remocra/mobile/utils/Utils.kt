@@ -2,6 +2,9 @@ package fr.sdis83.remocra.mobile.utils
 
 import android.content.Context
 import android.content.pm.PackageManager
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Dp
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -48,3 +51,5 @@ fun deleteFile(listeFile: List<String>) {
         }
     }
 }
+
+val Int.pxToDp: Dp @Composable get() = with(LocalDensity.current) { this@pxToDp.toDp() }

@@ -19,8 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
 import fr.sdis83.remocra.mobile.viewmodels.ExportViewModel
 
@@ -38,9 +38,9 @@ fun AdministrationScreen(viewModel: AdministrationViewModel) {
 
     var urlSaisie: String? by remember { mutableStateOf(null) }
 
-    Row(Modifier.padding(20.dp, 20.dp)) {
+    Row(Modifier.padding(20.pxToDp)) {
         Button(
-            modifier = Modifier.padding(10.dp, 0.dp),
+            modifier = Modifier.padding(10.pxToDp, 0.pxToDp),
             onClick = {
                 viewModel.setAdministrationScreen(true)
             },
@@ -48,7 +48,7 @@ fun AdministrationScreen(viewModel: AdministrationViewModel) {
             Text(stringResource(R.string.retour))
         }
         Button(
-            modifier = Modifier.padding(10.dp, 0.dp),
+            modifier = Modifier.padding(10.pxToDp, 0.pxToDp),
             onClick = {
                 exportViewModel.exportDiagnostics(context)
             },
@@ -77,7 +77,7 @@ fun AdministrationScreen(viewModel: AdministrationViewModel) {
             singleLine = true,
         )
         Button(
-            modifier = Modifier.padding(20.dp, 20.dp),
+            modifier = Modifier.padding(20.pxToDp),
             onClick = {
                 if (urlSaisie != null) {
                     preferences.edit().putString(url, urlSaisie).apply()

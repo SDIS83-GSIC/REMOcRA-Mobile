@@ -28,13 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.TourneeDispo
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 import kotlinx.coroutines.launch
 
@@ -56,8 +56,8 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, navControll
         ),
     ) {
         Card(
-            shape = RoundedCornerShape(10.dp),
-            modifier = Modifier.size(1600.dp, 300.dp),
+            shape = RoundedCornerShape(10.pxToDp),
+            modifier = Modifier.size(2000.pxToDp, 600.pxToDp),
         ) {
             Column(
                 Modifier
@@ -67,13 +67,13 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, navControll
             ) {
                 Text(
                     text = stringResource(R.string.tournees_a_embarquer),
-                    modifier = Modifier.padding(8.dp),
-                    fontSize = 20.sp,
+                    modifier = Modifier.padding(8.pxToDp),
+                    fontSize = 5.em,
                 )
 
                 if (!listeTourneesDispo.value.isNullOrEmpty()) {
                     LazyVerticalGrid(
-                        columns = GridCells.Adaptive(minSize = 225.dp),
+                        columns = GridCells.Adaptive(minSize = 300.pxToDp),
                         modifier = Modifier.weight(1f, fill = false),
                     ) {
                         items(listeTourneesDispo.value) {
@@ -81,12 +81,12 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, navControll
                         }
                     }
 
-                    Row(Modifier.padding(top = 10.dp)) {
+                    Row(Modifier.padding(top = 10.pxToDp)) {
                         OutlinedButton(
                             onClick = { onDismiss() },
                             Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
+                                .padding(8.pxToDp)
                                 .weight(1F),
                         ) {
                             Text(text = stringResource(R.string.annuler))
@@ -99,7 +99,7 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, navControll
                                 onDismiss()
                             },
                             Modifier
-                                .padding(8.dp)
+                                .padding(8.pxToDp)
                                 .weight(1F),
                         ) {
                             Text(
@@ -124,7 +124,7 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, navControll
                                 onDismiss()
                             },
                             Modifier
-                                .padding(10.dp),
+                                .padding(10.pxToDp),
                         ) {
                             Text(
                                 text = "Retour",
@@ -143,13 +143,15 @@ fun TourneeRow(tourneeDispo: TourneeDispo, choixTourneeViewModel: ChoixTourneeVi
     val coroutine = rememberCoroutineScope()
     Card(
         modifier = Modifier
-            .padding(all = 10.dp)
+            .padding(all = 10.pxToDp)
             .fillMaxWidth(),
     ) {
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             Checkbox(
                 checked = checkedState.value,
-                modifier = Modifier.padding(horizontal = 2.dp),
+                modifier = Modifier.padding(horizontal = 2.pxToDp),
                 onCheckedChange = {
                     checkedState.value = it
                     tourneeDispo.choisie = it
@@ -158,7 +160,7 @@ fun TourneeRow(tourneeDispo: TourneeDispo, choixTourneeViewModel: ChoixTourneeVi
                     }
                 },
             )
-            Text(tourneeDispo.nom.toString(), fontSize = 15.sp, modifier = Modifier.padding(10.dp))
+            Text(tourneeDispo.nom.toString(), fontSize = 2.5.em, modifier = Modifier.padding(10.pxToDp))
         }
     }
 }

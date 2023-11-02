@@ -46,7 +46,6 @@ import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -67,8 +66,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
@@ -86,6 +84,7 @@ import fr.sdis83.remocra.mobile.ui.components.LabelledCheckbox
 import fr.sdis83.remocra.mobile.ui.components.Spinner
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import fr.sdis83.remocra.mobile.utils.deleteFile
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.AgentViewModel
 import fr.sdis83.remocra.mobile.viewmodels.HydrantPhotoViewModel
 import fr.sdis83.remocra.mobile.viewmodels.HydrantVisiteViewModel
@@ -154,7 +153,7 @@ fun HydrantVisiteScreenInner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
+                        .padding(10.pxToDp),
                 ) {
                     Button(onClick = {
                         navController.navigate(
@@ -175,11 +174,11 @@ fun HydrantVisiteScreenInner(
                         Text(text = "Retour")
                     }
                     Text(
-                        modifier = Modifier.padding(10.dp, 0.dp),
+                        modifier = Modifier.padding(10.pxToDp, 0.pxToDp),
                         text = "Visite du point d'eau n°${hydrantVisite.numeroHydrant} : ${pagerState.currentPage + 1} / $nbSteps",
-                        fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                        fontSize = 5.em,
                         fontWeight = FontWeight.Bold,
-                        lineHeight = 35.sp,
+                        lineHeight = 1.em,
                     )
                 }
                 HydrantVisiteForm(
@@ -376,7 +375,7 @@ private fun StepOne(
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .padding(10.dp)
+            .padding(10.pxToDp)
             .verticalScroll(rememberScrollState()),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -504,7 +503,7 @@ private fun StepOne(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(text = "Non")
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(16.pxToDp))
                 Switch(
                     checked = hydrantVisite.hydrantVisite.ctrlDebitPression,
                     onCheckedChange = {
@@ -530,7 +529,7 @@ private fun StepOne(
                         }
                     },
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(16.pxToDp))
                 Text(text = "Oui")
             }
             if (hydrantVisite.hydrantVisite.ctrlDebitPression) {
@@ -658,7 +657,7 @@ private fun StepTwo(
     Column(
         modifier = Modifier
             .fillMaxHeight()
-            .padding(10.dp)
+            .padding(10.pxToDp)
             .verticalScroll(rememberScrollState()),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -695,8 +694,8 @@ private fun StepTwo(
                         Row(
                             modifier = Modifier
                                 .clickable { opened.value = !opened.value }
-                                .clip(RoundedCornerShape(8.dp))
-                                .padding(8.dp)
+                                .clip(RoundedCornerShape(8.pxToDp))
+                                .padding(8.pxToDp)
                                 .fillMaxWidth(),
                         ) {
                             Icon(
@@ -708,9 +707,9 @@ private fun StepTwo(
                                 },
                                 contentDescription = "Open/Close",
                             )
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(16.pxToDp))
                             Text(fontWeight = FontWeight.Bold, text = critere.nom)
-                            Spacer(modifier = Modifier.width(16.dp))
+                            Spacer(modifier = Modifier.width(16.pxToDp))
                             Text(text = "(${options[critere]!!.count { it.checked }}/${options[critere]!!.size})")
                         }
                         if (opened.value) {
@@ -731,7 +730,7 @@ private fun StepTwo(
             Button(onClick = onPrevious) {
                 Text(stringResource(id = R.string.precedent))
             }
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(16.pxToDp))
             Button(onClick = onNext) {
                 Text(stringResource(id = R.string.suivant))
             }
@@ -784,7 +783,7 @@ private fun StepThree(
     Column(
         Modifier
             .fillMaxHeight()
-            .padding(10.dp)
+            .padding(10.pxToDp)
             .verticalScroll(rememberScrollState()),
     ) {
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -794,7 +793,7 @@ private fun StepThree(
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .defaultMinSize(minHeight = 128.dp),
+                    .defaultMinSize(minHeight = 128.pxToDp),
                 value = hydrantVisite.hydrantVisite.observations ?: "",
                 onValueChange = {
                     onValueChange(
@@ -827,7 +826,7 @@ private fun StepThree(
                 }
             }) {
                 Icon(imageVector = Icons.Filled.CameraAlt, contentDescription = "Photo")
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(16.pxToDp))
                 Text(
                     text = "Ajouter",
                 )
@@ -839,7 +838,7 @@ private fun StepThree(
             Button(onClick = onPrevious) {
                 Text(stringResource(id = R.string.precedent))
             }
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(16.pxToDp))
             Button(onClick = onNext, enabled = hydrantVisite.hydrantVisite.isValid) {
                 Text(stringResource(id = R.string.valider))
             }
@@ -855,8 +854,8 @@ private fun PhotoList(photos: List<HydrantPhoto>, deletePhoto: (HydrantPhoto) ->
                 painter = rememberAsyncImagePainter(File(photo.path)),
                 contentDescription = photo.idHydrantPhoto.toString(),
                 modifier = Modifier
-                    .height(150.dp)
-                    .padding(8.dp)
+                    .height(150.pxToDp)
+                    .padding(10.pxToDp)
                     .aspectRatio(1f)
                     .clipToBounds(),
             )
@@ -866,7 +865,7 @@ private fun PhotoList(photos: List<HydrantPhoto>, deletePhoto: (HydrantPhoto) ->
                 Icon(
                     imageVector = Icons.Filled.Delete,
                     contentDescription = "EditContact",
-                    Modifier.size(30.dp),
+                    Modifier.size(60.pxToDp),
                 )
             }
         }

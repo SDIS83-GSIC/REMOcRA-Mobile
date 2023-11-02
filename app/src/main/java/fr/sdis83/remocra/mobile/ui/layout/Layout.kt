@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
@@ -31,10 +33,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.navigation.Screens
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import kotlinx.coroutines.launch
 
 @Composable
@@ -58,14 +60,19 @@ fun Layout(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(12.pxToDp))
                 Column(
                     Modifier.fillMaxHeight(0.8f),
                 ) {
                     items.forEach { item ->
                         NavigationDrawerItem(
                             icon = { Icon(item.icon!!, contentDescription = item.title!!) },
-                            label = { Text(item.title!!) },
+                            label = {
+                                Text(
+                                    text = item.title!!,
+                                    fontSize = 2.5.em,
+                                )
+                            },
                             selected = item == selectedItem.value,
                             onClick = {
                                 navController?.navigate(item.route)
@@ -74,23 +81,28 @@ fun Layout(
                                     drawerState.close()
                                 }
                             },
-                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                .verticalScroll(
+                                    rememberScrollState(),
+                                ),
                         )
                     }
                 }
                 Column(
-                    Modifier.fillMaxHeight(0.5f).fillMaxWidth(),
+                    Modifier
+                        .fillMaxHeight(0.5f)
+                        .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Button(
                         modifier = Modifier
-                            .padding(all = 16.dp),
+                            .padding(all = 10.pxToDp),
                         onClick = logout,
                     ) {
                         Text(
                             text = "Se déconnecter",
                             fontWeight = FontWeight.Bold,
-                            fontSize = 20.sp,
+                            fontSize = 2.em,
                             textAlign = TextAlign.Center,
                         )
                     }
@@ -104,6 +116,7 @@ fun Layout(
                         text = "Version : $versionName",
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center,
+                        fontSize = 2.5.em,
                     )
                 }
             }
@@ -114,7 +127,7 @@ fun Layout(
             floatingActionButton = {
                 FloatingActionButton(
                     modifier = Modifier
-                        .padding(all = 16.dp),
+                        .padding(all = 16.pxToDp),
                     onClick = {
                         scope.launch {
                             drawerState.open()

@@ -22,7 +22,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,9 +35,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.HydrantListViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import kotlinx.coroutines.launch
@@ -63,17 +63,17 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
+                        .padding(10.pxToDp),
                 ) {
                     Button(onClick = { navController.popBackStack() }) {
                         Text(
                             text = stringResource(id = R.string.retour),
                         )
                     }
-                    Spacer(Modifier.height(16.dp))
+                    Spacer(Modifier.height(16.pxToDp))
                     Text(
                         text = stringResource(id = R.string.hydrantCrees),
-                        fontSize = MaterialTheme.typography.headlineLarge.fontSize,
+                        fontSize = 5.em,
                         fontWeight = FontWeight.Bold,
                     )
                 }
@@ -119,21 +119,21 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                             items(hydrantList!!) { hydrantItem ->
                                 Row(
                                     Modifier
-                                        .padding(8.dp)
+                                        .padding(8.pxToDp)
                                         .fillMaxWidth(),
                                 ) {
                                     Box(
                                         modifier =
                                         Modifier
-                                            .clip(RoundedCornerShape(8.dp))
+                                            .clip(RoundedCornerShape(8.pxToDp))
                                             .background(Color(0xDDE9F3FF))
-                                            .padding(16.dp)
+                                            .padding(16.pxToDp)
                                             .fillMaxWidth(),
                                     ) {
                                         Column {
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(text = hydrantItem.hydrant.numero ?: "N/A")
-                                                Spacer(modifier = Modifier.width(16.dp))
+                                                Spacer(modifier = Modifier.width(16.pxToDp))
                                                 IconButton(onClick = {
                                                     mapViewModel.goToHydrant(hydrantItem.hydrant.idHydrant, true)
                                                 }) {
@@ -142,7 +142,7 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                                                         contentDescription = "",
                                                     )
                                                 }
-                                                Spacer(modifier = Modifier.width(16.dp))
+                                                Spacer(modifier = Modifier.width(16.pxToDp))
                                                 IconButton(onClick = {
                                                     openDialog.value = hydrantItem.hydrant.idHydrant
                                                 }) {

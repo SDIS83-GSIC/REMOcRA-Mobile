@@ -11,7 +11,7 @@ import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import fr.sdis83.remocra.mobile.utils.pxToDp
 
 @Composable
 fun LabelledCheckbox(
@@ -24,7 +24,7 @@ fun LabelledCheckbox(
 ) {
     Row(
         modifier = modifier
-            .height(48.dp)
+            .height(48.pxToDp)
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -34,7 +34,7 @@ fun LabelledCheckbox(
             enabled = enabled,
             colors = colors,
         )
-        Spacer(Modifier.width(8.dp))
+        Spacer(Modifier.width(8.pxToDp))
         label.invoke()
     }
 }

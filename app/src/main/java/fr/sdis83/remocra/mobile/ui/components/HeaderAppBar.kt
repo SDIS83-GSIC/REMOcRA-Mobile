@@ -15,31 +15,32 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
+import fr.sdis83.remocra.mobile.utils.pxToDp
 
 @Composable
 fun HeaderAppBar(title: String, returnAction: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth()
-            .height(100.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.pxToDp),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         IconButton(
-            modifier = Modifier.padding(20.dp),
+            modifier = Modifier.padding(50.pxToDp),
             onClick = { returnAction() },
         ) {
             Icon(
                 imageVector = Icons.Filled.ArrowBack,
                 contentDescription = "return",
-                modifier = Modifier.size(30.dp),
+                modifier = Modifier.size(50.pxToDp),
             )
         }
         Text(
             text = title,
             fontWeight = FontWeight.Bold,
-            fontSize = 35.sp,
+            fontSize = 5.em,
         )
     }
 }
