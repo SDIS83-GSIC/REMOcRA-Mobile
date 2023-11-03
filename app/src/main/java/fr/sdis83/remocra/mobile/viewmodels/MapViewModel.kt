@@ -76,6 +76,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
                         it.observation,
                         it.peiCaracteristiques,
                         it.statutVisite,
+                        it.idTournee,
                     ),
                 )
                 mapView?.setExpectedCenter(
@@ -89,6 +90,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
                         it.observation,
                         it.peiCaracteristiques,
                         it.statutVisite,
+                        it.idTournee,
                     ),
                 )
                 if (isNew) {

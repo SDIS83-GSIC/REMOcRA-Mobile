@@ -45,8 +45,10 @@ abstract class HydrantDao {
         """
         SELECT h.lat, h.lon, h.lat as mLatitude, h.lon as mLongitude, 1 as mAltitude,
             h.idHydrant, h.numero, h.dispoTerrestre, h.adresseComplete, h.observation,
-            h.peiCaracteristiques, hv.statut as statutVisite FROM hydrant h
+            h.peiCaracteristiques, hv.statut as statutVisite, t.idTournee FROM hydrant h
         LEFT JOIN hydrantVisite hv ON hv.idHydrant = h.idHydrant
+        JOIN hydrantTournee ht on ht.idRemocraHydrant = h.idRemocra
+        JOIN tournee t on t.idRemocra = ht.idRemocraTournee
         WHERE h.idHydrant = :idHydrant """,
     )
     abstract fun getHydrantGeoPointByIdHydrant(idHydrant: UUID): MapViewModel.HydrantGeoPoint
