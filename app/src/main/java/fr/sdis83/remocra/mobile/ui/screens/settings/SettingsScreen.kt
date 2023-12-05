@@ -1,6 +1,5 @@
 package fr.sdis83.remocra.mobile.ui.screens.settings
 
-import android.app.Application
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,9 +31,8 @@ import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.DroitViewModel
 
 @Composable
-fun SettingScreen(navController: NavController?) {
+fun SettingScreen(navController: NavController?, droitViewModel: DroitViewModel) {
     val context = LocalContext.current
-    val droitViewModel = DroitViewModel(context.applicationContext as Application)
     val listParamConf by droitViewModel.paramsConf.observeAsState()
     val listTypeDroit by droitViewModel.typesDroit.observeAsState()
 

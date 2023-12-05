@@ -4,6 +4,9 @@ import android.app.Application
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,6 +23,8 @@ import fr.sdis83.remocra.mobile.ui.screens.settings.SettingScreen
 import fr.sdis83.remocra.mobile.ui.screens.sync.SyncScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneeScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneesScreen
+import fr.sdis83.remocra.mobile.utils.GlobalConstants
+import fr.sdis83.remocra.mobile.viewmodels.DroitViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import fr.sdis83.remocra.mobile.viewmodels.SyncViewModel
 import java.util.UUID
@@ -30,6 +35,11 @@ fun NavGraph(
     mapViewModel: MapViewModel,
     mapViewState: MutableState<MapViewState>,
 ) {
+    val droitViewModel = DroitViewModel(LocalContext.current.applicationContext as Application)
+    val listTypeDroit by droitViewModel.typesDroit.observeAsState()
+
+    Screens.Settings.isVisible = listTypeDroit?.firstOrNull { it.code == GlobalConstants.CREATION_PEI_MOBILE_DROIT } != null ||
+        listTypeDroit?.firstOrNull { it.code == GlobalConstants.CREATION_GESTIONNAIRE_MOBILE_DROIT } != null
     NavHost(
         navController = navController,
         startDestination = Screens.Tournees.route,
@@ -38,7 +48,7 @@ fun NavGraph(
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
             }
-            SettingScreen(navController)
+            SettingScreen(navController, droitViewModel)
         }
         composable(route = Screens.Export.route) {
             LaunchedEffect(Unit) {

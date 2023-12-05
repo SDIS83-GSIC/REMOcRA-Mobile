@@ -467,44 +467,22 @@ class ReferentielWorker constructor(
             referentielDao.insertListHydrantAnomalie(hydrantAnomalieToInsert)
 
             // ///////////////////////////////////////////////////////////////////////////////////////////PARAM CONF
-            val listeNewUpdateDeleteParamConf: ListeNewUpdateDelete<ParamConf> =
-                gestionReferentiel(
-                    dataInRemocra = paramsConf,
-                    idPrimaryRemocra = null,
-                    cle = ParamConf::cle,
-                    dataInMobile = referentielDao.getListParamConf(),
-                    arguments = arrayOf(ParamConf::cle, ParamConf::valeur),
-                )
-            val paramConfToInsert = mutableListOf<ParamConf>()
-            listeNewUpdateDeleteParamConf.nouveauxElements.forEach {
-                paramConfToInsert.add(it.copy(UUID.randomUUID()))
+            // On n'a pas beaucoup de param conf donc pour réduire le temps, on supprime et on réintègre
+            referentielDao.truncateParamConf()
+            val listParamConf = mutableListOf<ParamConf>()
+            paramsConf.forEach {
+                listParamConf.add(it.copy(idParamConf = UUID.randomUUID()))
             }
-            referentielDao.insertListParamConf(paramConfToInsert)
 
-            if (listeNewUpdateDeleteParamConf.elementsModifies.isNotEmpty()) {
-                listeNewUpdateDeleteParamConf.elementsModifies.forEach {
-                    referentielDao.updateParamConf(
-                        it.cle,
-                        it.valeur,
-                    )
-                }
-            }
+            referentielDao.insertListParamConf(listParamConf)
 
             // ///////////////////////////////////////////////////////////////////////////////////////////TYPE DROIT
-            val listeNewUpdateDeleteTypeDroit: ListeNewUpdateDelete<TypeDroit> =
-                gestionReferentiel(
-                    dataInRemocra = typesDroit,
-                    cle = TypeDroit::code,
-                    idPrimaryRemocra = null,
-                    dataInMobile = referentielDao.getListTypeDroit(),
-                    arguments = arrayOf(TypeDroit::code),
-                )
-
-            val typeDroitToInsert = mutableListOf<TypeDroit>()
-            listeNewUpdateDeleteTypeDroit.nouveauxElements.forEach {
-                typeDroitToInsert.add(it.copy(UUID.randomUUID()))
+            referentielDao.truncateTypeDroit()
+            val listTypeDroit = mutableListOf<TypeDroit>()
+            typesDroit.forEach {
+                listTypeDroit.add(it.copy(idTypeDroit = UUID.randomUUID()))
             }
-            referentielDao.insertListTypeDroit(typeDroitToInsert)
+            referentielDao.insertListTypeDroit(listTypeDroit)
 
             // //////////////////////////////////////////////////////////////////////////////////////// Gestion des suppressions
 
@@ -520,11 +498,10 @@ class ReferentielWorker constructor(
                 deleteTypeHydrantAnomalie(listeNewUpdateDeleteTypeHydrantAnomalie.elementsSupprimes.map { it.idRemocra })
                 deleteTypeHydrantCritere(listeNewUpdateDeleteTypeHydrantCritere.elementsSupprimes.map { it.idRemocra })
                 deleteTypeHydrantSaisie(listeNewUpdateDeleteTypeHydrantSaisie.elementsSupprimes.map { it.idRemocra })
-                deleteParamConf(listeNewUpdateDeleteParamConf.elementsSupprimes.map { it.cle })
             }
 
-            // On regarde les agents
-            if (referentielDao.getAgentConnecte() == null) {
+            if (utilisateurConnecte != referentielDao.getAgentConnecte()?.nomAgent) {
+                agentDao.removeUserConnecte()
                 agentDao.insertComposantAgent(
                     Agent(
                         idAgent = UUID.randomUUID(),

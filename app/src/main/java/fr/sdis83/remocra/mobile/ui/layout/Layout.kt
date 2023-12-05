@@ -65,27 +65,29 @@ fun Layout(
                     Modifier.fillMaxHeight(0.8f),
                 ) {
                     items.forEach { item ->
-                        NavigationDrawerItem(
-                            icon = { Icon(item.icon!!, contentDescription = item.title!!) },
-                            label = {
-                                Text(
-                                    text = item.title!!,
-                                    fontSize = 2.5.em,
-                                )
-                            },
-                            selected = item == selectedItem.value,
-                            onClick = {
-                                navController?.navigate(item.route)
-                                selectedItem.value = item
-                                scope.launch {
-                                    drawerState.close()
-                                }
-                            },
-                            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-                                .verticalScroll(
-                                    rememberScrollState(),
-                                ),
-                        )
+                        if (item.isVisible) {
+                            NavigationDrawerItem(
+                                icon = { Icon(item.icon!!, contentDescription = item.title!!) },
+                                label = {
+                                    Text(
+                                        text = item.title!!,
+                                        fontSize = 2.5.em,
+                                    )
+                                },
+                                selected = item == selectedItem.value,
+                                onClick = {
+                                    navController?.navigate(item.route)
+                                    selectedItem.value = item
+                                    scope.launch {
+                                        drawerState.close()
+                                    }
+                                },
+                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                    .verticalScroll(
+                                        rememberScrollState(),
+                                    ),
+                            )
+                        }
                     }
                 }
                 Column(

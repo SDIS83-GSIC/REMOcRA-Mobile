@@ -41,4 +41,7 @@ abstract class AgentDao {
 
     @Query("SELECT agent.nomAgent from agent where numeroAgent = :numeroAgent")
     abstract fun getListAgent(numeroAgent: Int): LiveData<List<String>>
+
+    @Query("UPDATE agent set isUserConnecte = 0 where isUserConnecte = 1")
+    abstract fun removeUserConnecte()
 }
