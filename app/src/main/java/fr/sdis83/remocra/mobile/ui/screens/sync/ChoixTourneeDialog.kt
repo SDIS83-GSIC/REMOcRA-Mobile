@@ -19,7 +19,8 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -34,6 +35,7 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.TourneeDispo
+import fr.sdis83.remocra.mobile.ui.components.SearchInput
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 import kotlinx.coroutines.launch
@@ -42,7 +44,8 @@ import kotlinx.coroutines.launch
 fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, navController: NavController, onDismiss: () -> Unit) {
     val context = LocalContext.current
 
-    val listeTourneesDispo = choixTourneeViewModel.tourneesDisponibles.observeAsState(listOf())
+    val listeTourneesDispo = choixTourneeViewModel.tourneesDisponibles.collectAsState(initial = listOf())
+    val search by choixTourneeViewModel.search.collectAsState(initial = "")
 
     LaunchedEffect(key1 = Unit) {
         choixTourneeViewModel.getTourneesDisponibles()
@@ -57,12 +60,13 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, navControll
     ) {
         Card(
             shape = RoundedCornerShape(10.pxToDp),
-            modifier = Modifier.size(2000.pxToDp, 600.pxToDp),
+            modifier = Modifier.size(2200.pxToDp, 800.pxToDp),
         ) {
             Column(
                 Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
+                    .padding(10.pxToDp)
                     .background(Color.White),
             ) {
                 Text(
@@ -71,10 +75,16 @@ fun ChoixTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, navControll
                     fontSize = 5.em,
                 )
 
+                SearchInput(
+                    search = search,
+                    onChange = choixTourneeViewModel::doSearch,
+                    size = listeTourneesDispo.value.size,
+                )
+
                 if (!listeTourneesDispo.value.isNullOrEmpty()) {
                     LazyVerticalGrid(
-                        columns = GridCells.Adaptive(minSize = 300.pxToDp),
-                        modifier = Modifier.weight(1f, fill = false),
+                        columns = GridCells.Adaptive(minSize = 400.pxToDp),
+                        modifier = Modifier.fillMaxHeight().weight(1f, fill = false),
                     ) {
                         items(listeTourneesDispo.value) {
                             TourneeRow(tourneeDispo = it, choixTourneeViewModel)

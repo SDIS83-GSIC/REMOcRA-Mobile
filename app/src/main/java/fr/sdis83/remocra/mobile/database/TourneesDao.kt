@@ -6,6 +6,7 @@ import androidx.room.Embedded
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class TourneesDao {
@@ -21,9 +22,6 @@ abstract class TourneesDao {
 
     @Query("DELETE FROM hydrantTournee")
     abstract fun truncateHydrantTournee()
-
-    @Query("SELECT * FROM tourneeDispo")
-    abstract fun getTourneesDisponiblesLiveData(): LiveData<List<TourneeDispo>>
 
     @Query("SELECT * FROM tourneeDispo where choisie = 1")
     abstract fun getTourneesAReserver(): List<TourneeDispo>
@@ -77,4 +75,7 @@ abstract class TourneesDao {
          """,
     )
     abstract fun getHydrantsCreesCount(): LiveData<Int>
+
+    @Query("SELECT * FROM tourneeDispo t WHERE t.nom LIKE '%' || :search || '%' ")
+    abstract fun getTourneeDisponibleFiltree(search: String): Flow<List<TourneeDispo>>
 }

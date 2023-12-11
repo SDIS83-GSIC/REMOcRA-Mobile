@@ -16,13 +16,17 @@ import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.workers.AnnuleReservationTourneeWorker
 import fr.sdis83.remocra.mobile.workers.ReserveTourneesWorker
 import fr.sdis83.remocra.mobile.workers.TourneesDisposWorker
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
 
 class ChoixTourneeViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
         private const val TAG = "TourneeViewModel"
     }
     private val tourneesDao = RemocraDatabase.getInstance(getApplication()).tourneesDao()
-    val tourneesDisponibles = tourneesDao.getTourneesDisponiblesLiveData()
 
     suspend fun updateTourneeDispo(tourneeDispo: TourneeDispo) = tourneesDao.updateTourneeDispo(tourneeDispo)
 
@@ -34,6 +38,16 @@ class ChoixTourneeViewModel(application: Application) : AndroidViewModel(applica
 
     var infoAnnulation = mutableStateOf("")
         private set
+
+    private val _search: MutableStateFlow<String> = MutableStateFlow("")
+    val search: StateFlow<String> = _search.asStateFlow()
+    val tourneesDisponibles: Flow<List<TourneeDispo>> = search.flatMapLatest {
+        tourneesDao.getTourneeDisponibleFiltree(it)
+    }
+
+    fun doSearch(search: String) {
+        _search.value = search
+    }
 
     fun getTourneesDisponibles() {
         val tourneesDisponiblesWorker =

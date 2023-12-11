@@ -7,12 +7,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,6 +33,7 @@ import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
+import fr.sdis83.remocra.mobile.ui.components.SearchInput
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.GestionnaireListViewModel
 
@@ -73,15 +71,11 @@ fun GestionnaireList(
                 .padding(horizontal = 80.pxToDp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            OutlinedTextField(
-                value = search,
-                onValueChange = { str -> gestionnairesViewModel.doSearch(str) },
-                label = { Text(text = "Recherche") },
-                placeholder = { Text(text = "Recherche") },
-                singleLine = true,
+            SearchInput(
+                search = search,
+                onChange = gestionnairesViewModel::doSearch,
+                size = gestionnairesList.value.size,
             )
-            Spacer(modifier = Modifier.width(16.pxToDp))
-            Text(text = "${gestionnairesList.value.size} résultats")
         }
         LazyColumn(
             Modifier.padding(horizontal = 80.pxToDp),
