@@ -71,7 +71,6 @@ import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
-import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions
 import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
 
@@ -127,7 +126,7 @@ fun MapView(
     }
 
     val hydrantOverlay = remember {
-        mutableStateOf(SimpleFastPointOverlay(SimplePointTheme(listOf<MapViewModel.HydrantGeoPoint>())))
+        mutableStateOf(SimpleFastPointOverlayCustom(SimplePointTheme(listOf<MapViewModel.HydrantGeoPoint>()), listOf(), SimpleFastPointOverlayOptions(), null))
     }
 
     val newHydrantOverlay = remember {
@@ -200,8 +199,21 @@ fun MapView(
         }
 
         mapViewModel.hydrantList.observeForever {
+            val listeHydrantGeoPoint = it.map {
+                MapViewModel.HydrantGeoPoint(
+                    it.lat,
+                    it.lon,
+                    it.idHydrant,
+                    it.numero,
+                    it.dispoTerrestre,
+                    it.adresseComplete,
+                    it.observation,
+                    it.peiCaracteristiques,
+                    null,
+                )
+            }
             hydrantOverlay.value =
-                SimpleFastPointOverlay(
+                SimpleFastPointOverlayCustom(
                     SimplePointTheme(
                         it.map {
                             MapViewModel.HydrantGeoPoint(
@@ -217,6 +229,7 @@ fun MapView(
                             )
                         },
                     ),
+                    listeHydrantGeoPoint,
                     SimpleFastPointOverlayOptions.getDefaultStyle().apply {
                         pointStyle.color = Color.rgb(255, 127, 31)
                         selectedPointStyle.strokeWidth = 8f
@@ -227,6 +240,7 @@ fun MapView(
                         setRadius(8f)
                         setSelectedRadius(16f)
                     },
+                    null,
                 ).apply {
                     setOnClickListener { points, point ->
                         InfoWindow.closeAllInfoWindowsOn(mapState)

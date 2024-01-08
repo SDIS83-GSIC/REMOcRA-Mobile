@@ -1,9 +1,12 @@
 package fr.sdis83.remocra.mobile.ui.components
 
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Point
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toBitmap
+import fr.sdis83.remocra.mobile.database.Hydrant
 import fr.sdis83.remocra.mobile.database.HydrantVisite
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel.HydrantGeoPoint
 import org.osmdroid.util.BoundingBox
@@ -44,6 +47,12 @@ class SimpleFastPointOverlayCustom(
                     null,
                     mapView,
                 )
+
+                // Si le PEI est indisponible, on met une croix rouge
+                if (pt1.dispoTerrestre == Hydrant.Disponibilite.INDISPO) {
+                    drawSymboleIndispo(canvas, mPositionPixels)
+                }
+
                 if (pt1.statutVisite == HydrantVisite.HydrantVisiteStatut.TERMINE) {
                     val bitmap = drawableCheck!!.toBitmap()
                     canvas?.drawBitmap(
@@ -78,5 +87,45 @@ class SimpleFastPointOverlayCustom(
                 )
             }
         }
+    }
+
+    private fun drawSymboleIndispo(canvas: Canvas?, mPositionPixels: Point) {
+        val coutour = Paint()
+        coutour.strokeWidth = 6f
+        coutour.color = Color.WHITE
+        canvas?.drawLine(
+            mPositionPixels.x.toFloat() - style.circleRadius,
+            mPositionPixels.y.toFloat() + style.circleRadius,
+            mPositionPixels.x.toFloat() + style.circleRadius,
+            mPositionPixels.y.toFloat() - style.circleRadius,
+            coutour,
+        )
+
+        canvas?.drawLine(
+            mPositionPixels.x.toFloat() - style.circleRadius,
+            mPositionPixels.y.toFloat() - style.circleRadius,
+            mPositionPixels.x.toFloat() + style.circleRadius,
+            mPositionPixels.y.toFloat() + style.circleRadius,
+            coutour,
+        )
+
+        val fill = Paint()
+        fill.strokeWidth = 3f
+        fill.color = Color.argb(1f, 0.9f, 0.1f, 0.2f)
+
+        canvas?.drawLine(
+            mPositionPixels.x.toFloat() - style.circleRadius,
+            mPositionPixels.y.toFloat() + style.circleRadius,
+            mPositionPixels.x.toFloat() + style.circleRadius,
+            mPositionPixels.y.toFloat() - style.circleRadius,
+            fill,
+        )
+        canvas?.drawLine(
+            mPositionPixels.x.toFloat() - style.circleRadius,
+            mPositionPixels.y.toFloat() - style.circleRadius,
+            mPositionPixels.x.toFloat() + style.circleRadius,
+            mPositionPixels.y.toFloat() + style.circleRadius,
+            fill,
+        )
     }
 }
