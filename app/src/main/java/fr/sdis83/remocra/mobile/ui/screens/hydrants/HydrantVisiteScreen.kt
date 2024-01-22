@@ -643,6 +643,7 @@ private fun StepTwo(
                             )
                         }
                     },
+                    text = item.anomalie.nom,
                     label = {
                         Text(
                             text = item.anomalie.nom,
@@ -689,7 +690,7 @@ private fun StepTwo(
         ) {
             if (!options.isNullOrEmpty()) {
                 Column {
-                    options.keys.forEach { critere ->
+                    options.keys.sortedBy { k -> k.code }.forEach { critere ->
                         val opened = remember { mutableStateOf(false) }
                         Row(
                             modifier = Modifier
@@ -713,7 +714,7 @@ private fun StepTwo(
                             Text(text = "(${options[critere]!!.count { it.checked }}/${options[critere]!!.size})")
                         }
                         if (opened.value) {
-                            options[critere]!!.forEach { option ->
+                            options[critere]!!.sortedBy { o -> o.text }.forEach { option ->
                                 LabelledCheckbox(
                                     checked = option.checked,
                                     onCheckedChange = option.onCheckedChange,
@@ -875,6 +876,7 @@ private fun PhotoList(photos: List<HydrantPhoto>, deletePhoto: (HydrantPhoto) ->
 data class Option(
     var checked: Boolean,
     var onCheckedChange: (Boolean) -> Unit = {},
+    val text: String,
     val label: @Composable () -> Unit,
     var enabled: Boolean = true,
 )
