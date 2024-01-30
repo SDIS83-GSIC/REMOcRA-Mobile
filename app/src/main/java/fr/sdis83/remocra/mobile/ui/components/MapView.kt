@@ -126,11 +126,11 @@ fun MapView(
     }
 
     val hydrantOverlay = remember {
-        mutableStateOf(SimpleFastPointOverlayCustom(SimplePointTheme(listOf<MapViewModel.HydrantGeoPoint>()), listOf(), SimpleFastPointOverlayOptions(), null))
+        mutableStateOf(SimpleFastPointOverlayCustom(SimplePointTheme(listOf<MapViewModel.HydrantGeoPoint>()), listOf(), SimpleFastPointOverlayOptions(), null, mapViewModel.affichageIndispo.value))
     }
 
     val newHydrantOverlay = remember {
-        mutableStateOf(SimpleFastPointOverlayCustom(SimplePointTheme(listOf<MapViewModel.HydrantGeoPoint>()), listOf(), SimpleFastPointOverlayOptions(), null))
+        mutableStateOf(SimpleFastPointOverlayCustom(SimplePointTheme(listOf<MapViewModel.HydrantGeoPoint>()), listOf(), SimpleFastPointOverlayOptions(), null, mapViewModel.affichageIndispo.value))
     }
 
     val tourneeOverlay = remember {
@@ -241,6 +241,7 @@ fun MapView(
                         setSelectedRadius(16f)
                     },
                     null,
+                    mapViewModel.affichageIndispo.value,
                 ).apply {
                     setOnClickListener { points, point ->
                         InfoWindow.closeAllInfoWindowsOn(mapState)
@@ -305,6 +306,7 @@ fun MapView(
                         setSelectedRadius(16f)
                     },
                     null,
+                    mapViewModel.affichageIndispo.value,
                 ).apply {
                     setOnClickListener { points, point ->
                         InfoWindow.closeAllInfoWindowsOn(mapState)
@@ -363,6 +365,7 @@ fun MapView(
                             setSelectedRadius(20f)
                         },
                         context.resources.getDrawable(R.drawable.baseline_check_24, context.theme),
+                        mapViewModel.affichageIndispo.value,
                     ).apply {
                         setOnClickListener { points, point ->
                             InfoWindow.closeAllInfoWindowsOn(mapState)

@@ -45,6 +45,13 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
     var mapZoom = mutableStateOf<Double?>(null)
         private set
 
+    var affichageIndispo = mutableStateOf(false)
+        private set
+
+    fun setAffichageIndispo(affichageIndispo_new: Boolean) {
+        affichageIndispo.value = affichageIndispo_new
+    }
+
     fun showCenter(show: Boolean) {
         showCenter.value = show
     }

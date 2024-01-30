@@ -4,6 +4,7 @@ object GlobalConstants {
     const val CREATION_PEI_MOBILE_PARAM = "CREATION_PEI_MOBILE"
     const val CREATION_PEI_MOBILE_DROIT = "CREATION_PEI_MOBILE"
     const val CREATION_GESTIONNAIRE_MOBILE_DROIT = "CREATION_GESTIONNAIRE_MOBILE"
+    const val AFFICHAGE_INDISPO = "AFFICHAGE_INDISPO"
 
     /**
      * Pour la gestion des agents

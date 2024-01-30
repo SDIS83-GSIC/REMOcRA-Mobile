@@ -1,5 +1,6 @@
 package fr.sdis83.remocra.mobile
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -31,6 +32,7 @@ import fr.sdis83.remocra.mobile.utils.getVersionName
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
+import fr.sdis83.remocra.mobile.viewmodels.ParamConfViewModel
 
 data class MapViewState(
     val showMapView: Boolean = true,
@@ -43,6 +45,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val mapViewModel = MapViewModel(applicationContext)
+        val paramConfViewModel = ParamConfViewModel(applicationContext as Application)
 
         // On affiche la barre de navigation du périphérique
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
@@ -57,6 +60,9 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     val mapViewState = remember { mutableStateOf(MapViewState()) }
+                    paramConfViewModel.paramAffichageIndispo.observe(this) {
+                        mapViewModel.setAffichageIndispo(it.toBoolean())
+                    }
                     Layout(
                         navController,
                         getVersionName(applicationContext),

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
+import fr.sdis83.remocra.mobile.utils.GlobalConstants
 
 @Dao
 abstract class ParamConfDao {
@@ -16,4 +17,7 @@ abstract class ParamConfDao {
 
     @Query("DELETE FROM paramConf where cle =:cle")
     abstract fun deleteParamConf(cle: String)
+
+    @Query("SELECT paramConf.valeur from paramConf where cle = :constantCle")
+    abstract fun getAffichageIndispo(constantCle: String = GlobalConstants.AFFICHAGE_INDISPO): LiveData<String?>
 }

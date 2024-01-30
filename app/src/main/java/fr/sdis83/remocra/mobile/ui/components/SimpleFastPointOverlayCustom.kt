@@ -19,6 +19,7 @@ class SimpleFastPointOverlayCustom(
     val listHydrantGeoPoint: List<HydrantGeoPoint>,
     private val style: SimpleFastPointOverlayOptions,
     private val drawableCheck: Drawable?,
+    private val affichageIndispo: Boolean,
 ) : SimpleFastPointOverlay(pointList, style) {
 
     /**
@@ -48,9 +49,12 @@ class SimpleFastPointOverlayCustom(
                     mapView,
                 )
 
-                // Si le PEI est indisponible, on met une croix rouge
-                if (pt1.dispoTerrestre == Hydrant.Disponibilite.INDISPO) {
-                    drawSymboleIndispo(canvas, mPositionPixels)
+                // Si le paramètre est vrai, on permet d'afficher les indispo
+                if (affichageIndispo) {
+                    // Si le PEI est indisponible, on met une croix rouge
+                    if (pt1.dispoTerrestre == Hydrant.Disponibilite.INDISPO) {
+                        drawSymboleIndispo(canvas, mPositionPixels)
+                    }
                 }
 
                 if (pt1.statutVisite == HydrantVisite.HydrantVisiteStatut.TERMINE) {

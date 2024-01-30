@@ -12,6 +12,8 @@ class ParamConfViewModel(application: Application) : AndroidViewModel(applicatio
 
     val paramsConf: LiveData<List<ParamConf>> = paramConfDao.getParamConfList()
 
+    val paramAffichageIndispo: LiveData<String?> = paramConfDao.getAffichageIndispo()
+
     companion object {
         private const val TAG: String = "ParamConfViewModel"
     }
