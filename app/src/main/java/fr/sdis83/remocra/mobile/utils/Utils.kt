@@ -9,6 +9,9 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 fun createImageFormData(name: String, path: String): MultipartBody.Part? =
     MultipartBody.Part.createFormData(
@@ -53,3 +56,10 @@ fun deleteFile(listeFile: List<String>) {
 }
 
 val Int.pxToDp: Dp @Composable get() = with(LocalDensity.current) { this@pxToDp.toDp() }
+
+fun dateAfterNow(date: String) =
+    ZonedDateTime.parse(
+        date,
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            .withZone(ZoneId.systemDefault()),
+    ).isAfter(ZonedDateTime.now())

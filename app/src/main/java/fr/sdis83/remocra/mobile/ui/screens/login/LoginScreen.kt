@@ -86,7 +86,7 @@ fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: Administrati
                 username = newText
             },
             label = {
-                Text(text = stringResource(R.string.username))
+                Text(text = context.resources.getString(R.string.username))
             },
             placeholder = {
                 Text(text = stringResource(R.string.username))

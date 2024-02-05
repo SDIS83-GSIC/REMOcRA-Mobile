@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import fr.sdis83.remocra.mobile.ui.screens.login.LoginScreen
 import fr.sdis83.remocra.mobile.ui.theme.REMOcRAMobileTheme
+import fr.sdis83.remocra.mobile.utils.dateAfterNow
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
 import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
 import fr.sdis83.remocra.mobile.viewmodels.SplashViewModel
@@ -41,6 +42,12 @@ class LoginActivity : ComponentActivity() {
 
         val mdm = preferences.getString(applicationContext.resources.getString(R.string.preference_mdm), "false").toBoolean()
 
+        val dateProchaineDeconnexion = preferences.getString(
+            applicationContext.resources
+                .getString(R.string.preference_date_prochaine_deconnexion),
+            null,
+        )
+
         splashScreen.setKeepOnScreenCondition { splashViewModel.isLoading.value }
 
         splashViewModel.goToMainActivity.observe(this) {
@@ -63,7 +70,6 @@ class LoginActivity : ComponentActivity() {
                 finish()
             }
         }
-
         setContent {
             REMOcRAMobileTheme {
                 Surface(
@@ -71,7 +77,18 @@ class LoginActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background,
                 ) {
                     Scaffold {
-                        LoginScreen(viewModel = loginViewModel, administrationViewModel, application, mdm)
+                        if (dateProchaineDeconnexion != null &&
+                            dateAfterNow(dateProchaineDeconnexion)
+                        ) {
+                            loginViewModel.goToMainActivity.postValue(true)
+                        } else {
+                            LoginScreen(
+                                viewModel = loginViewModel,
+                                administrationViewModel,
+                                application,
+                                mdm,
+                            )
+                        }
                     }
                 }
             }

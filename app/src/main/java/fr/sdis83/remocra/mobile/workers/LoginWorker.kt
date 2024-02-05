@@ -11,7 +11,6 @@ import fr.sdis83.remocra.mobile.authn.SessionManager
 import fr.sdis83.remocra.mobile.services.AuthService
 import fr.sdis83.remocra.mobile.utils.getVersionName
 
-@Suppress("DEPRECATION")
 class LoginWorker constructor(
     context: Context,
     workerParams: WorkerParameters,
@@ -50,7 +49,11 @@ class LoginWorker constructor(
             return Result.failure()
         }
 
-        sessionManager.saveAuthToken(loginResponse.body()!!.token)
+        if (loginResponse.body() != null) {
+            sessionManager.saveAuthToken(loginResponse.body()!!)
+        } else {
+            return Result.failure()
+        }
 
         return Result.success()
     }

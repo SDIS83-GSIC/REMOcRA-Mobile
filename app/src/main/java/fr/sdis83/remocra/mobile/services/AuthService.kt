@@ -42,5 +42,9 @@ interface AuthService {
 
         @SerializedName("username")
         var username: String,
+
+        // Si le mode déconnexion est actif, on sauvegarde la date de prochaine de déconnexion
+        @SerializedName("dateProchaineDeconnexion")
+        var dateProchaineDeconnexion: String?,
     )
 }
