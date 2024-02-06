@@ -47,14 +47,6 @@ fun AdministrationScreen(viewModel: AdministrationViewModel) {
         ) {
             Text(stringResource(R.string.retour))
         }
-        Button(
-            modifier = Modifier.padding(10.pxToDp, 0.pxToDp),
-            onClick = {
-                exportViewModel.exportDiagnostics(context)
-            },
-        ) {
-            Text(stringResource(R.string.exporterLogs))
-        }
     }
 
     Column(

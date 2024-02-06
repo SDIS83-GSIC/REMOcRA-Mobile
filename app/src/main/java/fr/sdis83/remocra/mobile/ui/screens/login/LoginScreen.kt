@@ -71,15 +71,14 @@ fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: Administrati
             ) {
                 Text(stringResource(R.string.administrer))
             }
-        } else {
-            Button(
-                modifier = Modifier.padding(10.pxToDp, 0.pxToDp),
-                onClick = {
-                    exportViewModel.exportDiagnostics(context)
-                },
-            ) {
-                Text(stringResource(R.string.exporterLogs))
-            }
+        }
+        Button(
+            modifier = Modifier.padding(10.pxToDp, 0.pxToDp),
+            onClick = {
+                exportViewModel.exportDiagnostics(context)
+            },
+        ) {
+            Text(stringResource(R.string.exporterLogs))
         }
         Text(
             modifier = Modifier.padding(10.pxToDp, 0.pxToDp),

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -34,6 +36,13 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        // A l'ouverture de l'appli, on demande à l'utilisateur d'autoriser l'accès aux fichiers
+        if (!Environment.isExternalStorageManager()) {
+            val getpermission = Intent()
+            getpermission.action = Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION
+            startActivity(getpermission)
+        }
 
         val preferences = applicationContext.getSharedPreferences(
             applicationContext.getString(R.string.app_name),
