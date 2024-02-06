@@ -35,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
+import fr.sdis83.remocra.mobile.database.Tournee
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
@@ -48,9 +49,17 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
     val tourneesViewModel = TourneesViewModel(context.applicationContext as Application)
     val choixTourneeViewModel = ChoixTourneeViewModel(context.applicationContext as Application)
     val tourneeList by tourneesViewModel.tourneeList.observeAsState()
-
     var idTourneeAAnnuler: Long? by remember {
         mutableStateOf(null)
+    }
+    var tourneeZoom: Tournee? by remember {
+        mutableStateOf(null)
+    }
+
+    if (tourneeZoom != null) {
+        zoomSurTournee(tourneeZoom!!, mapViewModel)
+    } else if (!tourneeList.isNullOrEmpty()) {
+        zoomSurTournees(mapViewModel)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -80,8 +89,6 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                         .padding(10.pxToDp)
                                         .fillMaxWidth()
                                         .clickable {
-                                            zoomSurTournee(tourneeItem.tournee, mapViewModel)
-
                                             navController.navigate(
                                                 Screens.TourneeHydrants.route
                                                     .replace(
@@ -89,6 +96,7 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                                         newValue = tourneeItem.tournee.idTournee.toString(),
                                                     ),
                                             )
+                                            tourneeZoom = tourneeItem.tournee
                                         },
                                 ) {
                                     Box(
