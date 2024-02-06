@@ -103,6 +103,9 @@
     <string name="diagnostics">Diagnostics</string>
     <string name="exporterLogs">Exporter les logs</string>
 
+<!--    Administrateur dialog -->
+    <string name="mdp_admin">Entrez le mot de passe administrateur :</string>
+
     <string name="url_api">preference_url_api</string>
     <string name="preference_mdm">preference_mdm</string>
     <string name="preference_date_prochaine_deconnexion">date_prochaine_deconnexion</string>

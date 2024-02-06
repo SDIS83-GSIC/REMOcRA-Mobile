@@ -17,6 +17,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,11 +30,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.ui.screens.administration.MdpAdministrateurDialog
 import fr.sdis83.remocra.mobile.utils.getVersionName
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
 import fr.sdis83.remocra.mobile.viewmodels.ExportViewModel
 import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
+import fr.sdis83.remocra.mobile.viewmodels.MdpAdministeurViewModel
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: AdministrationViewModel, application: Application, isMdm: Boolean) {
@@ -43,6 +46,13 @@ fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: Administrati
 
     val context = LocalContext.current
     val exportViewModel = ExportViewModel(context.applicationContext as Application)
+    val mdpAdministeurViewModel = MdpAdministeurViewModel(context.applicationContext as Application)
+
+    val mdpAdmin = administrationViewModel.mdpAdmin.observeAsState()
+
+    var showCustomDialog by remember {
+        mutableStateOf(false)
+    }
 
     Row(
         modifier = Modifier.padding(20.pxToDp),
@@ -52,7 +62,10 @@ fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: Administrati
         if (!isMdm) {
             Button(
                 onClick = {
-                    administrationViewModel.setAdministrationScreen(true)
+                    mdpAdministeurViewModel.getMdpAdmin(administrationViewModel)
+                    if (mdpAdmin.value == true) {
+                        showCustomDialog = true
+                    }
                 },
                 enabled = !viewModel.isBusy,
             ) {
@@ -137,5 +150,10 @@ fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: Administrati
             Text("Connexion")
         }
         Text(viewModel.info.value)
+    }
+    if (mdpAdmin.value == true && showCustomDialog) {
+        MdpAdministrateurDialog(administrationViewModel) {
+            showCustomDialog = !showCustomDialog
+        }
     }
 }

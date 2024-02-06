@@ -25,6 +25,9 @@ interface AuthService {
     @PUT("authentication/check")
     fun checkUrl(): Call<ResponseBody>
 
+    @PUT("authentication/mdpAdministrateur")
+    fun getMdpAdministrateur(): Call<String>
+
     @FormUrlEncoded
     @POST("authentication/login")
     fun doLogin(

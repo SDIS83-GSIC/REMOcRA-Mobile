@@ -7,9 +7,6 @@ import androidx.room.Query
 @Dao
 abstract class DroitDao {
 
-    @Query("SELECT paramConf.* from paramConf")
-    abstract fun getParamConfList(): LiveData<List<ParamConf>>
-
     @Query("SELECT typeDroit.* from typeDroit")
     abstract fun getTypeDroitList(): LiveData<List<TypeDroit>>
 }

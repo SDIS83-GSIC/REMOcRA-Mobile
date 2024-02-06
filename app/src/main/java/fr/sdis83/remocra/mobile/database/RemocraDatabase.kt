@@ -71,7 +71,8 @@ abstract class RemocraDatabase : RoomDatabase() {
 
     abstract fun synchronisationDao(): SynchronisationDao
 
-    abstract fun paramConfDao(): DroitDao
+    abstract fun droitDao(): DroitDao
+    abstract fun paramConfDao(): ParamConfDao
 
     abstract fun hydrantPhotoDao(): HydrantPhotoDao
 
