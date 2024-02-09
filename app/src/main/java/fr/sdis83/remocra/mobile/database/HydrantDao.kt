@@ -14,25 +14,36 @@ abstract class HydrantDao {
 
     @Query(
         """
-        SELECT h.* FROM hydrant h WHERE h.idRemocra IS NOT NULL
+        SELECT h.lat, h.lon, h.lat as mLatitude, h.lon as mLongitude, 1 as mAltitude,
+            h.idHydrant, h.numero, h.dispoTerrestre, h.adresseComplete, h.observation,
+            h.peiCaracteristiques, thn.code as codeNature 
+        FROM hydrant h 
+        JOIN typeHydrantNature thn on thn.idRemocra = h.idNature
+        WHERE h.idRemocra IS NOT NULL
         """,
     )
-    abstract fun getHydrantList(): LiveData<List<Hydrant>>
+    abstract fun getHydrantList(): LiveData<List<MapViewModel.HydrantGeoPoint>>
 
     @Query(
         """
-        SELECT h.* FROM hydrant h WHERE h.idRemocra IS NULL
+        SELECT  h.lat, h.lon, h.lat as mLatitude, h.lon as mLongitude, 1 as mAltitude,
+            h.idHydrant, h.numero, h.dispoTerrestre, h.adresseComplete, h.observation,
+            h.peiCaracteristiques, thn.code as codeNature  
+        FROM hydrant h
+        JOIN typeHydrantNature thn on thn.idRemocra = h.idNature
+        WHERE h.idRemocra IS NULL
         """,
     )
-    abstract fun getNewHydrantList(): LiveData<List<Hydrant>>
+    abstract fun getNewHydrantList(): LiveData<List<MapViewModel.HydrantGeoPoint>>
 
     @Query(
         """
         SELECT h.lat, h.lon, h.lat as mLatitude, h.lon as mLongitude, 1 as mAltitude,
             h.idHydrant, h.numero, h.dispoTerrestre, h.adresseComplete, h.observation,
-            h.peiCaracteristiques, hv.statut as statutVisite, t.* FROM tournee t
+            h.peiCaracteristiques, hv.statut as statutVisite, thn.code as codeNature, t.*  FROM tournee t
         JOIN hydrantTournee ht ON ht.idRemocraTournee = t.idRemocra
         JOIN hydrant h ON h.idRemocra = ht.idRemocraHydrant
+        JOIN typeHydrantNature thn on thn.idRemocra = h.idNature
         LEFT JOIN hydrantVisite hv ON hv.idHydrant = h.idHydrant
         """,
     )
@@ -45,10 +56,11 @@ abstract class HydrantDao {
         """
         SELECT h.lat, h.lon, h.lat as mLatitude, h.lon as mLongitude, 1 as mAltitude,
             h.idHydrant, h.numero, h.dispoTerrestre, h.adresseComplete, h.observation,
-            h.peiCaracteristiques, hv.statut as statutVisite, t.idTournee FROM hydrant h
+            h.peiCaracteristiques, hv.statut as statutVisite, t.idTournee, thn.code as codeNature FROM hydrant h
         LEFT JOIN hydrantVisite hv ON hv.idHydrant = h.idHydrant
         LEFT JOIN hydrantTournee ht on ht.idRemocraHydrant = h.idRemocra
         LEFT JOIN tournee t on t.idRemocra = ht.idRemocraTournee
+        JOIN typeHydrantNature thn on thn.idRemocra = h.idNature
         WHERE h.idHydrant = :idHydrant """,
     )
     abstract fun getHydrantGeoPointByIdHydrant(idHydrant: UUID): MapViewModel.HydrantGeoPoint

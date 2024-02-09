@@ -13,6 +13,7 @@ class ParamConfViewModel(application: Application) : AndroidViewModel(applicatio
     val paramsConf: LiveData<List<ParamConf>> = paramConfDao.getParamConfList()
 
     val paramAffichageIndispo: LiveData<String?> = paramConfDao.getAffichageIndispo()
+    val paramAffichageSymbolesNormalises: LiveData<String?> = paramConfDao.getAffichageSymbolesNormalises()
 
     companion object {
         private const val TAG: String = "ParamConfViewModel"

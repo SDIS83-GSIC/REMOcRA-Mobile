@@ -20,4 +20,7 @@ abstract class ParamConfDao {
 
     @Query("SELECT paramConf.valeur from paramConf where cle = :constantCle")
     abstract fun getAffichageIndispo(constantCle: String = GlobalConstants.AFFICHAGE_INDISPO): LiveData<String?>
+
+    @Query("SELECT paramConf.valeur from paramConf where cle = :constantCle")
+    abstract fun getAffichageSymbolesNormalises(constantCle: String = GlobalConstants.AFFICHAGE_SYMBOLES_NORMALISES): LiveData<String?>
 }

@@ -63,6 +63,9 @@ class MainActivity : ComponentActivity() {
                     paramConfViewModel.paramAffichageIndispo.observe(this) {
                         mapViewModel.setAffichageIndispo(it.toBoolean())
                     }
+                    paramConfViewModel.paramAffichageSymbolesNormalises.observe(this) {
+                        mapViewModel.setAffichageSymbolesNormalises(it.toBoolean())
+                    }
                     Layout(
                         navController,
                         getVersionName(applicationContext),

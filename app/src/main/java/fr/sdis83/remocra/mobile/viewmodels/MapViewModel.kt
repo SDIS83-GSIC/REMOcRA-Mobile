@@ -48,8 +48,15 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
     var affichageIndispo = mutableStateOf(false)
         private set
 
+    var affichageSymbolesNormalises = mutableStateOf(false)
+        private set
+
     fun setAffichageIndispo(affichageIndispo_new: Boolean) {
         affichageIndispo.value = affichageIndispo_new
+    }
+
+    fun setAffichageSymbolesNormalises(value: Boolean) {
+        affichageSymbolesNormalises.value = value
     }
 
     fun showCenter(show: Boolean) {
@@ -84,6 +91,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
                         it.peiCaracteristiques,
                         it.statutVisite,
                         it.idTournee,
+                        it.codeNature,
                     ),
                 )
                 mapView?.setExpectedCenter(
@@ -98,6 +106,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
                         it.peiCaracteristiques,
                         it.statutVisite,
                         it.idTournee,
+                        it.codeNature,
                     ),
                 )
                 if (isNew) {
@@ -122,6 +131,7 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
         val peiCaracteristiques: String?,
         val statutVisite: HydrantVisite.HydrantVisiteStatut?,
         val idTournee: UUID? = null,
+        val codeNature: String,
     ) :
         GeoPoint(lat, lon)
 }
