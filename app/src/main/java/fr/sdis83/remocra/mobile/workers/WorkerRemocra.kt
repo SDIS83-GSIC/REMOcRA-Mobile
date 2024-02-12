@@ -49,6 +49,8 @@ abstract class WorkerRemocra constructor(
                 dateAfterNow(sessionManager.getDateDeconnexion()!!)
             ) {
                 Log.w("WorkerRemocra", "Mode déconnecté, on ne fait pas l'appel au serveur ET on ne redirige pas vers le login")
+                return Result.success()
+            } else {
                 return Result.failure()
             }
         }
