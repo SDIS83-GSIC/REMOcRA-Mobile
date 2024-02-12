@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
+import fr.sdis83.remocra.mobile.MainActivity
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
@@ -35,7 +36,7 @@ import fr.sdis83.remocra.mobile.viewmodels.ParamConfViewModel
 @Composable
 fun SettingScreen(navController: NavController?, droitViewModel: DroitViewModel) {
     val context = LocalContext.current
-    val paramConfViewModel = ParamConfViewModel(context as Application)
+    val paramConfViewModel = ParamConfViewModel((context as MainActivity).application.applicationContext as Application)
     val listParamConf by paramConfViewModel.paramsConf.observeAsState()
     val listTypeDroit by droitViewModel.typesDroit.observeAsState()
 
