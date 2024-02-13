@@ -60,7 +60,7 @@ class LoginActivity : ComponentActivity() {
         splashScreen.setKeepOnScreenCondition { splashViewModel.isLoading.value }
 
         splashViewModel.goToMainActivity.observe(this) {
-            if (it) {
+            if (it && loginViewModel.goToMainActivity.value != true) {
                 startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                 finish()
             }
