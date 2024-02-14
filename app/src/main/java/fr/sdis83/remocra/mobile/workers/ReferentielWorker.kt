@@ -530,6 +530,7 @@ class ReferentielWorker constructor(
 
         // Get suprimées
         val elementsSupprimes = dataInMobile.filterNot { data -> dataInRemocra.map { it.property() }.contains(data.property()) }
+            .filter { it.property() != null }
 
         // Get modifiées
         val elementsModifies = dataInRemocra.minus(nouveauxElements).filter { data ->
