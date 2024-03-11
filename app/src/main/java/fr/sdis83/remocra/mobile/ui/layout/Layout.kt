@@ -43,6 +43,7 @@ import kotlinx.coroutines.launch
 fun Layout(
     navController: NavController?,
     versionName: String,
+    modeDeconnecte: Boolean,
     logout: () -> Unit,
     content: @Composable (PaddingValues) -> Unit = {},
 ) {
@@ -55,6 +56,7 @@ fun Layout(
     )
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val selectedItem = remember { mutableStateOf(items[0]) }
+
     ModalNavigationDrawer(
         gesturesEnabled = drawerState.isOpen,
         drawerState = drawerState,
@@ -82,7 +84,8 @@ fun Layout(
                                         drawerState.close()
                                     }
                                 },
-                                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                modifier = Modifier
+                                    .padding(NavigationDrawerItemDefaults.ItemPadding)
                                     .verticalScroll(
                                         rememberScrollState(),
                                     ),
@@ -90,25 +93,28 @@ fun Layout(
                         }
                     }
                 }
-                Column(
-                    Modifier
-                        .fillMaxHeight(0.5f)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Button(
-                        modifier = Modifier
-                            .padding(all = 10.pxToDp),
-                        onClick = logout,
+                if (!modeDeconnecte) {
+                    Column(
+                        Modifier
+                            .fillMaxHeight(0.5f)
+                            .fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Text(
-                            text = "Se déconnecter",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 2.em,
-                            textAlign = TextAlign.Center,
-                        )
+                        Button(
+                            modifier = Modifier
+                                .padding(all = 10.pxToDp),
+                            onClick = logout,
+                        ) {
+                            Text(
+                                text = "Se déconnecter",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 2.em,
+                                textAlign = TextAlign.Center,
+                            )
+                        }
                     }
                 }
+
                 Column(
                     Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.Bottom,

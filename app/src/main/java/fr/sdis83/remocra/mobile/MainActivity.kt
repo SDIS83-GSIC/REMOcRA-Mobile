@@ -1,6 +1,7 @@
 package fr.sdis83.remocra.mobile
 
 import android.app.Application
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -52,6 +53,16 @@ class MainActivity : ComponentActivity() {
         windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
         windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
 
+        val preferences = applicationContext.getSharedPreferences(
+            applicationContext.getString(R.string.app_name),
+            Context.MODE_PRIVATE,
+        )
+
+        val dateProchaineDeconnexion = preferences.getString(
+            applicationContext.resources
+                .getString(R.string.preference_date_prochaine_deconnexion),
+            null,
+        )
         setContent {
             REMOcRAMobileTheme {
                 Surface(
@@ -69,6 +80,7 @@ class MainActivity : ComponentActivity() {
                     Layout(
                         navController,
                         getVersionName(applicationContext),
+                        modeDeconnecte = !dateProchaineDeconnexion.isNullOrBlank(),
                         logout = {
                             loginViewModel.sessionManager.invalidateAuthToken()
                             startActivity(
