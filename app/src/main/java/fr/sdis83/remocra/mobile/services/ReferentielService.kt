@@ -27,6 +27,8 @@ interface ReferentielService {
     companion object {
         fun getRetroFitInstance(context: Context): ReferentielService =
             RetrofitBuilder.getInstance(context).create(ReferentielService::class.java)
+        fun rebuildUrl(context: Context): ReferentielService =
+            RetrofitBuilder.setNewUrl(context).create(ReferentielService::class.java)
     }
 
     @GET("referentiel")

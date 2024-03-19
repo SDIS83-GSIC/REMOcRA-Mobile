@@ -34,7 +34,7 @@ class ReferentielWorker constructor(
     }
 
     override fun doExecute(): Result {
-        val retrofitBuilder = ReferentielService.getRetroFitInstance(applicationContext)
+        val retrofitBuilder = ReferentielService.rebuildUrl(applicationContext)
         val referentielDao = RemocraDatabase.getInstance(applicationContext).referentielDao()
         val agentDao = RemocraDatabase.getInstance(applicationContext).agentDao()
 
