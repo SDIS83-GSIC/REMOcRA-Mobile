@@ -40,12 +40,16 @@ abstract class TourneesDao {
 
     @Query(
         """
-        SELECT t.*, COUNT(hv.idHydrantVisite) AS doneCount FROM tournee t
-        LEFT JOIN hydrantVisite hv ON hv.idTournee = t.idTournee
+        SELECT t.*, doneCount FROM tournee t
+        LEFT JOIN  (select idTournee,  COUNT(hydrantVisite.idHydrantVisite)AS doneCount
+            from hydrantVisite where statut = :terminee group by  idTournee) as c on t.idTournee = c.idTournee
         GROUP BY t.idTournee
         """,
     )
-    abstract fun getTourneeList(): LiveData<List<TourneeAvancement>>
+    abstract fun getTourneeList(
+        terminee: HydrantVisite.HydrantVisiteStatut =
+            HydrantVisite.HydrantVisiteStatut.TERMINE,
+    ): LiveData<List<TourneeAvancement>>
 
     data class TourneeAvancement(
         @Embedded val tournee: Tournee,

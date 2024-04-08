@@ -39,12 +39,13 @@ abstract class SynchronisationDao {
 
     @Query(
         """
-        SELECT t.*, COUNT(hv.idHydrantVisite) AS doneCount FROM tournee t
-        LEFT JOIN hydrantVisite hv ON hv.idTournee = t.idTournee
+        SELECT t.*, doneCount FROM tournee t
+        LEFT JOIN  (select idTournee,  COUNT(hydrantVisite.idHydrantVisite)AS doneCount
+            from hydrantVisite where statut = :terminee group by  idTournee) as c on t.idTournee = c.idTournee
         GROUP BY t.idTournee
         """,
     )
-    abstract fun getAllTournee(): List<TourneesDao.TourneeAvancement>
+    abstract fun getAllTournee(terminee: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE): List<TourneesDao.TourneeAvancement>
 
     @Query(
         """
