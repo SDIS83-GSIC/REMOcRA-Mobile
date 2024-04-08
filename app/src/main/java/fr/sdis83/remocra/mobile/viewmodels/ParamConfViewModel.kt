@@ -11,6 +11,7 @@ class ParamConfViewModel(application: Application) : AndroidViewModel(applicatio
     val paramConfDao = RemocraDatabase.getInstance(application).paramConfDao()
 
     val paramsConf: LiveData<List<ParamConf>> = paramConfDao.getParamConfList()
+    val mdpAdmin: LiveData<String?> = paramConfDao.getMdpAdministrateur()
 
     val paramAffichageIndispo: LiveData<String?> = paramConfDao.getAffichageIndispo()
     val paramAffichageSymbolesNormalises: LiveData<String?> = paramConfDao.getAffichageSymbolesNormalises()

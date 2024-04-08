@@ -22,11 +22,11 @@ interface AuthService {
     @PUT("authentication/token")
     fun checkToken(): Call<ResponseBody>
 
+    /**
+     * Retourne le mdp passe admin s'il existe
+     */
     @PUT("authentication/check")
-    fun checkUrl(): Call<ResponseBody>
-
-    @PUT("authentication/mdpAdministrateur")
-    fun getMdpAdministrateur(): Call<String>
+    fun checkUrl(): Call<String?>
 
     @FormUrlEncoded
     @POST("authentication/login")

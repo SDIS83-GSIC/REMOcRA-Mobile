@@ -17,10 +17,8 @@ class AdministrationViewModel(application: Application) : AndroidViewModel(appli
     }
 
     val administrationScreen = MutableLiveData(false)
-    val mdpAdmin = MutableLiveData(false)
 
     fun setAdministrationScreen(value: Boolean) = administrationScreen.postValue(value)
-    fun setMdpAdmin(value: Boolean) = mdpAdmin.postValue(value)
 
     fun checkUrl(context: Context) {
         val administrationWorker = OneTimeWorkRequestBuilder<AdministrationWorker>().build()
@@ -46,35 +44,6 @@ class AdministrationViewModel(application: Application) : AndroidViewModel(appli
                     }
 
                     else -> {}
-                }
-            }
-        }
-
-        fun getMdpAdministrateur(context: Context) {
-            val administrationWorker = OneTimeWorkRequestBuilder<AdministrationWorker>().build()
-
-            WorkManager.getInstance(getApplication()).let { workManager ->
-                workManager.enqueue(administrationWorker)
-                workManager.getWorkInfoByIdLiveData(administrationWorker.id).observeForever {
-                    when (it.state) {
-                        WorkInfo.State.RUNNING -> {
-                            Toast.makeText(context, "Connexion en cours", Toast.LENGTH_SHORT).show()
-                        }
-
-                        WorkInfo.State.SUCCEEDED -> {
-                            Toast.makeText(context, "Connexion réussie", Toast.LENGTH_SHORT).show()
-                        }
-
-                        WorkInfo.State.FAILED -> {
-                            Toast.makeText(
-                                context,
-                                "Echec de la connexion au serveur",
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                        }
-
-                        else -> {}
-                    }
                 }
             }
         }
