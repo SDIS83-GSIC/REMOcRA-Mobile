@@ -1,8 +1,12 @@
 package fr.sdis83.remocra.mobile
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.RestrictionsManager
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
@@ -36,6 +40,57 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
+        val preferences: SharedPreferences = applicationContext.getSharedPreferences(
+            applicationContext.getString(R.string.app_name),
+            Context.MODE_PRIVATE,
+        )
+        // On va chercher les restrictions
+        val myRestrictionsMgr =
+            this.getSystemService(Context.RESTRICTIONS_SERVICE) as RestrictionsManager
+
+        val appRestrictions: Bundle = myRestrictionsMgr.applicationRestrictions
+
+        if (appRestrictions.containsKey("preference_url_api")) {
+            preferences.edit()
+                .putString(getString(R.string.url_api), appRestrictions.getString("preference_url_api"))
+                .apply()
+
+            preferences.edit()
+                .putBoolean(getString(R.string.preference_mdm), appRestrictions.getBoolean("preference_mdm"))
+                .apply()
+        }
+
+        splashScreen.setKeepOnScreenCondition { splashViewModel.isLoading.value }
+    }
+
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+    override fun onResume() {
+        super.onResume()
+
+        val preferences: SharedPreferences = applicationContext.getSharedPreferences(
+            applicationContext.getString(R.string.app_name),
+            Context.MODE_PRIVATE,
+        )
+
+        val myRestrictionsMgr =
+            this.getSystemService(Context.RESTRICTIONS_SERVICE) as RestrictionsManager
+        val appRestrictions: Bundle = myRestrictionsMgr.applicationRestrictions
+
+        // Si elles ont changé, on les recharge
+        val restrictionsFilter = IntentFilter(Intent.ACTION_APPLICATION_RESTRICTIONS_CHANGED)
+
+        val restrictionsReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                preferences.edit()
+                    .putString(getString(R.string.url_api), appRestrictions.getString("preference_url_api"))
+                    .apply()
+
+                preferences.edit()
+                    .putBoolean(getString(R.string.preference_mdm), appRestrictions.getBoolean("preference_mdm"))
+                    .apply()
+            }
+        }
+        registerReceiver(restrictionsReceiver, restrictionsFilter)
 
         // A l'ouverture de l'appli, on demande à l'utilisateur d'autoriser l'accès aux fichiers
         if (!Environment.isExternalStorageManager()) {
@@ -44,20 +99,17 @@ class LoginActivity : ComponentActivity() {
             startActivity(getpermission)
         }
 
-        val preferences = applicationContext.getSharedPreferences(
-            applicationContext.getString(R.string.app_name),
-            Context.MODE_PRIVATE,
+        val mdm = preferences.getBoolean(
+            applicationContext.resources
+                .getString(R.string.preference_mdm),
+            false,
         )
-
-        val mdm = preferences.getString(applicationContext.resources.getString(R.string.preference_mdm), "false").toBoolean()
 
         val dateProchaineDeconnexion = preferences.getString(
             applicationContext.resources
                 .getString(R.string.preference_date_prochaine_deconnexion),
             null,
         )
-
-        splashScreen.setKeepOnScreenCondition { splashViewModel.isLoading.value }
 
         splashViewModel.goToMainActivity.observe(this) {
             if (it && loginViewModel.goToMainActivity.value != true) {
@@ -79,6 +131,7 @@ class LoginActivity : ComponentActivity() {
                 finish()
             }
         }
+
         setContent {
             REMOcRAMobileTheme {
                 Surface(

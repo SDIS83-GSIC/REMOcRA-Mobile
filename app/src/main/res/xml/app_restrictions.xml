@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<restrictions xmlns:android="http://schemas.android.com/apk/res/android">
+    <restriction
+        android:key="preference_url_api"
+        android:title="@string/url_api"
+        android:restrictionType="string"
+        android:defaultValue="https://mon-api"/>
+
+    <restriction
+        android:key="preference_mdm"
+        android:title="@string/preference_mdm"
+        android:restrictionType="bool"
+        android:defaultValue="false"/>
+</restrictions>

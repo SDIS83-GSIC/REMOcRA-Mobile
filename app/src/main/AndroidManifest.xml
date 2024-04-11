@@ -27,6 +27,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.REMOcRAMobile"
         tools:targetApi="31">
+        <meta-data android:name="android.content.APP_RESTRICTIONS"
+            android:resource="@xml/app_restrictions" />
         <activity
             android:name=".LoginActivity"
             android:exported="true"
