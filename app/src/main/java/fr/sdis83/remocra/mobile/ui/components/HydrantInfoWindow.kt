@@ -56,7 +56,7 @@ class HydrantInfoWindow(mapView: MapView, val navController: NavController) : In
 
             getTextView(mHydrantAdresse).text = if (hydrant.adresseComplete != null) Html.fromHtml(hydrant.adresseComplete, Html.FROM_HTML_MODE_COMPACT) else ""
 
-            getTextView(mHydrantCaracteristiques).text = Html.fromHtml(hydrant.peiCaracteristiques, Html.FROM_HTML_MODE_COMPACT)
+            getTextView(mHydrantCaracteristiques).text = Html.fromHtml(hydrant.peiCaracteristiques ?: "", Html.FROM_HTML_MODE_COMPACT)
 
             val goToVisite = mView.findViewById<Button>(mGoToVisite)
             if (hydrant.idTournee != null) {
