@@ -2,6 +2,7 @@ package fr.sdis83.remocra.mobile.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
 
@@ -16,6 +17,9 @@ abstract class ParamConfDao {
 
     @Query("UPDATE paramConf set valeur = :valeur where cle = :cle")
     abstract fun updateParamConf(cle: String, valeur: String)
+
+    @Insert
+    abstract fun insertParamConf(paramConf: ParamConf)
 
     @Query("DELETE FROM paramConf where cle =:cle")
     abstract fun deleteParamConf(cle: String)
