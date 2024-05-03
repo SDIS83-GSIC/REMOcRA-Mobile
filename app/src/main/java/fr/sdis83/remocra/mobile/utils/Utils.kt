@@ -60,6 +60,6 @@ val Int.pxToDp: Dp @Composable get() = with(LocalDensity.current) { this@pxToDp.
 fun dateAfterNow(date: String) =
     ZonedDateTime.parse(
         date,
-        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
             .withZone(ZoneId.systemDefault()),
     ).isAfter(ZonedDateTime.now())
