@@ -197,8 +197,11 @@ abstract class ReferentielDao {
     @Query("DELETE FROM contactRole where roleId = :roleId and contactId = :contactId")
     abstract fun deleteContactRole(roleId: UUID, contactId: UUID)
 
-    @Query("SELECT * FROM pei where peiId not in  (:listePeiId) and isNew = 0")
-    abstract fun getListPeiToRemove(listePeiId: List<UUID>): List<Pei>
+    @Query("SELECT * FROM pei")
+    abstract fun getListPei(): List<Pei>
+
+    @Query("SELECT * FROM pei where peiId in (:listPeiId) and isNew = 0")
+    abstract fun getListPeiToRemove(listPeiId: List<UUID>): List<Pei>
 
     @Query("DELETE FROM pei where peiId in (:listPeiId)")
     abstract fun deletePei(listPeiId: List<UUID>)

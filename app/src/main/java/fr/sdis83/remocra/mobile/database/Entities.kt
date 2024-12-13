@@ -298,7 +298,7 @@ data class AnomalieCategorie(
 )
 data class Anomalie(
     @PrimaryKey val anomalieId: UUID,
-    val anomalieCategorieId: UUID,
+    val anomalieCategorieId: UUID?,
     val anomalieCode: String,
     val anomalieLibelle: String,
 )

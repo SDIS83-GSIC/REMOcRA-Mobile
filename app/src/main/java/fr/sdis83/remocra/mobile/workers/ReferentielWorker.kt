@@ -6,6 +6,7 @@ import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.Agent
 import fr.sdis83.remocra.mobile.database.LPoidsAnomalieTypeVisite
 import fr.sdis83.remocra.mobile.database.Nature
+import fr.sdis83.remocra.mobile.database.Pei
 import fr.sdis83.remocra.mobile.database.PoidsAnomalie
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.database.Role
@@ -67,7 +68,7 @@ class ReferentielWorker constructor(
                         natureId = it.natureId,
                         natureCode = it.natureCode,
                         natureLibelle = it.natureLibelle,
-                        typePeiId = it.typePeiId,
+                        typePeiId = typePei.find { t -> t.typePeiCode == it.natureTypePei }!!.typePeiId,
                     )
                 },
             )
@@ -179,15 +180,15 @@ class ReferentielWorker constructor(
             referentielDao.insertListRole(
                 listRole.map {
                     Role(
-                        roleId = it.roleId,
-                        roleLibelle = it.roleLibelle,
-                        roleCode = it.roleCode,
+                        roleId = it.id,
+                        roleLibelle = it.libelle,
+                        roleCode = it.code,
                     )
                 },
             )
 
             val roleToRemove = dataInMobileRole
-                .filterNot { data -> listRole.map { it.roleId }.contains(data.roleId) }
+                .filterNot { data -> listRole.map { it.id }.contains(data.roleId) }
 
             // ///////////////////////////////////////////////////////////////////////////////////////////GESTIONNAIRE
             val dataInMobileGestionnaire = referentielDao.getListGestionnaire()
@@ -228,18 +229,39 @@ class ReferentielWorker constructor(
             referentielDao.insertListContactRole(listContactRole)
 
             // ///////////////////////////////////////////////////////////////////////////////////////////PEI
-            listPei.forEach {
-                it.peiCaracteristiques = peiCaracteristiques[it.peiId]
-            }
             referentielDao.insertListPei(
                 listPei.map {
-                    it.copy(
-                        typePeiId = it.typePeiId,
+                    Pei(
+                        peiId = it.peiId,
+                        natureId = it.natureId,
+                        natureDeciId = it.natureDeciId,
+                        dispoHbe = it.dispoHbe,
+                        dispoTerrestre = it.dispoTerrestre,
+                        x = it.x,
+                        y = it.y,
+                        lon = it.lon,
+                        lat = it.lat,
+                        peiNumeroComplet = it.peiNumeroComplet,
+                        typePeiId = typePei.find { t -> t.typePeiCode == it.peiTypePei }!!.typePeiId,
+                        adresseComplete = it.peiComplementAdresse,
+                        observation = it.peiObservation,
+                        gestionnaireId = it.gestionnaireId,
+                        peiCaracteristiques = peiCaracteristiques[it.peiId],
                     )
                 },
             )
 
-            val peiToRemove = referentielDao.getListPeiToRemove(listPei.map { it.peiId })
+            val list = referentielDao.getListPei()
+            val peiToRemove = if (list.isNotEmpty()) {
+                referentielDao.getListPeiToRemove(
+                    list.map { it.peiId }.minus(
+                        listPei.map { it.peiId }
+                            .toSet(),
+                    ),
+                )
+            } else {
+                emptyList()
+            }
 
             // ///////////////////////////////////////////////////////////////////////////////////////////L_PEI_ANOMALIE
             referentielDao.deleteLPeiAnomalie()

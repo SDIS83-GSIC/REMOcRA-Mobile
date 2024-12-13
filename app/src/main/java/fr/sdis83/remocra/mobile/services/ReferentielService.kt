@@ -8,11 +8,9 @@ import fr.sdis83.remocra.mobile.database.ContactRole
 import fr.sdis83.remocra.mobile.database.FonctionContact
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.LPeiAnomalie
-import fr.sdis83.remocra.mobile.database.Nature
 import fr.sdis83.remocra.mobile.database.NatureDeci
 import fr.sdis83.remocra.mobile.database.Parametre
 import fr.sdis83.remocra.mobile.database.Pei
-import fr.sdis83.remocra.mobile.database.Role
 import fr.sdis83.remocra.mobile.database.Tournee
 import fr.sdis83.remocra.mobile.database.TourneeDispo
 import fr.sdis83.remocra.mobile.network.RetrofitBuilder
@@ -49,15 +47,15 @@ interface ReferentielService {
     ): Call<String>
 
     data class ReferentielResponse(
-        val listPei: List<Pei>,
+        val listPei: List<PeiInput>,
         val listPeiAnomalies: List<LPeiAnomalie>,
         val listGestionnaire: List<Gestionnaire>,
-        val listFonctionContact: List<FonctionContact>,
+        val listFonctionContact: List<FonctionContact>? = listOf(),
         val listContact: List<Contact>,
-        val listRole: List<Role>,
+        val listRole: List<IdCodeLibelleInput>,
         val listContactRole: List<ContactRole>,
         val listTypePei: List<String>,
-        val listNature: List<Nature>,
+        val listNature: List<NatureInput>,
         val listNatureDeci: List<NatureDeci>,
         val listAnomalie: List<Anomalie>,
         val listPoidsAnomalie: List<PoidsAnomalieInput>,
@@ -67,6 +65,46 @@ interface ReferentielService {
         val listDroit: List<String>,
         val peiCaracteristiques: Map<UUID, String>,
         val utilisateurConnecte: String,
+    )
+
+    data class NatureInput(
+        val natureId: UUID,
+        val natureCode: String,
+        val natureLibelle: String,
+        val natureTypePei: String,
+    )
+
+    data class PeiInput(
+        val peiId: UUID,
+        val natureId: UUID,
+        val natureDeciId: UUID,
+        val dispoHbe: Pei.DisponibiliteHbe?,
+        val dispoTerrestre: Pei.Disponibilite,
+        val x: Double,
+        val y: Double,
+        val lon: Double,
+        val lat: Double,
+        val peiNumeroComplet: String?,
+        val peiTypePei: String,
+        val peiEnFace: Boolean?,
+        val peiNumeroVoie: String?,
+        val peiSuffixeVoie: String?,
+        val peiVoieId: UUID?,
+        val peiVoieLibelle: String?,
+        val peiVoieTexte: String?,
+        val peiComplementAdresse: String?,
+        val communeCodePostal: String?,
+        val communeLibelle: String,
+        val lieuDitId: UUID?,
+        val lieuDitLibelle: String?,
+        val peiObservation: String?,
+        val gestionnaireId: UUID?,
+    )
+
+    data class IdCodeLibelleInput(
+        val id: UUID,
+        val code: String,
+        val libelle: String,
     )
 
     data class PoidsAnomalieInput(

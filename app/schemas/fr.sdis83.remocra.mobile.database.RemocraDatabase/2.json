@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "2cd9a50ea42d0df0db9b4be513c8839b",
+    "identityHash": "0e4fa3de0dd1a7cbce6c527dc1e0abef",
     "entities": [
       {
         "tableName": "pei",
@@ -823,7 +823,7 @@
       },
       {
         "tableName": "anomalie",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`anomalieId` BLOB NOT NULL, `anomalieCategorieId` BLOB NOT NULL, `anomalieCode` TEXT NOT NULL, `anomalieLibelle` TEXT NOT NULL, PRIMARY KEY(`anomalieId`), FOREIGN KEY(`anomalieCategorieId`) REFERENCES `anomalieCategorie`(`anomalieCategorieId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`anomalieId` BLOB NOT NULL, `anomalieCategorieId` BLOB, `anomalieCode` TEXT NOT NULL, `anomalieLibelle` TEXT NOT NULL, PRIMARY KEY(`anomalieId`), FOREIGN KEY(`anomalieCategorieId`) REFERENCES `anomalieCategorie`(`anomalieCategorieId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "anomalieId",
@@ -835,7 +835,7 @@
             "fieldPath": "anomalieCategorieId",
             "columnName": "anomalieCategorieId",
             "affinity": "BLOB",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "anomalieCode",
@@ -1676,7 +1676,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2cd9a50ea42d0df0db9b4be513c8839b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0e4fa3de0dd1a7cbce6c527dc1e0abef')"
     ]
   }
 }
