@@ -37,7 +37,7 @@ import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
 import fr.sdis83.remocra.mobile.viewmodels.ExportViewModel
 import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
-import fr.sdis83.remocra.mobile.viewmodels.ParamConfViewModel
+import fr.sdis83.remocra.mobile.viewmodels.ParametreViewModel
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: AdministrationViewModel, application: Application, isMdm: Boolean) {
@@ -48,8 +48,8 @@ fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: Administrati
     val context = LocalContext.current
     val exportViewModel = ExportViewModel(context.applicationContext as Application)
 
-    val paramConfViewModel = ParamConfViewModel((context as LoginActivity).application.applicationContext as Application)
-    val mdpAdmin by paramConfViewModel.mdpAdmin.observeAsState()
+    val parametreViewModel = ParametreViewModel((context as LoginActivity).application.applicationContext as Application)
+    val mdpAdmin by parametreViewModel.mdpAdmin.observeAsState()
 
     var showCustomDialog by remember {
         mutableStateOf(false)

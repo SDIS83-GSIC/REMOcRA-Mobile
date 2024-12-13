@@ -130,7 +130,7 @@ fun MapView(
     val hydrantOverlay = remember {
         mutableStateOf(
             SimpleFastPointOverlayCustom(
-                SimplePointTheme(listOf<MapViewModel.HydrantGeoPoint>()),
+                SimplePointTheme(listOf<MapViewModel.PeiGeoPoint>()),
                 listOf(),
                 SimpleFastPointOverlayOptions(),
                 null,
@@ -144,7 +144,7 @@ fun MapView(
     val newHydrantOverlay = remember {
         mutableStateOf(
             SimpleFastPointOverlayCustom(
-                SimplePointTheme(listOf<MapViewModel.HydrantGeoPoint>()),
+                SimplePointTheme(listOf<MapViewModel.PeiGeoPoint>()),
                 listOf(),
                 SimpleFastPointOverlayOptions(),
                 null,
@@ -209,14 +209,14 @@ fun MapView(
         }
 
         mapViewModel.hydrantTourneeSelected.observeForever { hydrant ->
-            if (hydrant != null && tourneeOverlay.value.values.firstOrNull { it.listHydrantGeoPoint.contains(hydrant) } != null) {
-                tourneeOverlay.value.values.first { it.listHydrantGeoPoint.contains(hydrant) }.selectedPoint =
-                    tourneeOverlay.value.values.first { it.listHydrantGeoPoint.contains(hydrant) }.listHydrantGeoPoint.indexOf(hydrant)
+            if (hydrant != null && tourneeOverlay.value.values.firstOrNull { it.listPeiGeoPoint.contains(hydrant) } != null) {
+                tourneeOverlay.value.values.first { it.listPeiGeoPoint.contains(hydrant) }.selectedPoint =
+                    tourneeOverlay.value.values.first { it.listPeiGeoPoint.contains(hydrant) }.listPeiGeoPoint.indexOf(hydrant)
             }
         }
         mapViewModel.hydrantNewSelected.observeForever { hydrant ->
             if (hydrant != null) {
-                newHydrantOverlay.value.selectedPoint = newHydrantOverlay.value.listHydrantGeoPoint.indexOf(hydrant)
+                newHydrantOverlay.value.selectedPoint = newHydrantOverlay.value.listPeiGeoPoint.indexOf(hydrant)
             }
         }
 
@@ -246,7 +246,7 @@ fun MapView(
                 ).apply {
                     setOnClickListener { points, point ->
                         InfoWindow.closeAllInfoWindowsOn(mapState)
-                        val selected = points.get(point) as MapViewModel.HydrantGeoPoint
+                        val selected = points.get(point) as MapViewModel.PeiGeoPoint
                         iwOverlay.setVisible(true)
                         mapState.controller.animateTo(selected)
                         iwOverlay.position = selected
@@ -290,7 +290,7 @@ fun MapView(
                 ).apply {
                     setOnClickListener { points, point ->
                         InfoWindow.closeAllInfoWindowsOn(mapState)
-                        val selected = points.get(point) as MapViewModel.HydrantGeoPoint
+                        val selected = points.get(point) as MapViewModel.PeiGeoPoint
                         mapState.controller.animateTo(selected)
                         iwOverlay.setVisible(true)
                         iwOverlay.position = selected
@@ -340,7 +340,7 @@ fun MapView(
                     ).apply {
                         setOnClickListener { points, point ->
                             InfoWindow.closeAllInfoWindowsOn(mapState)
-                            val selected = points.get(point) as MapViewModel.HydrantGeoPoint
+                            val selected = points.get(point) as MapViewModel.PeiGeoPoint
                             mapState.controller.animateTo(selected)
                             iwOverlay.setVisible(true)
                             iwOverlay.position = selected

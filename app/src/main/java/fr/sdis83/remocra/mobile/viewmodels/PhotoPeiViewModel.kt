@@ -4,7 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.AndroidViewModel
-import fr.sdis83.remocra.mobile.database.HydrantPhoto
+import fr.sdis83.remocra.mobile.database.PhotoPei
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import java.io.File
 import java.io.FileOutputStream
@@ -14,18 +14,18 @@ import java.util.Locale
 import java.util.UUID
 import kotlin.concurrent.thread
 
-class HydrantPhotoViewModel(application: Application, idHydrant: UUID) : AndroidViewModel(application) {
+class PhotoPeiViewModel(application: Application, peiId: UUID) : AndroidViewModel(application) {
 
     companion object {
-        private const val TAG: String = "HydrantPhotoViewModel"
+        private const val TAG: String = "PhotoPeiViewModel"
     }
-    val idHydrant = idHydrant
+    val peiId = peiId
 
-    val hydrantPhotoDao = RemocraDatabase.getInstance(application).hydrantPhotoDao()
+    val photoPeiDao = RemocraDatabase.getInstance(application).photoPeiDao()
 
-    val photos = hydrantPhotoDao.getListHydrantPhoto(idHydrant)
+    val photos = photoPeiDao.getListPhotoPei(peiId)
 
-    suspend fun deleteHydrantPhoto(hydrantPhoto: HydrantPhoto) = hydrantPhotoDao.deleteHydrantPhoto(hydrantPhoto)
+    suspend fun deletePhotoPei(photoPei: PhotoPei) = photoPeiDao.deletePhotoPei(photoPei)
 
     private fun getOutputDirectory(context: Context): File {
         val appContext = context.applicationContext
@@ -54,10 +54,10 @@ class HydrantPhotoViewModel(application: Application, idHydrant: UUID) : Android
         // TODO refaire sans le thread => mais cercle vicieux : besoin d'un suspens
         //  mais onTakePicture ne doit pas l'être dans camera
         thread {
-            hydrantPhotoDao.insertHydrantPhoto(
-                HydrantPhoto(
-                    idHydrantPhoto = UUID.randomUUID(),
-                    idHydrant = idHydrant,
+            photoPeiDao.insertPhotoPei(
+                PhotoPei(
+                    photoId = UUID.randomUUID(),
+                    peiId = peiId,
                     datePhoto = now,
                     path = file.absolutePath,
                 ),

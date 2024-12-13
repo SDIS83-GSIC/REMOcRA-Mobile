@@ -80,7 +80,7 @@ fun GestionnaireList(
         LazyColumn(
             Modifier.padding(horizontal = 80.pxToDp),
         ) {
-            items(gestionnairesList.value.sortedBy { it.nom }) { gestionnaire ->
+            items(gestionnairesList.value.sortedBy { it.gestionnaireLibelle }) { gestionnaire ->
                 Row(
                     Modifier
                         .padding(8.pxToDp)
@@ -101,11 +101,11 @@ fun GestionnaireList(
                                         .weight(1f),
                                 ) {
                                     Text(
-                                        text = gestionnaire.nom,
+                                        text = gestionnaire.gestionnaireLibelle,
                                         fontWeight = FontWeight.Bold,
                                     )
-                                    gestionnaire.code?.let {
-                                        Text(text = "SIREN : ${gestionnaire.code}")
+                                    gestionnaire.gestionnaireCode?.let {
+                                        Text(text = "SIREN : ${gestionnaire.gestionnaireCode}")
                                     }
                                 }
                                 Column {
@@ -114,8 +114,8 @@ fun GestionnaireList(
                                             navController.navigate(
                                                 Screens.EditGestionnaire.route
                                                     .replace(
-                                                        oldValue = "{idGestionnaire}",
-                                                        newValue = gestionnaire.idGestionnaire.toString(),
+                                                        oldValue = "{gestionnaireId}",
+                                                        newValue = gestionnaire.gestionnaireId.toString(),
                                                     ),
                                             )
                                         },

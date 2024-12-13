@@ -41,6 +41,7 @@ import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import fr.sdis83.remocra.mobile.viewmodels.TourneesViewModel
+import java.util.UUID
 import kotlin.math.roundToInt
 
 @Composable
@@ -49,7 +50,7 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
     val tourneesViewModel = TourneesViewModel(context.applicationContext as Application)
     val choixTourneeViewModel = ChoixTourneeViewModel(context.applicationContext as Application)
     val tourneeList by tourneesViewModel.tourneeList.observeAsState()
-    var idTourneeAAnnuler: Long? by remember {
+    var idTourneeAAnnuler: UUID? by remember {
         mutableStateOf(null)
     }
     var tourneeZoom: Tournee? by remember {
@@ -90,10 +91,10 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                         .fillMaxWidth()
                                         .clickable {
                                             navController.navigate(
-                                                Screens.TourneeHydrants.route
+                                                Screens.TourneePei.route
                                                     .replace(
-                                                        oldValue = "{idTournee}",
-                                                        newValue = tourneeItem.tournee.idTournee.toString(),
+                                                        oldValue = "{tourneeId}",
+                                                        newValue = tourneeItem.tournee.tourneeId.toString(),
                                                     ),
                                             )
                                             tourneeZoom = tourneeItem.tournee
@@ -116,7 +117,7 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                                 .align(Alignment.TopEnd)
                                                 .fillMaxWidth(0.2f),
                                             onClick = {
-                                                idTourneeAAnnuler = tourneeItem.tournee.idRemocra
+                                                idTourneeAAnnuler = tourneeItem.tournee.tourneeId
                                             },
                                         ) {
                                             Icon(
@@ -139,7 +140,7 @@ fun TourneesScreen(navController: NavController, mapViewModel: MapViewModel) {
                                             Row(verticalAlignment = Alignment.CenterVertically) {
                                                 Column(Modifier.weight(4f)) {
                                                     Text(
-                                                        text = "${tourneeItem.tournee.hydrantCount} point(s) d'eau",
+                                                        text = "${tourneeItem.tournee.peiCount} point(s) d'eau",
                                                         fontWeight = FontWeight.Bold,
                                                         fontSize = 2.5.em,
                                                     )

@@ -13,46 +13,46 @@ abstract class SynchronisationDao {
     @Query("SELECT * FROM contact where edited = 1")
     abstract fun getAllContacts(): List<Contact>
 
-    @Query("SELECT * FROM contactRole join contact on contactRole.idContact = contact.idContact where contact.edited = 1")
+    @Query("SELECT contactRole.* FROM contactRole join contact on contactRole.contactId = contact.contactId where contact.edited = 1")
     abstract fun getAllContactsRole(): List<ContactRole>
 
-    @Query("SELECT * FROM hydrant where idRemocra is null")
-    abstract fun getAllNewHydrants(): List<Hydrant>
+    @Query("SELECT * FROM pei where isNew = 1")
+    abstract fun getAllNewPei(): List<Pei>
 
-    @Query("SELECT * FROM hydrantVisite where statut = :statutFini")
-    abstract fun getAllHydrantVisite(statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE): List<HydrantVisite>
+    @Query("SELECT * FROM visite where statut = :statutFini")
+    abstract fun getAllVisite(statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE): List<Visite>
 
-    @Query("SELECT * FROM hydrant")
-    abstract fun getAllHydrant(): List<Hydrant>
+    @Query("SELECT * FROM pei")
+    abstract fun getAllPei(): List<Pei>
 
     @Query(
         """
-            SELECT * FROM hydrantVisiteAnomalie
-                JOIN hydrantVisite ON hydrantVisite.idHydrantVisite = hydrantVisiteAnomalie.idHydrantVisite
-                WHERE hydrantVisite.statut = :statutFini
+            SELECT lva.* FROM lVisiteAnomalie lva
+                JOIN visite ON visite.visiteId = lva.visiteId
+                WHERE visite.statut = :statutFini
         """,
     )
-    abstract fun getAllHydrantVisiteAnomalie(statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE): List<HydrantVisiteAnomalie>
+    abstract fun getAllVisiteAnomalie(statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE): List<LVisiteAnomalie>
 
-    @Query("SELECT * FROM hydrantAnomalie")
-    abstract fun getAllAnomalie(): List<HydrantAnomalie>
+    @Query("SELECT * FROM lPeiAnomalie")
+    abstract fun getAllAnomalie(): List<LPeiAnomalie>
 
     @Query(
         """
         SELECT t.*, doneCount FROM tournee t
-        LEFT JOIN  (select idTournee,  COUNT(hydrantVisite.idHydrantVisite)AS doneCount
-            from hydrantVisite where statut = :terminee group by  idTournee) as c on t.idTournee = c.idTournee
-        GROUP BY t.idTournee
+        LEFT JOIN  (select tourneeId,  COUNT(visite.visiteId)AS doneCount
+            from visite where statut = :terminee group by tourneeId) as c on t.tourneeId = c.tourneeId
+        GROUP BY t.tourneeId
         """,
     )
-    abstract fun getAllTournee(terminee: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE): List<TourneesDao.TourneeAvancement>
+    abstract fun getAllTournee(terminee: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE): List<TourneesDao.TourneeAvancement>
 
     @Query(
         """
-        SELECT * FROM hydrantPhoto
+        SELECT * FROM photoPei
         """,
     )
-    abstract fun getHydrantPhoto(): List<HydrantPhoto>
+    abstract fun getPhotoPei(): List<PhotoPei>
 
     @Query("DELETE FROM gestionnaire where edited = 1")
     abstract fun deleteGestionnaireSynchronises()
@@ -61,53 +61,53 @@ abstract class SynchronisationDao {
     abstract fun deleteContactsSynchronises()
 
     @Query(
-        "DELETE FROM contactRole where idContact in " +
-            "(SELECT  idContact from  contact where contact.edited = 1)",
+        "DELETE FROM contactRole where contactId in " +
+            "(SELECT  contactId from  contact where contact.edited = 1)",
     )
     abstract fun deleteContactsRoleSynchronises()
 
-    @Query("DELETE FROM hydrant where idRemocra is null")
-    abstract fun deleteNewHydrantsSynchronises()
+    @Query("DELETE FROM pei where isNew = 1")
+    abstract fun deleteNewPeiSynchronises()
 
     @Query(
         """
-            DELETE FROM hydrantVisiteAnomalie where idHydrantVisite in (
-                SELECT idHydrantVisite FROM hydrantVisite
-                join tournee on tournee.idTournee = hydrantVisite.idTournee 
-                WHERE hydrantVisite.statut = :statutFini and tournee.idRemocra in (:idsTournee))
+            DELETE FROM lVisiteAnomalie where visiteId in (
+                SELECT visiteId FROM visite
+                join tournee on tournee.tourneeId = visite.tourneeId 
+                WHERE visite.statut = :statutFini and tournee.tourneeId in (:idsTournee))
         """,
     )
-    abstract fun deleteHydrantVisiteAnomalie(idsTournee: List<UUID>, statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE)
+    abstract fun deleteHydrantVisiteAnomalie(idsTournee: List<UUID>, statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE)
 
     @Query(
         """
-            SELECT path FROM hydrantPhoto where idHydrant in (
-                SELECT idHydrant FROM hydrantVisite 
-                WHERE hydrantVisite.statut = :statutFini)
+            SELECT path FROM photoPei where peiId in (
+                SELECT peiId FROM visite 
+                WHERE statut = :statutFini)
         """,
     )
-    abstract fun getHydrantPhotoFini(statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE): List<String>
+    abstract fun getPhotoPeiFini(statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE): List<String>
 
     @Query(
         """
-            DELETE FROM hydrantPhoto where path in (:listPath)
+            DELETE FROM photoPei where path in (:listPath)
         """,
     )
-    abstract fun deleteHydrantPhoto(listPath: List<String>)
+    abstract fun deletePhotoPei(listPath: List<String>)
 
     @Query(
         """
-            DELETE FROM hydrantVisite where idHydrantVisite in (
-                SELECT idHydrantVisite FROM hydrantVisite  
-                join tournee on tournee.idTournee = hydrantVisite.idTournee
-                WHERE hydrantVisite.statut = :statutFini and tournee.idRemocra in (:idsTournee))
+            DELETE FROM visite where visiteId in (
+                SELECT visiteId FROM visite  
+                join tournee on tournee.tourneeId = visite.tourneeId
+                WHERE visite.statut = :statutFini and tournee.tourneeId in (:idsTournee))
         """,
     )
-    abstract fun deleteHydrantVisite(idsTournee: List<UUID>, statutFini: HydrantVisite.HydrantVisiteStatut = HydrantVisite.HydrantVisiteStatut.TERMINE)
+    abstract fun deleteVisite(idsTournee: List<UUID>, statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE)
 
     @Query(
         """
-        DELETE FROM tournee where idTournee in (:idsTournee)       
+        DELETE FROM tournee where tourneeId in (:idsTournee)       
         """,
     )
     abstract fun deleteTourneesSynchronisees(idsTournee: List<UUID>)

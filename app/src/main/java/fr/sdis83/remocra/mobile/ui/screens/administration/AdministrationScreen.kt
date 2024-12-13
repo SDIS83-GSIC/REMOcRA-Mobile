@@ -22,7 +22,6 @@ import androidx.compose.ui.res.stringResource
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
-import fr.sdis83.remocra.mobile.viewmodels.ExportViewModel
 
 @Composable
 fun AdministrationScreen(viewModel: AdministrationViewModel) {
@@ -34,7 +33,6 @@ fun AdministrationScreen(viewModel: AdministrationViewModel) {
     )
 
     val administrationViewModel = AdministrationViewModel(context.applicationContext as Application)
-    val exportViewModel = ExportViewModel(context.applicationContext as Application)
 
     var urlSaisie: String? by remember { mutableStateOf(null) }
 

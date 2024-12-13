@@ -16,15 +16,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class GestionnaireViewModel(application: Application, idGestionnaire: UUID?) : AndroidViewModel(application) {
+class GestionnaireViewModel(application: Application, gestionnaireId: UUID?) : AndroidViewModel(application) {
 
     companion object {
         private const val TAG: String = "GestionnairesViewModel"
     }
 
     val gestionnairesDao = RemocraDatabase.getInstance(application).gestionnairesDao()
-    val gestionnaire: LiveData<Gestionnaire?> = gestionnairesDao.getCurrentGestionnaireByUUID(idGestionnaire)
-    val contactsList: LiveData<List<Contact>> = gestionnairesDao.getContactByGestionnaireUUID(idGestionnaire)
+    val gestionnaire: LiveData<Gestionnaire?> = gestionnairesDao.getCurrentGestionnaireByUUID(gestionnaireId)
+    val contactsList: LiveData<List<Contact>> = gestionnairesDao.getContactByGestionnaireUUID(gestionnaireId)
 
     suspend fun upsertGestionnaire(gestionnaire: Gestionnaire) {
         gestionnairesDao.upsertGestionnaire(gestionnaire.copy(edited = true))
@@ -32,10 +32,9 @@ class GestionnaireViewModel(application: Application, idGestionnaire: UUID?) : A
 
     private val _gestionnaireState = MutableStateFlow(
         Gestionnaire(
-            idRemocra = null,
-            nom = "",
-            code = null,
-            actif = true,
+            gestionnaireId = UUID.randomUUID(),
+            gestionnaireLibelle = "",
+            gestionnaireCode = "",
         ),
     )
 
@@ -43,21 +42,20 @@ class GestionnaireViewModel(application: Application, idGestionnaire: UUID?) : A
     var gestionnaireValidState: MutableState<GestionnaireValidation> =
         mutableStateOf(GestionnaireValidation(false))
 
-    suspend fun loadData(idGestionnaire: UUID?) {
-        if (idGestionnaire != null) {
-            _gestionnaireState.value = gestionnairesDao.getGestionnaireByUUID(idGestionnaire)
+    suspend fun loadData(gestionnaireId: UUID?) {
+        if (gestionnaireId != null) {
+            _gestionnaireState.value = gestionnairesDao.getGestionnaireByUUID(gestionnaireId)
         } else {
             _gestionnaireState.value = Gestionnaire(
-                idRemocra = null,
-                nom = "",
-                code = null,
-                actif = true,
+                gestionnaireId = UUID.randomUUID(),
+                gestionnaireLibelle = "",
+                gestionnaireCode = "",
             )
         }
     }
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            loadData(idGestionnaire)
+            loadData(gestionnaireId)
         }
     }
 
@@ -67,7 +65,7 @@ class GestionnaireViewModel(application: Application, idGestionnaire: UUID?) : A
 
     fun formValidation() {
         gestionnaireValidState.value = GestionnaireValidation(
-            isNomValid = !_gestionnaireState.value.nom.isNullOrEmpty(),
+            isNomValid = !_gestionnaireState.value.gestionnaireLibelle.isNullOrEmpty(),
         )
     }
 

@@ -17,38 +17,29 @@ abstract class TourneesDao {
     @Query("DELETE FROM tourneeDispo")
     abstract fun truncateTourneesDispos()
 
-    @Query("DELETE FROM tournee")
-    abstract fun truncateTournee()
-
-    @Query("DELETE FROM hydrantTournee")
-    abstract fun truncateHydrantTournee()
-
     @Query("SELECT * FROM tourneeDispo where choisie = 1")
     abstract fun getTourneesAReserver(): List<TourneeDispo>
 
     @Update
     abstract suspend fun updateTourneeDispo(tourneeDispo: TourneeDispo)
 
-    @Query("SELECT * FROM hydrant")
-    abstract fun getHydrants(): List<Hydrant>
-
     @Insert
     abstract fun insertTournee(tournee: Tournee)
 
     @Insert
-    abstract fun insertLienHydrantTournee(hydrantTournee: HydrantTournee)
+    abstract fun insertLPeiTournee(LPeiTournee: LPeiTournee)
 
     @Query(
         """
         SELECT t.*, doneCount FROM tournee t
-        LEFT JOIN  (select idTournee,  COUNT(hydrantVisite.idHydrantVisite)AS doneCount
-            from hydrantVisite where statut = :terminee group by  idTournee) as c on t.idTournee = c.idTournee
-        GROUP BY t.idTournee
+        LEFT JOIN  (select tourneeId,  COUNT(visiteId) AS doneCount
+            from visite where statut = :terminee group by  tourneeId) as c on t.tourneeId = c.tourneeId
+        GROUP BY t.tourneeId
         """,
     )
     abstract fun getTourneeList(
-        terminee: HydrantVisite.HydrantVisiteStatut =
-            HydrantVisite.HydrantVisiteStatut.TERMINE,
+        terminee: Visite.VisiteStatut =
+            Visite.VisiteStatut.TERMINE,
     ): LiveData<List<TourneeAvancement>>
 
     data class TourneeAvancement(
@@ -56,15 +47,15 @@ abstract class TourneesDao {
         val doneCount: Int,
     ) {
         val progression: Float
-            get() = if (tournee.hydrantCount > 0) (doneCount.toFloat() / tournee.hydrantCount) else 0.0f
+            get() = if (tournee.peiCount > 0) (doneCount.toFloat() / tournee.peiCount) else 0.0f
     }
 
     @Query(
         """
         SELECT count(*) FROM tournee t
         -- pas optimal de passer par hydrantCount mais ça passe
-        WHERE t.hydrantCount >
-          (SELECT count(*) FROM hydrantVisite hv WHERE hv.idTournee = t.idTournee AND hv.statut == 'TERMINE')
+        WHERE t.peiCount >
+          (SELECT count(*) FROM visite hv WHERE hv.tourneeId = t.tourneeId AND hv.statut == 'TERMINE')
          """,
     )
     abstract fun getTourneeNotDoneCount(): LiveData<Int>
@@ -74,8 +65,8 @@ abstract class TourneesDao {
 
     @Query(
         """
-        SELECT count(*) FROM hydrant
-        WHERE hydrant.idRemocra is null
+        SELECT count(*) FROM pei
+        WHERE isNew = 1
          """,
     )
     abstract fun getHydrantsCreesCount(): LiveData<Int>

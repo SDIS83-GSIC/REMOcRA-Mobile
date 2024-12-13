@@ -7,10 +7,10 @@ import android.graphics.Path
 import android.graphics.Point
 import android.graphics.drawable.Drawable
 import androidx.core.graphics.drawable.toBitmap
-import fr.sdis83.remocra.mobile.database.Hydrant
-import fr.sdis83.remocra.mobile.database.HydrantVisite
-import fr.sdis83.remocra.mobile.utils.TypeHydrantNatureEnum
-import fr.sdis83.remocra.mobile.viewmodels.MapViewModel.HydrantGeoPoint
+import fr.sdis83.remocra.mobile.database.Pei
+import fr.sdis83.remocra.mobile.database.Visite
+import fr.sdis83.remocra.mobile.utils.TypeNatureEnum
+import fr.sdis83.remocra.mobile.viewmodels.MapViewModel.PeiGeoPoint
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlay
@@ -18,7 +18,7 @@ import org.osmdroid.views.overlay.simplefastpoint.SimpleFastPointOverlayOptions
 
 class SimpleFastPointOverlayCustom(
     pointList: PointAdapter,
-    val listHydrantGeoPoint: List<HydrantGeoPoint>,
+    val listPeiGeoPoint: List<PeiGeoPoint>,
     private val style: SimpleFastPointOverlayOptions,
     private val drawableCheck: Drawable?,
     private val drawableSymboleInconnu: Drawable,
@@ -36,7 +36,7 @@ class SimpleFastPointOverlayCustom(
         if (b) return
         val mPositionPixels = Point()
         val pj = mapView.projection
-        for (pt1 in listHydrantGeoPoint) {
+        for (pt1 in listPeiGeoPoint) {
             if (pt1.latitude > viewBBox.latSouth && pt1.latitude < viewBBox.latNorth &&
                 pt1.longitude > viewBBox.lonWest && pt1.longitude < viewBBox.lonEast
             ) {
@@ -55,8 +55,8 @@ class SimpleFastPointOverlayCustom(
                         mapView,
                     )
                 } else {
-                    when (pt1.codeNature) {
-                        TypeHydrantNatureEnum.PI.getCode() -> {
+                    when (pt1.natureCode) {
+                        TypeNatureEnum.PI.getCode() -> {
                             canvas?.drawCircle(
                                 mPositionPixels.x.toFloat(),
                                 mPositionPixels.y
@@ -65,7 +65,7 @@ class SimpleFastPointOverlayCustom(
                                 style.pointStyle,
                             )
                         }
-                        TypeHydrantNatureEnum.BI.getCode() -> {
+                        TypeNatureEnum.BI.getCode() -> {
                             canvas?.drawRect(
                                 mPositionPixels.x.toFloat() - style.circleRadius,
                                 mPositionPixels.y.toFloat() - style.circleRadius,
@@ -74,7 +74,7 @@ class SimpleFastPointOverlayCustom(
                                 style.pointStyle,
                             )
                         }
-                        TypeHydrantNatureEnum.PA.getCode() -> {
+                        TypeNatureEnum.PA.getCode() -> {
                             drawTriangle(
                                 mPositionPixels.x - style.circleRadius.toInt(),
                                 mPositionPixels.y + style.circleRadius.toInt(),
@@ -84,7 +84,7 @@ class SimpleFastPointOverlayCustom(
                                 canvas!!,
                             )
                         }
-                        TypeHydrantNatureEnum.CI.getCode() -> {
+                        TypeNatureEnum.CI.getCode() -> {
                             canvas?.drawRect(
                                 mPositionPixels.x.toFloat() - style.circleRadius * 2,
                                 mPositionPixels.y.toFloat() - style.circleRadius,
@@ -108,12 +108,12 @@ class SimpleFastPointOverlayCustom(
                 // Si le paramètre est vrai, on permet d'afficher les indispo
                 if (affichageIndispo) {
                     // Si le PEI est indisponible, on met une croix rouge
-                    if (pt1.dispoTerrestre == Hydrant.Disponibilite.INDISPO) {
+                    if (pt1.dispoTerrestre == Pei.Disponibilite.INDISPO) {
                         drawSymboleIndispo(canvas, mPositionPixels)
                     }
                 }
 
-                if (pt1.statutVisite == HydrantVisite.HydrantVisiteStatut.TERMINE) {
+                if (pt1.statutVisite == Visite.VisiteStatut.TERMINE) {
                     val bitmap = drawableCheck!!.toBitmap()
                     canvas?.drawBitmap(
                         bitmap,
@@ -125,10 +125,10 @@ class SimpleFastPointOverlayCustom(
             }
         }
 
-        if (selectedPoint != null && listHydrantGeoPoint[selectedPoint] != null &&
+        if (selectedPoint != null && listPeiGeoPoint[selectedPoint] != null &&
             style.selectedPointStyle != null
         ) {
-            pj.toPixels(listHydrantGeoPoint[selectedPoint], mPositionPixels)
+            pj.toPixels(listPeiGeoPoint[selectedPoint], mPositionPixels)
             if (style.symbol == SimpleFastPointOverlayOptions.Shape.CIRCLE) {
                 canvas?.drawCircle(
                     mPositionPixels.x.toFloat(),

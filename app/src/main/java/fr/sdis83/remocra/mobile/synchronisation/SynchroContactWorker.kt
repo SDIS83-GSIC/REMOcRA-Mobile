@@ -20,26 +20,22 @@ class SynchroContactWorker constructor(
         val contacts = synchronisationDao.getAllContacts()
 
         contacts.forEach { contact ->
-            if (contact.idGestionnaire == null) {
-                throw IllegalArgumentException("Le gestionnaire ne peut pas être nul.")
-            }
             val res = retrofitBuilder.postContact(
-                idContact = contact.idContact,
-                idRemocra = contact.idRemocra,
-                idGestionnaire = contact.idGestionnaire,
-                nom = contact.nom ?: "",
-                prenom = contact.prenom ?: "",
-                fonction = contact.fonction,
-                civilite = contact.civilite?.name ?: "",
-                codePostal = contact.codePostal ?: "",
-                voie = contact.voie ?: "",
-                suffixeVoie = contact.suffixeVoie,
-                lieuDit = contact.lieuDit,
-                numeroVoie = contact.numeroVoie,
-                pays = contact.pays ?: "",
-                telephone = contact.telephone,
-                ville = contact.ville ?: "",
-                email = contact.email ?: "",
+                contactId = contact.contactId,
+                gestionnaireId = contact.gestionnaireId,
+                nom = contact.contactNom ?: "",
+                prenom = contact.contactPrenom ?: "",
+                fonction = contact.contactFonctionContactId,
+                civilite = contact.contactCivilite?.name ?: "",
+                codePostal = contact.contactCodePostal ?: "",
+                voie = contact.contactVoieText ?: "",
+                suffixeVoie = contact.contactSuffixeVoie,
+                lieuDit = contact.contactLieuDitText,
+                numeroVoie = contact.contactNumeroVoie,
+                pays = contact.contactPays ?: "",
+                telephone = contact.contactTelephone,
+                ville = contact.contactCommuneText ?: "",
+                email = contact.contactEmail ?: "",
             ).execute()
 
             when (res.code()) {

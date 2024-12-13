@@ -14,7 +14,7 @@ abstract class AgentDao {
     @Insert
     abstract suspend fun insertAgent(composantAgent: Agent)
 
-    @Query("SELECT valeur from paramConf where cle = :gestionAgent")
+    @Query("SELECT parametreValeur from parametre where parametreCode = :gestionAgent")
     abstract fun getMethodeGestionAgent(gestionAgent: String = GlobalConstants.GESTION_AGENT): LiveData<String>
 
     @Transaction

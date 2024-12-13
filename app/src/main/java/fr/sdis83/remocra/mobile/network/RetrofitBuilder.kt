@@ -65,6 +65,7 @@ private fun buildApiUrl(uri: String): String {
         Uri.Builder()
             .scheme(parsedUri.scheme)
             .authority(parsedUri.authority)
+            .appendPath("api")
             .appendPath("mobile")
             .appendPath("")
             .build().toString(),

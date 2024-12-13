@@ -40,11 +40,11 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
-fun ContactFormScreen(navController: NavController?, idContact: UUID?, idGestionnaire: UUID) {
+fun ContactFormScreen(navController: NavController?, contactId: UUID?, gestionnaireId: UUID) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val contactsViewModel =
-        ContactsViewModel(context.applicationContext as Application, idContact, idGestionnaire)
+        ContactsViewModel(context.applicationContext as Application, contactId, gestionnaireId)
 
     ContactFormScreenInner(
         contactsViewModel,
@@ -70,14 +70,14 @@ fun ContactFormScreenInner(
     val listRole = contactsViewModel.roleList.observeAsState(listOf())
 
     var mainTitle: String by remember { mutableStateOf("") }
-    var contextCreation: Boolean = contact?.idContact == null
+    var contextCreation: Boolean = contact?.contactId == null
 
     mainTitle = if (contextCreation) {
         // Context = Création d'un contact
-        "${stringResource(R.string.addContactST)} ${gestAppartenance?.nom}"
+        "${stringResource(R.string.addContactST)} ${gestAppartenance?.gestionnaireLibelle}"
     } else {
         // Context = Modification d'un contact
-        "${stringResource(R.string.editContactST)} ${contact?.nom} ${contact?.prenom}"
+        "${stringResource(R.string.editContactST)} ${contact?.contactNom} ${contact?.contactPrenom}"
     }
 
     Column(
@@ -116,13 +116,13 @@ fun ContactFormScreenInner(
                     OutlinedTextField(
                         modifier = Modifier
                             .fillMaxWidth(.5f),
-                        value = currentContact.contact.fonction ?: "",
+                        value = "", // TODO fontion !
                         onValueChange = { it: String ->
-                            contactsViewModel.updateForm(
+                          /*  contactsViewModel.updateForm(
                                 currentContact.copy(
                                     contact = currentContact.contact.copy(fonction = it),
                                 ),
-                            )
+                            )*/
                         },
                         label = { Text(text = stringResource(R.string.formContactFonction)) },
                         placeholder = { Text(text = stringResource(R.string.formContactFonctionPH)) },
@@ -141,12 +141,12 @@ fun ContactFormScreenInner(
                         Column(
                             modifier = Modifier
                                 .selectable(
-                                    selected = (civ == currentContact.contact.civilite),
+                                    selected = (civ == currentContact.contact.contactCivilite),
                                     onClick = {
                                         contactsViewModel.updateForm(
                                             currentContact.copy(
                                                 contact = currentContact.contact.copy(
-                                                    civilite = civ,
+                                                    contactCivilite = civ,
                                                 ),
                                             ),
                                         )
@@ -159,12 +159,12 @@ fun ContactFormScreenInner(
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 RadioButton(
-                                    selected = (civ == currentContact.contact.civilite),
+                                    selected = (civ == currentContact.contact.contactCivilite),
                                     onClick = {
                                         contactsViewModel.updateForm(
                                             currentContact.copy(
                                                 contact = currentContact.contact.copy(
-                                                    civilite = civ,
+                                                    contactCivilite = civ,
                                                 ),
                                             ),
                                         )
@@ -178,11 +178,11 @@ fun ContactFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth(.5f)
                             .padding(start = 5.pxToDp, end = 5.pxToDp),
-                        value = currentContact.contact.nom ?: "",
+                        value = currentContact.contact.contactNom ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
                                 currentContact.copy(
-                                    contact = currentContact.contact.copy(nom = it),
+                                    contact = currentContact.contact.copy(contactNom = it),
                                 ),
                             )
                         },
@@ -195,11 +195,11 @@ fun ContactFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 5.pxToDp),
-                        value = currentContact.contact.prenom ?: "",
+                        value = currentContact.contact.contactPrenom ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
                                 currentContact.copy(
-                                    contact = currentContact.contact.copy(prenom = it),
+                                    contact = currentContact.contact.copy(contactPrenom = it),
                                 ),
                             )
                         },
@@ -228,11 +228,11 @@ fun ContactFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth(.15f)
                             .padding(end = 5.pxToDp),
-                        value = currentContact.contact.numeroVoie ?: "",
+                        value = currentContact.contact.contactNumeroVoie ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
                                 currentContact.copy(
-                                    contact = currentContact.contact.copy(numeroVoie = it),
+                                    contact = currentContact.contact.copy(contactNumeroVoie = it),
                                 ),
                             )
                         },
@@ -245,11 +245,11 @@ fun ContactFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth(.15f)
                             .padding(start = 5.pxToDp, end = 5.pxToDp),
-                        value = currentContact.contact.suffixeVoie ?: "",
+                        value = currentContact.contact.contactSuffixeVoie ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
                                 currentContact.copy(
-                                    contact = currentContact.contact.copy(suffixeVoie = it),
+                                    contact = currentContact.contact.copy(contactSuffixeVoie = it),
                                 ),
                             )
                         },
@@ -262,11 +262,11 @@ fun ContactFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 5.pxToDp),
-                        value = currentContact.contact.voie ?: "",
+                        value = currentContact.contact.contactVoieText ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
                                 currentContact.copy(
-                                    contact = currentContact.contact.copy(voie = it),
+                                    contact = currentContact.contact.copy(contactVoieText = it),
                                 ),
                             )
                         },
@@ -285,11 +285,11 @@ fun ContactFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth(.15f)
                             .padding(end = 5.pxToDp),
-                        value = currentContact.contact.codePostal ?: "",
+                        value = currentContact.contact.contactCodePostal ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
                                 currentContact.copy(
-                                    contact = currentContact.contact.copy(codePostal = it),
+                                    contact = currentContact.contact.copy(contactCodePostal = it),
                                 ),
                             )
                         },
@@ -302,11 +302,11 @@ fun ContactFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth(.50f)
                             .padding(start = 5.pxToDp, end = 5.pxToDp),
-                        value = currentContact.contact.ville ?: "",
+                        value = currentContact.contact.contactCommuneText ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
                                 currentContact.copy(
-                                    contact = currentContact.contact.copy(ville = it),
+                                    contact = currentContact.contact.copy(contactCommuneText = it),
                                 ),
                             )
                         },
@@ -319,11 +319,11 @@ fun ContactFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 5.pxToDp),
-                        value = currentContact.contact.pays ?: "",
+                        value = currentContact.contact.contactPays ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
                                 currentContact.copy(
-                                    contact = currentContact.contact.copy(pays = it),
+                                    contact = currentContact.contact.copy(contactPays = it),
                                 ),
                             )
                         },
@@ -352,11 +352,11 @@ fun ContactFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth(.3f)
                             .padding(end = 5.pxToDp),
-                        value = currentContact.contact.telephone ?: "",
+                        value = currentContact.contact.contactTelephone ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
                                 currentContact.copy(
-                                    contact = currentContact.contact.copy(telephone = it),
+                                    contact = currentContact.contact.copy(contactTelephone = it),
                                 ),
                             )
                         },
@@ -369,11 +369,11 @@ fun ContactFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth(.50f)
                             .padding(start = 5.pxToDp, end = 5.pxToDp),
-                        value = currentContact.contact.email ?: "",
+                        value = currentContact.contact.contactEmail ?: "",
                         onValueChange = { it: String ->
                             contactsViewModel.updateForm(
                                 currentContact.copy(
-                                    contact = currentContact.contact.copy(email = it),
+                                    contact = currentContact.contact.copy(contactEmail = it),
                                 ),
                             )
                         },
@@ -419,7 +419,7 @@ fun ContactFormScreenInner(
                                 )
                                 Text(
                                     modifier = Modifier.padding(start = 2.pxToDp),
-                                    text = role.nom.toString(),
+                                    text = role.roleLibelle.toString(),
                                 )
                             }
                         }
@@ -438,8 +438,8 @@ fun ContactFormScreenInner(
                                     navController?.navigate(
                                         Screens.EditGestionnaire.route
                                             .replace(
-                                                oldValue = "{idGestionnaire}",
-                                                newValue = currentContact.contact.idGestionnaire.toString(),
+                                                oldValue = "{gestionnaireId}",
+                                                newValue = currentContact.contact.gestionnaireId.toString(),
                                             ),
                                     ) {
                                         popUpTo(Screens.Settings.route)

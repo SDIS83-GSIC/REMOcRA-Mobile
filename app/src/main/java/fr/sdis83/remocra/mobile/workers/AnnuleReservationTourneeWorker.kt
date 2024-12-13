@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.ReferentielService
+import java.util.UUID
 
 class AnnuleReservationTourneeWorker constructor(
     context: Context,
@@ -19,14 +20,11 @@ class AnnuleReservationTourneeWorker constructor(
         val retrofitBuilder = ReferentielService.getRetroFitInstance(applicationContext)
         val tourneeDao = RemocraDatabase.getInstance(applicationContext).tourneeDao()
 
-        val idTournee = inputData.getLong("idTournee", -1)
-        if (idTournee == -1L) {
-            throw Exception("Aucun idTournee")
-        }
+        val tourneeId = UUID.fromString(inputData.getString("tourneeId"))
 
         // On passe toutes les tournées choisies au serveur pour pouvoir les réserver
         val annuleReservationResponse = retrofitBuilder.annuleReservation(
-            idTournee,
+            tourneeId,
         ).execute()
 
         if (!annuleReservationResponse.isSuccessful) {
@@ -35,18 +33,17 @@ class AnnuleReservationTourneeWorker constructor(
         }
 
         // Etape 1 : on supprime le lien entre les hydrants et la tournée à supprimer
-        tourneeDao.deleteHydrantTournee(idTournee)
+        tourneeDao.deletePeiTournee(tourneeId)
 
         // Etape 2 : Suppression des hydrants visites anomalies
-        val uuidTournee = tourneeDao.getTourneeUUID(idTournee)
-        val listIdHydrantVisite = tourneeDao.getListIdHydrantVisite(uuidTournee)
-        tourneeDao.deleteHydrantVisiteAnomalie(listIdHydrantVisite)
+        val listvisiteId = tourneeDao.getListVisiteIdByTournee(tourneeId)
+        tourneeDao.deleteLVisiteAnomalie(listvisiteId)
 
         // Etape 3 : Les hydrants visites
-        tourneeDao.deleteHydrantVisite(uuidTournee)
+        tourneeDao.deleteVisite(tourneeId)
 
         // Etape 4 : Les tournées
-        tourneeDao.deleteTournee(uuidTournee)
+        tourneeDao.deleteTournee(tourneeId)
 
         return Result.success()
     }

@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import fr.sdis83.remocra.mobile.database.Hydrant
-import fr.sdis83.remocra.mobile.database.HydrantVisite
+import fr.sdis83.remocra.mobile.database.Pei
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
+import fr.sdis83.remocra.mobile.database.Visite
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,17 +23,17 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
 
     private var mapView: MapView? = null
 
-    var hydrantTourneeSelected: MutableLiveData<HydrantGeoPoint?> = MutableLiveData()
-    var hydrantNewSelected: MutableLiveData<HydrantGeoPoint?> = MutableLiveData()
+    var hydrantTourneeSelected: MutableLiveData<PeiGeoPoint?> = MutableLiveData()
+    var hydrantNewSelected: MutableLiveData<PeiGeoPoint?> = MutableLiveData()
 
     fun register(mapView: MapView) {
         this.mapView = mapView
     }
 
-    private val hydrantDao = RemocraDatabase.getInstance(applicationContext).hydrantDao()
+    private val hydrantDao = RemocraDatabase.getInstance(applicationContext).peiDao()
 
-    val hydrantList = hydrantDao.getHydrantList()
-    val newHydrantList = hydrantDao.getNewHydrantList()
+    val hydrantList = hydrantDao.getPeiList()
+    val newHydrantList = hydrantDao.getNewPeiList()
     val tourneeList = hydrantDao.getTourneeMap()
 
     var showCenter = mutableStateOf(false)
@@ -75,38 +75,38 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
         mapView?.zoomToBoundingBox(boundingBox, true)
     }
 
-    fun goToHydrant(idhydrant: UUID, isNew: Boolean) {
+    fun goToPei(idhydrant: UUID, isNew: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
-            val hydrant = hydrantDao.getHydrantGeoPointByIdHydrant(idhydrant)
+            val hydrant = hydrantDao.getPeiGeoPointByIdPei(idhydrant)
             hydrant.let {
                 setCenter(
-                    HydrantGeoPoint(
+                    PeiGeoPoint(
                         it.lat,
                         it.lon,
                         UUID.randomUUID(),
-                        it.numero,
+                        it.peiNumeroComplet,
                         it.dispoTerrestre,
                         it.adresseComplete,
                         it.observation,
                         it.peiCaracteristiques,
                         it.statutVisite,
-                        it.idTournee,
-                        it.codeNature,
+                        it.tourneeId,
+                        it.natureCode,
                     ),
                 )
                 mapView?.setExpectedCenter(
-                    HydrantGeoPoint(
+                    PeiGeoPoint(
                         it.lat,
                         it.lon,
-                        it.idHydrant,
-                        it.numero,
+                        it.peiId,
+                        it.peiNumeroComplet,
                         it.dispoTerrestre,
                         it.adresseComplete,
                         it.observation,
                         it.peiCaracteristiques,
                         it.statutVisite,
-                        it.idTournee,
-                        it.codeNature,
+                        it.tourneeId,
+                        it.natureCode,
                     ),
                 )
                 if (isNew) {
@@ -120,18 +120,18 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
         }
     }
 
-    data class HydrantGeoPoint(
+    data class PeiGeoPoint(
         val lat: Double,
         val lon: Double,
-        val idHydrant: UUID,
-        val numero: String?,
-        val dispoTerrestre: Hydrant.Disponibilite?,
+        val peiId: UUID,
+        val peiNumeroComplet: String?,
+        val dispoTerrestre: Pei.Disponibilite?,
         val adresseComplete: String?,
         val observation: String?,
         val peiCaracteristiques: String?,
-        val statutVisite: HydrantVisite.HydrantVisiteStatut?,
-        val idTournee: UUID? = null,
-        val codeNature: String,
+        val statutVisite: Visite.VisiteStatut?,
+        val tourneeId: UUID? = null,
+        val natureCode: String,
     ) :
         GeoPoint(lat, lon)
 }

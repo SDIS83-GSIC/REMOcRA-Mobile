@@ -17,18 +17,18 @@ class SynchroNewHydrantWorker constructor(
         val synchronisationDao = RemocraDatabase.getInstance(applicationContext).synchronisationDao()
         val retrofitBuilder = SynchronisationService.getRetroFitInstance(applicationContext)
 
-        val newHydrants = synchronisationDao.getAllNewHydrants()
+        val newHydrants = synchronisationDao.getAllNewPei()
 
         newHydrants.forEach { hydrant ->
             val res = retrofitBuilder.postHydrants(
-                idHydrant = hydrant.idHydrant,
+                peiId = hydrant.peiId,
                 lat = hydrant.lat,
                 lon = hydrant.lon,
-                code = hydrant.code!!,
-                idGestionnaire = hydrant.idGestionnaire,
-                idGestionnaireRemocra = hydrant.idRemocraGestionnaire,
-                idNature = hydrant.idNature!!,
-                idNatureDeci = hydrant.idNatureDeci!!,
+                code = "",
+                gestionnaireId = hydrant.gestionnaireId,
+                idGestionnaireRemocra = hydrant.gestionnaireId,
+                idNature = hydrant.natureId,
+                idNatureDeci = hydrant.natureDeciId,
                 observations = hydrant.observation,
             ).execute()
 

@@ -18,31 +18,32 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 @Database(
-    version = 1,
+    version = 2,
     entities = [
-        Hydrant::class,
+        Pei::class,
         Gestionnaire::class,
         Role::class,
         ContactRole::class,
         Contact::class,
         Tournee::class,
-        HydrantTournee::class,
-        HydrantVisite::class,
-        TypeHydrant::class,
-        TypeHydrantAnomalie::class,
-        TypeHydrantAnomalieNature::class,
-        TypeHydrantAnomalieNatureSaisie::class,
-        TypeHydrantCritere::class,
-        TypeHydrantNature::class,
-        TypeHydrantNatureDeci::class,
-        TypeHydrantSaisie::class,
-        HydrantPhoto::class,
-        HydrantVisiteAnomalie::class,
-        HydrantAnomalie::class,
+        LPeiTournee::class,
+        Visite::class,
+        TypePei::class,
+        Anomalie::class,
+        PoidsAnomalie::class,
+        LPoidsAnomalieTypeVisite::class,
+        AnomalieCategorie::class,
+        Nature::class,
+        NatureDeci::class,
+        TypeVisite::class,
+        PhotoPei::class,
+        LVisiteAnomalie::class,
+        LPeiAnomalie::class,
         TourneeDispo::class,
-        ParamConf::class,
+        Parametre::class,
         TypeDroit::class,
         Agent::class,
+        FonctionContact::class,
     ],
 )
 @TypeConverters(Converters::class)
@@ -57,13 +58,13 @@ abstract class RemocraDatabase : RoomDatabase() {
     }
 
     abstract fun referentielDao(): ReferentielDao
-    abstract fun hydrantDao(): HydrantDao
+    abstract fun peiDao(): PeiDao
 
     abstract fun tourneeDao(): TourneeDao
 
     abstract fun tourneesDao(): TourneesDao
 
-    abstract fun hydrantVisiteDao(): HydrantVisiteDao
+    abstract fun visiteDao(): VisiteDao
 
     abstract fun gestionnairesDao(): GestionnairesDao
 
@@ -72,9 +73,9 @@ abstract class RemocraDatabase : RoomDatabase() {
     abstract fun synchronisationDao(): SynchronisationDao
 
     abstract fun droitDao(): DroitDao
-    abstract fun paramConfDao(): ParamConfDao
+    abstract fun parametreDao(): ParametreDao
 
-    abstract fun hydrantPhotoDao(): HydrantPhotoDao
+    abstract fun photoPeiDao(): PhotoPeiDao
 
     abstract fun agentDao(): AgentDao
 

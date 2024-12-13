@@ -22,7 +22,7 @@ class SynchroTourneeWorker constructor(
 
         tournees.forEach { tournee ->
             val res = retrofitBuilder.postTournee(
-                idTourneeRemocra = tournee.idRemocra,
+                idTourneeRemocra = tournee.tourneeId,
                 nom = tournee.nom,
             ).execute()
 
@@ -33,20 +33,20 @@ class SynchroTourneeWorker constructor(
         }
 
         // On supprime les données
-        val idsTournee = tournees.map { it.idTournee }
+        val idsTournee = tournees.map { it.tourneeId }
         synchronisationDao.apply {
-            deleteNewHydrantsSynchronises()
+            deleteNewPeiSynchronises()
             deleteContactsRoleSynchronises()
             deleteContactsSynchronises()
             deleteGestionnaireSynchronises()
 
             deleteHydrantVisiteAnomalie(idsTournee)
 
-            val photos = getHydrantPhotoFini()
+            val photos = getPhotoPeiFini()
             deleteFile(photos)
-            deleteHydrantPhoto(photos)
+            deletePhotoPei(photos)
 
-            deleteHydrantVisite(idsTournee)
+            deleteVisite(idsTournee)
             deleteTourneesSynchronisees(idsTournee)
         }
 

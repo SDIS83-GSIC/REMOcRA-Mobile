@@ -5,18 +5,18 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.database.Tournee
-import fr.sdis83.remocra.mobile.database.TourneeDao.TourneeHydrantAvancement
+import fr.sdis83.remocra.mobile.database.TourneeDao.TourneePeiAvancement
 import java.util.UUID
 
-class TourneeViewModel(application: Application, idTournee: UUID) : AndroidViewModel(application) {
+class TourneeViewModel(application: Application, tourneeId: UUID) : AndroidViewModel(application) {
 
     val tourneeDao = RemocraDatabase.getInstance(application).tourneeDao()
     val tourneesDao = RemocraDatabase.getInstance(application).tourneesDao()
 
-    val hydrantList: LiveData<List<TourneeHydrantAvancement>> =
-        tourneeDao.getHydrantByTournee(idTournee)
+    val peiList: LiveData<List<TourneePeiAvancement>> =
+        tourneeDao.getPeiByTournee(tourneeId)
 
-    val tourneeData: LiveData<Tournee> = tourneeDao.getTournee(idTournee)
+    val tourneeData: LiveData<Tournee> = tourneeDao.getTournee(tourneeId)
 
     val tourneesData = tourneesDao.getTourneeList()
 

@@ -34,7 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
-import fr.sdis83.remocra.mobile.database.HydrantVisite
+import fr.sdis83.remocra.mobile.database.Visite
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
@@ -42,10 +42,10 @@ import fr.sdis83.remocra.mobile.viewmodels.TourneeViewModel
 import java.util.UUID
 
 @Composable
-fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: MapViewModel) {
+fun TourneeScreen(navController: NavController, tourneeId: UUID, mapViewModel: MapViewModel) {
     val context = LocalContext.current
-    val tourneeViewModel = TourneeViewModel(context.applicationContext as Application, idTournee)
-    val hydrantList by tourneeViewModel.hydrantList.observeAsState()
+    val tourneeViewModel = TourneeViewModel(context.applicationContext as Application, tourneeId)
+    val peiList by tourneeViewModel.peiList.observeAsState()
     val tourneeData by tourneeViewModel.tourneeData.observeAsState()
     val tourneesData by tourneeViewModel.tourneesData.observeAsState()
 
@@ -80,13 +80,13 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                             Button(
                                 onClick = {
                                     navController.navigate(
-                                        Screens.TourneeHydrants.route
+                                        Screens.TourneePei.route
                                             .replace(
-                                                oldValue = "{idTournee}",
-                                                newValue = tourneeItem.tournee.idTournee.toString(),
+                                                oldValue = "{tourneeId}",
+                                                newValue = tourneeItem.tournee.tourneeId.toString(),
                                             ),
                                     ) {
-                                        popUpTo(Screens.TourneeHydrants.route) {
+                                        popUpTo(Screens.TourneePei.route) {
                                             inclusive = true
                                         }
                                     }
@@ -95,8 +95,8 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                                 },
                                 border = BorderStroke(color = tourneeItem.tournee.getColor(), width = 4.pxToDp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = if (tourneeItem.tournee.idTournee == idTournee) tourneeItem.tournee.getColor() else Color.Transparent,
-                                    contentColor = if (tourneeItem.tournee.idTournee == idTournee) Color.White else tourneeItem.tournee.getColor(),
+                                    containerColor = if (tourneeItem.tournee.tourneeId == tourneeId) tourneeItem.tournee.getColor() else Color.Transparent,
+                                    contentColor = if (tourneeItem.tournee.tourneeId == tourneeId) Color.White else tourneeItem.tournee.getColor(),
                                 ),
                             ) {
                                 Text(
@@ -120,38 +120,38 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                     )
                     Spacer(Modifier.width(16.pxToDp))
                 }
-                if (!hydrantList.isNullOrEmpty()) {
+                if (!peiList.isNullOrEmpty()) {
                     Row {
                         LazyColumn {
                             items(
-                                hydrantList!!.sortedWith(
+                                peiList!!.sortedWith(
                                     compareBy {
-                                        if (it.statut == HydrantVisite.HydrantVisiteStatut.TERMINE.toString()) {
+                                        if (it.statut == Visite.VisiteStatut.TERMINE.toString()) {
                                             it.statut
                                         } else {
                                             null
                                         }
                                     },
                                 ),
-                            ) { hydrantItem ->
-                                val estTerminee = hydrantItem.statut == HydrantVisite.HydrantVisiteStatut.TERMINE.toString()
+                            ) { peiItem ->
+                                val estTerminee = peiItem.statut == Visite.VisiteStatut.TERMINE.toString()
                                 Row(
                                     Modifier
                                         .padding(8.pxToDp)
                                         .fillMaxWidth()
                                         .clickable {
                                             navController.navigate(
-                                                Screens.Hydrant.route
+                                                Screens.Pei.route
                                                     .replace(
-                                                        oldValue = "{idHydrant}",
-                                                        newValue = hydrantItem.hydrant.idHydrant.toString(),
+                                                        oldValue = "{peiId}",
+                                                        newValue = peiItem.pei.peiId.toString(),
                                                     )
                                                     .replace(
-                                                        oldValue = "{idTournee}",
-                                                        newValue = idTournee.toString(),
+                                                        oldValue = "{tourneeId}",
+                                                        newValue = tourneeId.toString(),
                                                     ),
                                             ) {
-                                                popUpTo(Screens.TourneeHydrants.route)
+                                                popUpTo(Screens.TourneePei.route)
                                             }
                                         },
                                 ) {
@@ -165,10 +165,10 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                                     ) {
                                         Column {
                                             Row(modifier = Modifier.fillMaxWidth()) {
-                                                Text(text = hydrantItem.hydrant.numero ?: "N/A")
+                                                Text(text = peiItem.pei.peiNumeroComplet ?: "N/A")
                                                 Spacer(modifier = Modifier.width(16.pxToDp))
                                                 Text(
-                                                    text = hydrantItem.statut ?: "À faire",
+                                                    text = peiItem.statut ?: "À faire",
                                                     color = if (estTerminee) Color(0xDD31861E) else Color.Black,
                                                     fontWeight = if (estTerminee) FontWeight.Bold else FontWeight.Normal,
                                                 )
@@ -182,12 +182,12 @@ fun TourneeScreen(navController: NavController, idTournee: UUID, mapViewModel: M
                                             }
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(
-                                                    text = hydrantItem.hydrantNature.nom,
+                                                    text = peiItem.nature.natureLibelle,
                                                 )
                                             }
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(
-                                                    text = hydrantItem.hydrant.dispoTerrestre.toString(),
+                                                    text = peiItem.pei.dispoTerrestre.toString(),
                                                 )
                                             }
                                         }

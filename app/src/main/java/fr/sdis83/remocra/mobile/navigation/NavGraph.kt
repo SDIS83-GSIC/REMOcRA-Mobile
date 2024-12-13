@@ -13,9 +13,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import fr.sdis83.remocra.mobile.MapViewState
 import fr.sdis83.remocra.mobile.ui.screens.export.ExportScreen
-import fr.sdis83.remocra.mobile.ui.screens.hydrants.HydrantCreateScreen
-import fr.sdis83.remocra.mobile.ui.screens.hydrants.HydrantListScreen
-import fr.sdis83.remocra.mobile.ui.screens.hydrants.HydrantVisiteScreen
+import fr.sdis83.remocra.mobile.ui.screens.pei.PeiCreateScreen
+import fr.sdis83.remocra.mobile.ui.screens.pei.PeiListScreen
+import fr.sdis83.remocra.mobile.ui.screens.pei.VisiteScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.ContactFormScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireFormScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireListScreen
@@ -60,13 +60,13 @@ fun NavGraph(
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
             }
-            HydrantCreateScreen(navController, mapViewModel)
+            PeiCreateScreen(navController, mapViewModel)
         }
         composable(route = Screens.HydrantList.route) {
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
             }
-            HydrantListScreen(navController, mapViewModel)
+            PeiListScreen(navController, mapViewModel)
         }
         composable(route = Screens.Sync.route) {
             LaunchedEffect(Unit) {
@@ -82,34 +82,34 @@ fun NavGraph(
             TourneesScreen(navController, mapViewModel)
         }
         composable(
-            route = Screens.TourneeHydrants.route,
-            arguments = listOf(navArgument("idTournee") {}),
+            route = Screens.TourneePei.route,
+            arguments = listOf(navArgument("tourneeId") {}),
         ) {
-            if (!it.arguments?.getString("idTournee").isNullOrEmpty()) {
-                val idTournee = UUID.fromString(it.arguments?.getString("idTournee"))
-                    ?: throw Exception("wrong idTournee")
+            if (!it.arguments?.getString("tourneeId").isNullOrEmpty()) {
+                val tourneeId = UUID.fromString(it.arguments?.getString("tourneeId"))
+                    ?: throw Exception("wrong tourneeId")
                 LaunchedEffect(Unit) {
                     mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
                 }
-                TourneeScreen(navController, idTournee, mapViewModel)
+                TourneeScreen(navController, tourneeId, mapViewModel)
             }
         }
 
         composable(
-            route = Screens.Hydrant.route,
-            arguments = listOf(navArgument("idTournee") {}, navArgument("idHydrant") {}),
+            route = Screens.Pei.route,
+            arguments = listOf(navArgument("tourneeId") {}, navArgument("peiId") {}),
         ) {
-            if (!it.arguments?.getString("idTournee")
-                    .isNullOrEmpty() && !it.arguments?.getString("idHydrant").isNullOrEmpty()
+            if (!it.arguments?.getString("tourneeId")
+                    .isNullOrEmpty() && !it.arguments?.getString("peiId").isNullOrEmpty()
             ) {
-                val idHydrant = UUID.fromString(it.arguments?.getString("idHydrant"))
-                    ?: throw Exception("wrong idHydrant")
-                val idTournee = UUID.fromString(it.arguments?.getString("idTournee"))
-                    ?: throw Exception("wrong idTournee")
+                val peiId = UUID.fromString(it.arguments?.getString("peiId"))
+                    ?: throw Exception("wrong peiId")
+                val tourneeId = UUID.fromString(it.arguments?.getString("tourneeId"))
+                    ?: throw Exception("wrong tourneeId")
                 LaunchedEffect(Unit) {
                     mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
                 }
-                HydrantVisiteScreen(navController, idTournee, idHydrant, mapViewModel)
+                VisiteScreen(navController, tourneeId, peiId, mapViewModel)
             }
         }
 
@@ -129,53 +129,53 @@ fun NavGraph(
 
         composable(
             route = Screens.EditGestionnaire.route,
-            arguments = listOf(navArgument("idGestionnaire") { nullable = true }),
+            arguments = listOf(navArgument("gestionnaireId") { nullable = true }),
         ) {
-            if (!it.arguments?.getString("idGestionnaire").isNullOrEmpty()) {
-                val idGestionnaire = UUID.fromString(it.arguments?.getString("idGestionnaire"))
-                    ?: throw Exception("wrong idGestionnaire")
+            if (!it.arguments?.getString("gestionnaireId").isNullOrEmpty()) {
+                val gestionnaireId = UUID.fromString(it.arguments?.getString("gestionnaireId"))
+                    ?: throw Exception("wrong gestionnaireId")
                 LaunchedEffect(Unit) {
                     mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
                 }
-                GestionnaireFormScreen(navController, idGestionnaire)
+                GestionnaireFormScreen(navController, gestionnaireId)
             }
         }
 
         composable(
             route = Screens.CreateContact.route,
             arguments = listOf(
-                navArgument("idGestionnaire") { nullable = true },
+                navArgument("gestionnaireId") { nullable = true },
             ),
         ) {
-            if (!it.arguments?.getString("idGestionnaire").isNullOrEmpty()) {
-                val idGestionnaire = UUID.fromString(it.arguments?.getString("idGestionnaire"))
-                    ?: throw Exception("wrong idGestionnaire")
+            if (!it.arguments?.getString("gestionnaireId").isNullOrEmpty()) {
+                val gestionnaireId = UUID.fromString(it.arguments?.getString("gestionnaireId"))
+                    ?: throw Exception("wrong gestionnaireId")
                 LaunchedEffect(Unit) {
                     mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
                 }
-                ContactFormScreen(navController, null, idGestionnaire)
+                ContactFormScreen(navController, null, gestionnaireId)
             }
         }
 
         composable(
             route = Screens.EditContact.route,
             arguments = listOf(
-                navArgument("idGestionnaire") { nullable = false },
-                navArgument("idContact") { nullable = true },
+                navArgument("gestionnaireId") { nullable = false },
+                navArgument("contactId") { nullable = true },
             ),
         ) {
-            if (!it.arguments?.getString("idContact").isNullOrEmpty()) {
-                val idContact = UUID.fromString(it.arguments?.getString("idContact"))
-                    ?: throw Exception("wrong idContact")
-                if (!it.arguments?.getString("idGestionnaire").isNullOrEmpty()) {
-                    val idGestionnaire =
-                        UUID.fromString(it.arguments?.getString("idGestionnaire"))
-                            ?: throw Exception("wrong idGestionnaire")
+            if (!it.arguments?.getString("contactId").isNullOrEmpty()) {
+                val contactId = UUID.fromString(it.arguments?.getString("contactId"))
+                    ?: throw Exception("wrong contactId")
+                if (!it.arguments?.getString("gestionnaireId").isNullOrEmpty()) {
+                    val gestionnaireId =
+                        UUID.fromString(it.arguments?.getString("gestionnaireId"))
+                            ?: throw Exception("wrong gestionnaireId")
                     LaunchedEffect(Unit) {
                         mapViewState.value =
                             MapViewState(showMapView = false, isFullscreen = false)
                     }
-                    ContactFormScreen(navController, idContact, idGestionnaire)
+                    ContactFormScreen(navController, contactId, gestionnaireId)
                 }
             }
         }

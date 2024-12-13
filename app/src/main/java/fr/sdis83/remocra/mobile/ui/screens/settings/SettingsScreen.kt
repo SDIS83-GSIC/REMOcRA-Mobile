@@ -31,13 +31,13 @@ import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.DroitViewModel
-import fr.sdis83.remocra.mobile.viewmodels.ParamConfViewModel
+import fr.sdis83.remocra.mobile.viewmodels.ParametreViewModel
 
 @Composable
 fun SettingScreen(navController: NavController?, droitViewModel: DroitViewModel) {
     val context = LocalContext.current
-    val paramConfViewModel = ParamConfViewModel((context as MainActivity).application.applicationContext as Application)
-    val listParamConf by paramConfViewModel.paramsConf.observeAsState()
+    val parametreViewModel = ParametreViewModel((context as MainActivity).application.applicationContext as Application)
+    val listParamConf by parametreViewModel.parametres.observeAsState()
     val listTypeDroit by droitViewModel.typesDroit.observeAsState()
 
     BackHandler { navController?.navigate(Screens.Tournees.route) }
@@ -99,7 +99,7 @@ fun SettingScreen(navController: NavController?, droitViewModel: DroitViewModel)
                 }
             }
 
-            if (listParamConf?.firstOrNull { it.cle == GlobalConstants.CREATION_PEI_MOBILE_PARAM }?.valeur == "true") {
+            if (listParamConf?.firstOrNull { it.parametreCode == GlobalConstants.CREATION_PEI_MOBILE_PARAM }?.parametreValeur == "true") {
                 if (listTypeDroit?.firstOrNull { it.code == GlobalConstants.CREATION_PEI_MOBILE_DROIT } != null) {
                     Column(
                         modifier = Modifier

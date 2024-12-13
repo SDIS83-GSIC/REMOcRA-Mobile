@@ -4,80 +4,84 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Embedded
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Relation
-import fr.sdis83.remocra.mobile.services.ReferentielService
+import androidx.room.Transaction
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 @Dao
 abstract class ReferentielDao {
 
-    @Insert
-    abstract fun insertListTypeHydrant(listTypeHydrant: List<TypeHydrant>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListTypePei(listTypePei: Collection<TypePei>)
 
-    @Insert
-    abstract fun insertListTypeHydrantNature(listTypeHydrantNature: List<TypeHydrantNature>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListNature(listNature: Collection<Nature>)
 
-    @Insert
-    abstract fun insertListTypeHydrantNatureDeci(listTypeHydrantNatureDeci: List<TypeHydrantNatureDeci>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListNatureDeci(listNatureDeci: Collection<NatureDeci>)
 
-    @Insert
-    abstract fun insertListTypeHydrantSaisie(listTypeHydrantSaisie: List<TypeHydrantSaisie>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListTypeVisite(listTypeVisite: Collection<TypeVisite>)
 
-    @Insert
-    abstract fun insertListTypeHydrantCritere(listTypeHydrantCritere: List<TypeHydrantCritere>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListAnomalieCategorie(listAnomalieCategorie: Collection<AnomalieCategorie>)
 
-    @Insert
-    abstract fun insertListTypeHydrantAnomalie(listTypeHydrantAnomalie: List<TypeHydrantAnomalie>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListAnomalie(listAnomalie: Collection<Anomalie>)
 
-    @Insert
-    abstract fun insertListHydrant(listHydrant: List<Hydrant>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListPei(listPei: Collection<Pei>)
 
-    @Insert
-    abstract fun insertListHydrantAnomalie(listHydrantAnomalie: List<HydrantAnomalie>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListLPeiAnomalie(listLPeiAnomalie: Collection<LPeiAnomalie>)
 
-    @Insert
-    abstract fun insertListTypeHydrantAnomalieNature(listTypeHydrantAnomalieNature: List<TypeHydrantAnomalieNature>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListPoidsAnomalie(listPoidsAnomalie: Collection<PoidsAnomalie>)
 
-    @Insert
-    abstract fun insertListTypeHydrantAnomalieNatureSaisie(listTypeHydrantAnomalieNatureSaisie: List<TypeHydrantAnomalieNatureSaisie>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListLPoidsAnomalieTypeVisite(listLPoidsAnomalieTypeVisite: Collection<LPoidsAnomalieTypeVisite>)
 
-    @Insert
-    abstract fun insertListRole(roles: List<Role>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListRole(roles: Collection<Role>)
 
-    @Insert
-    abstract fun insertListGestionnaire(gestionnaires: List<Gestionnaire>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListGestionnaire(gestionnaires: Collection<Gestionnaire>)
 
-    @Insert
-    abstract fun insertListContact(contacts: List<Contact>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListFonctionContact(fonctionsContacts: Collection<FonctionContact>)
 
-    @Insert
-    abstract fun insertListContactRole(contactsRoles: List<ContactRole>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListContact(contacts: Collection<Contact>)
 
-    @Insert
-    abstract fun insertListParamConf(listParamConf: List<ParamConf>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListContactRole(contactsRoles: Collection<ContactRole>)
 
-    @Insert
-    abstract fun insertListTypeDroit(listTypeDroit: List<TypeDroit>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListParamConf(listParametre: Collection<Parametre>)
 
-    @Query("DELETE FROM hydrantAnomalie")
-    abstract fun truncateHydrantAnomalie()
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertListTypeDroit(listTypeDroit: Collection<TypeDroit>)
 
-    @Query("DELETE FROM hydrantPhoto")
-    abstract fun truncateHydrantPhoto()
+    @Query("DELETE FROM lPeiAnomalie where peiId not in (SELECT visite.peiId FROM visite where statut!= 'A_FAIRE')")
+    abstract fun deleteLPeiAnomalie()
 
-    @Query("DELETE FROM hydrantVisite")
-    abstract fun truncateHydrantVisite()
+    @Query("DELETE FROM photoPei")
+    abstract fun truncatePhotoPei()
 
-    @Query("DELETE FROM hydrantTournee")
-    abstract fun truncateHydrantTournee()
+    @Query("DELETE FROM visite")
+    abstract fun truncateVisite()
+
+    @Query("DELETE FROM lPeiTournee")
+    abstract fun truncateLPeiTournee()
 
     @Query("DELETE FROM tournee")
     abstract fun truncateTournee()
 
-    @Query("DELETE FROM hydrant")
-    abstract fun truncateHydrant()
+    @Query("DELETE FROM pei")
+    abstract fun truncatePei()
 
     @Query("DELETE FROM contactRole")
     abstract fun truncateContactRole()
@@ -91,260 +95,149 @@ abstract class ReferentielDao {
     @Query("DELETE FROM role")
     abstract fun truncateRole()
 
-    @Query("DELETE FROM typeHydrantNature")
-    abstract fun truncateTypeHydrantNature()
+    @Query("DELETE FROM nature")
+    abstract fun truncateNature()
 
-    @Query("DELETE FROM typeHydrantNatureDeci")
-    abstract fun truncateTypeHydrantNatureDeci()
+    @Query("DELETE FROM natureDeci")
+    abstract fun truncateNatureDeci()
 
-    @Query("DELETE FROM typeHydrant")
-    abstract fun truncateTypeHydrant()
+    @Query("DELETE FROM typePei")
+    abstract fun truncateTypePei()
 
-    @Query("DELETE FROM typeHydrantAnomalie")
-    abstract fun truncateTypeHydrantAnomalie()
+    @Query("DELETE FROM anomalie")
+    abstract fun truncateAnomalie()
 
-    @Query("DELETE FROM typeHydrantAnomalieNatureSaisie")
-    abstract fun truncateTypeHydrantAnomalieNatureSaisie()
+    @Query("DELETE FROM poidsAnomalie")
+    abstract fun truncatePoidsAnomalie()
 
-    @Query("DELETE FROM typeHydrantAnomalieNature")
-    abstract fun truncateTypeHydrantAnomalieNature()
+    @Query("DELETE FROM anomalieCategorie")
+    abstract fun truncateAnomalieCategorie()
 
-    @Query("DELETE FROM typeHydrantCritere")
-    abstract fun truncateTypeHydrantCritere()
+    @Query("DELETE FROM typeVisite")
+    abstract fun truncateTypeVisite()
 
-    @Query("DELETE FROM typeHydrantSaisie")
-    abstract fun truncateTypeHydrantSaisie()
-
-    @Query("DELETE FROM paramConf")
-    abstract fun truncateParamConf()
+    @Query("DELETE FROM parametre")
+    abstract fun truncateParametre()
 
     @Query("DELETE FROM typeDroit")
     abstract fun truncateTypeDroit()
 
-    @Query("SELECT * FROM typeHydrant")
-    abstract fun getListTypeHydrant(): List<TypeHydrant>
+    @Query("SELECT * FROM typePei")
+    abstract fun getListTypePei(): List<TypePei>
 
-    @Query("UPDATE typeHydrant set nom = :nom, actif = :actif, code = :code  where idRemocra = :idRemocra")
-    abstract fun updateTypeHydrant(idRemocra: Long, nom: String, actif: Boolean, code: String?)
+    @Query("DELETE FROM typePei where typePeiId in (:listTypePeiId)")
+    abstract fun deleteTypePei(listTypePeiId: List<UUID>)
 
-    @Query("DELETE FROM typeHydrant where idRemocra in (:listIdRemocra)")
-    abstract fun deleteTypeHydrant(listIdRemocra: List<Long>)
+    @Query("SELECT * FROM nature")
+    abstract fun getListNature(): List<Nature>
 
-    @Query("SELECT * FROM typeHydrantNature")
-    abstract fun getListTypeHydrantNature(): List<TypeHydrantNature>
+    @Query("DELETE FROM nature where natureId in (:listNatureId)")
+    abstract fun deleteNature(listNatureId: List<UUID>)
 
-    @Query("UPDATE typeHydrantNature set nom = :nom, actif = :actif, code = :code  where idRemocra = :idRemocra")
-    abstract fun updateTypeHydrantNature(idRemocra: Long, nom: String, actif: Boolean, code: String?)
+    @Query("SELECT * FROM natureDeci")
+    abstract fun getListNatureDeci(): List<NatureDeci>
 
-    @Query("DELETE FROM typeHydrantNature where idRemocra in (:listIdRemocra)")
-    abstract fun deleteTypeHydrantNature(listIdRemocra: List<Long>)
+    @Query("DELETE FROM natureDeci where natureDeciId in (:listNatureDeciId)")
+    abstract fun deleteNatureDeci(listNatureDeciId: List<UUID>)
 
-    @Query("SELECT * FROM typeHydrantNatureDeci")
-    abstract fun getListTypeHydrantNatureDeci(): List<TypeHydrantNatureDeci>
+    @Query("SELECT * FROM typeVisite")
+    abstract fun getListTypeVisite(): List<TypeVisite>
 
-    @Query("UPDATE typeHydrantNatureDeci set nom = :nom, actif = :actif, code = :code  where idRemocra = :idRemocra")
-    abstract fun updateTypeHydrantNatureDeci(idRemocra: Long, nom: String, actif: Boolean, code: String?)
+    @Query("DELETE FROM typeVisite where typeVisiteId in (:listTypeVisiteId)")
+    abstract fun deleteTypeVisite(listTypeVisiteId: List<UUID>)
 
-    @Query("DELETE FROM typeHydrantNatureDeci where idRemocra in (:listIdRemocra)")
-    abstract fun deleteTypeHydrantNatureDeci(listIdRemocra: List<Long>)
+    @Query("DELETE FROM fonctionContact where fonctionContactId in (:listFonctionContactId)")
+    abstract fun deleteFonctionContact(listFonctionContactId: List<UUID>)
 
-    @Query("SELECT * FROM typeHydrantSaisie")
-    abstract fun getListTypeHydrantSaisie(): List<TypeHydrantSaisie>
+    @Query("SELECT * FROM anomalieCategorie")
+    abstract fun getListAnomalieCategorie(): List<AnomalieCategorie>
 
-    @Query("UPDATE typeHydrantSaisie set nom = :nom, actif = :actif, code = :code  where idRemocra = :idRemocra")
-    abstract fun updateTypeHydrantSaisie(idRemocra: Long, nom: String, actif: Boolean, code: String?)
+    @Query("DELETE FROM anomalieCategorie where anomalieCategorieId in (:listAnomalieCategorieId)")
+    abstract fun deleteAnomalieCategorie(listAnomalieCategorieId: List<UUID>)
 
-    @Query("DELETE FROM typeHydrantSaisie where idRemocra in (:listIdRemocra)")
-    abstract fun deleteTypeHydrantSaisie(listIdRemocra: List<Long>)
+    @Query("SELECT * FROM anomalie")
+    abstract fun getListAnomalie(): List<Anomalie>
 
-    @Query("SELECT * FROM typeHydrantCritere")
-    abstract fun getListTypeHydrantCritere(): List<TypeHydrantCritere>
+    @Query("DELETE FROM anomalie where anomalieId in (:listAnomalieId)")
+    abstract fun deleteAnomalie(listAnomalieId: List<UUID>)
 
-    @Query("UPDATE typeHydrantCritere set nom = :nom, actif = :actif, code = :code  where idRemocra = :idRemocra")
-    abstract fun updateTypeHydrantCritere(idRemocra: Long, nom: String, actif: Boolean, code: String?)
+    @Query("SELECT * FROM poidsAnomalie")
+    abstract fun getListPoidsAnomalie(): List<PoidsAnomalie>
 
-    @Query("DELETE FROM typeHydrantCritere where idRemocra in (:listIdRemocra)")
-    abstract fun deleteTypeHydrantCritere(listIdRemocra: List<Long>)
+    @Query("SELECT * FROM lpoidsanomalietypevisite")
+    abstract fun getListLPoidsAnomalieTypeVisite(): List<LPoidsAnomalieTypeVisite>
 
-    @Query("SELECT * FROM typeHydrantAnomalie")
-    abstract fun getListTypeHydrantAnomalie(): List<TypeHydrantAnomalie>
+    @Query("DELETE FROM lpoidsanomalietypevisite where poidsAnomalieId in (:listePoidsAnomalieId)")
+    abstract fun deleteLPoidsAnomalieTypeVisite(listePoidsAnomalieId: List<UUID>)
 
-    @Query("UPDATE typeHydrantAnomalie set nom = :nom, actif = :actif, code = :code, idCritere = :idCritere where idRemocra = :idRemocra")
-    abstract fun updateTypeHydrantAnomalie(idRemocra: Long, nom: String, actif: Boolean, idCritere: Long, code: String?)
-
-    @Query("DELETE FROM typeHydrantAnomalie where idRemocra in (:listIdRemocra)")
-    abstract fun deleteTypeHydrantAnomalie(listIdRemocra: List<Long>)
-
-    @Query("SELECT * FROM typeHydrantAnomalieNature")
-    abstract fun getListTypeHydrantAnomalieNature(): List<TypeHydrantAnomalieNature>
-
-    @Query(
-        "UPDATE typeHydrantAnomalieNature set idTypeHydrantNature = :idTypeHydrantNature, idTypeHydrantAnomalie = :idTypeHydrantAnomalie," +
-            "valIndispoTerrestre = :valIndispoTerrestre, valIndispoHbe =:valIndispoHbe, valIndispoAdmin = :valIndispoAdmin   where idRemocra = :idRemocra",
-    )
-    abstract fun updateTypeHydrantAnomalieNature(
-        idRemocra: Long,
-        idTypeHydrantNature: Long,
-        idTypeHydrantAnomalie: Long,
-        valIndispoTerrestre: Int,
-        valIndispoHbe: Int,
-        valIndispoAdmin: Int,
-    )
-
-    @Query("DELETE FROM typeHydrantAnomalieNature where idRemocra in (:listIdRemocra)")
-    abstract fun deleteTypeHydrantAnomalieNature(listIdRemocra: List<Long>)
-
-    @Query("SELECT * FROM typeHydrantAnomalieNatureSaisie")
-    abstract fun getListTypeHydrantAnomalieNatureSaisie(): List<TypeHydrantAnomalieNatureSaisie>
-
-    @Query("DELETE FROM typeHydrantAnomalieNatureSaisie where idTypeHydrantAnomalieNature = :idTypeHydrantAnomalieNature and  idTypeHydrantSaisie = :idTypeHydrantSaisie")
-    abstract fun deleteTypeHydrantAnomalieNatureSaisie(idTypeHydrantAnomalieNature: Long, idTypeHydrantSaisie: Long)
+    @Query("DELETE FROM poidsAnomalie where poidsAnomalieId in (:listPoidsAnomalieId)")
+    abstract fun deletePoidsAnomalie(listPoidsAnomalieId: List<UUID>)
 
     @Query("SELECT * FROM role")
     abstract fun getListRole(): List<Role>
 
-    @Query("UPDATE role set nom = :nom, actif = :actif, code = :code  where idRemocra = :idRemocra")
-    abstract fun updateRole(idRemocra: Long, nom: String?, actif: Boolean, code: String?)
-
-    @Query("DELETE FROM role where idRemocra in (:listIdRemocra)")
-    abstract fun deleteRole(listIdRemocra: List<Long>)
+    @Query("DELETE FROM role where roleId in (:listRoleId)")
+    abstract fun deleteRole(listRoleId: List<UUID>)
 
     @Query("SELECT * FROM gestionnaire")
     abstract fun getListGestionnaire(): List<Gestionnaire>
 
-    @Query("UPDATE gestionnaire set nom = :nom, actif = :actif, code = :code  where idRemocra = :idRemocra and edited = 0")
-    abstract fun updateGestionnaire(idRemocra: Long, nom: String?, actif: Boolean, code: String?)
+    @Query("SELECT * FROM fonctionContact")
+    abstract fun getListFonctionContact(): List<FonctionContact>
 
-    @Query("DELETE FROM gestionnaire where idRemocra in (:listIdRemocra)")
-    abstract fun deleteGestionnaire(listIdRemocra: List<Long>)
+    @Query("DELETE FROM gestionnaire where gestionnaireId in (:listGestionnaireId)")
+    abstract fun deleteGestionnaire(listGestionnaireId: List<UUID>)
 
     @Query("SELECT * FROM contact")
     abstract fun getListContact(): List<Contact>
 
-    @Query(
-        "UPDATE contact set idGestionnaire = :idGestionnaire, idRemocraGestionnaire = :idRemocraGestionnaire, " +
-            "fonction =:fonction, civilite = :civilite, nom = :nom, prenom = :prenom, " +
-            "numeroVoie = :numeroVoie, suffixeVoie = :suffixeVoie, voie = :voie, " +
-            "lieuDit = :lieuDit, codePostal = :codePostal, ville = :ville, pays = :pays, " +
-            "telephone = :telephone, email = :email where idRemocra = :idRemocra and edited = 0",
-    )
-    abstract fun updateContact(
-        idRemocra: Long,
-        idRemocraGestionnaire: Long,
-        idGestionnaire: UUID,
-        fonction: String?,
-        civilite: Contact.Civilite?,
-        nom: String?,
-        prenom: String?,
-        numeroVoie: String?,
-        suffixeVoie: String?,
-        voie: String?,
-        lieuDit: String?,
-        codePostal: String?,
-        ville: String?,
-        pays: String?,
-        telephone: String?,
-        email: String?,
-    )
+    @Query("DELETE FROM contact where contactId in (:listContactId)")
+    abstract fun deleteContact(listContactId: List<UUID>)
 
-    @Query("DELETE FROM contact where idRemocra in (:listIdRemocra)")
-    abstract fun deleteContact(listIdRemocra: List<Long>)
+    @Query("DELETE FROM contactRole where roleId = :roleId and contactId = :contactId")
+    abstract fun deleteContactRole(roleId: UUID, contactId: UUID)
 
-    @Query("SELECT contact.idRemocra as idContact, contactRole.idRole FROM contactRole JOIN contact ON contactRole.idContact = contact.idContact")
-    abstract fun getListContactRole(): List<ReferentielService.ContactRoleInput>
+    @Query("SELECT * FROM pei where peiId not in  (:listePeiId) and isNew = 0")
+    abstract fun getListPeiToRemove(listePeiId: List<UUID>): List<Pei>
 
-    @Query("DELETE FROM contactRole where idRole = :idRole and idContact = :idContact")
-    abstract fun deleteContactRole(idRole: Long, idContact: UUID)
-
-    @Query("SELECT * FROM hydrant where idRemocra is not null")
-    abstract fun getListHydrant(): List<Hydrant>
-
-    @Query(
-        "DELETE FROM hydrant where idRemocra is not null and (idRemocra not in (select idRemocraHydrant from hydrantTournee) " +
-            "and idHydrant not in (select idHydrant from hydrantVisite))",
-    )
-    abstract fun deleteHydrantsNonUtilises()
-
-    @Query("DELETE FROM typeHydrantAnomalieNature where idRemocra in (:listIdRemocra)")
-    abstract fun deleteHydrant(listIdRemocra: List<Long>)
+    @Query("DELETE FROM pei where peiId in (:listPeiId)")
+    abstract fun deletePei(listPeiId: List<UUID>)
 
     @Query("SELECT * FROM agent where isUserConnecte = 1 LIMIT 1")
     abstract fun getAgentConnecte(): Agent?
 
-    @Query(
-        "UPDATE hydrant set idNatureDeci = :idNatureDeci, " +
-            "idNature =:idNature, dispoHbe = :dispoHbe, dispoTerrestre = :dispoTerrestre, x = :x, " +
-            "y = :y, lon = :lon, lat = :lat, " +
-            "numero = :numero, code = :code, " +
-            "adresseComplete = :adresseComplete, idGestionnaire = :idGestionnaire, " +
-            "observation = :observation, idRemocraGestionnaire = :idRemocraGestionnaire, peiCaracteristiques = :peiCaracteristiques " +
-            "where idRemocra = :idRemocra",
-    )
-    abstract fun updateHydrant(
-        idRemocra: Long,
-        idNatureDeci: Long?,
-        idNature: Long?,
-        dispoHbe: Hydrant.DisponibiliteHbe?,
-        dispoTerrestre: Hydrant.Disponibilite?,
-        x: Double,
-        y: Double,
-        lon: Double,
-        lat: Double,
-        numero: String?,
-        code: String?,
-        adresseComplete: String?,
-        observation: String?,
-        idRemocraGestionnaire: Long?,
-        idGestionnaire: UUID?,
-        peiCaracteristiques: String?,
-    )
-
-    @Query("SELECT idAnomalie, hydrant.idRemocra as idHydrant FROM hydrantAnomalie join hydrant on hydrant.idHydrant = hydrantAnomalie.idHydrant")
-    abstract fun getListHydrantAnomalie(): List<ReferentielService.HydrantAnomalieInput>
-
-    @Query("SELECT * FROM paramConf")
-    abstract fun getListParamConf(): List<ParamConf>
-
-    @Query("UPDATE paramConf set valeur = :valeur  where cle = :cle")
-    abstract fun updateParamConf(cle: String, valeur: String)
-
-    @Query("DELETE FROM paramConf where cle in (:listeCle)")
-    abstract fun deleteParamConf(listeCle: List<String>)
-
     @Query("SELECT * FROM typeDroit")
     abstract fun getListTypeDroit(): List<TypeDroit>
 
-    @Query("SELECT ths.* FROM typeHydrantSaisie ths")
-    abstract fun getTypeSaisieList(): LiveData<List<TypeHydrantSaisie>>
-
+    @Transaction
     @Query(
         """
-        SELECT tha.*, than.valIndispoTerrestre FROM typeHydrantAnomalie tha
-        JOIN typeHydrantAnomalieNature than ON than.idTypeHydrantAnomalie = tha.idRemocra
-        WHERE than.idRemocra IN
-          (SELECT thans.idTypeHydrantAnomalieNature FROM typeHydrantAnomalieNatureSaisie thans
-          WHERE thans.idTypeHydrantSaisie = :idTypeHydrantSaisie
+        SELECT tha.*, than.valIndispoTerrestre FROM anomalie tha
+        JOIN poidsAnomalie than ON than.poidsAnomalieAnomalieId = tha.anomalieId
+        WHERE than.poidsAnomalieId IN
+          (SELECT thans.poidsAnomalieId FROM lPoidsAnomalieTypeVisite thans
+          WHERE thans.typeVisiteId = :typeVisiteId
           )
-        AND than.idTypeHydrantNature = :idNature
+        AND than.poidsAnomalieNatureId = :natureId
         """,
     )
-    abstract fun getAnomalieItemList(idTypeHydrantSaisie: Long?, idNature: Long?): Flow<List<AnomalieItem>>
+    abstract fun getAnomalieItemList(typeVisiteId: UUID?, natureId: UUID?): Flow<List<AnomalieItem>>
 
-    @Query("SELECT g.* FROM gestionnaire g WHERE g.actif = 1")
+    @Query("SELECT * FROM gestionnaire")
     abstract fun getGestionnaireList(): LiveData<List<Gestionnaire>>
 
-    @Query("SELECT thn.* FROM typeHydrantNature thn WHERE thn.actif = 1")
-    abstract fun getTypeHydrantNatureList(): LiveData<List<TypeHydrantNature>>
-
-    @Query("SELECT thnd.* FROM typeHydrantNatureDeci thnd WHERE thnd.actif = 1")
-    abstract fun getTypeHydrantNatureDeciList(): LiveData<List<TypeHydrantNatureDeci>>
-
-    @Query("SELECT th.code FROM typeHydrant th  WHERE idRemocra = :idTypeHydrant")
-    abstract suspend fun getTypeHydrant(idTypeHydrant: Long): String
-
     data class AnomalieItem(
-        @Embedded val anomalie: TypeHydrantAnomalie,
+        @Embedded val anomalie: Anomalie,
         val valIndispoTerrestre: Int,
-        @Relation(parentColumn = "idCritere", entityColumn = "idRemocra") val critere: TypeHydrantCritere,
+        @Relation(parentColumn = "anomalieCategorieId", entityColumn = "anomalieCategorieId") val categorie: AnomalieCategorie,
     )
+
+    @Query("SELECT * FROM nature")
+    abstract fun getNatureList(): LiveData<List<Nature>>
+
+    @Query("SELECT * FROM natureDeci")
+    abstract fun getNatureDeciList(): LiveData<List<NatureDeci>>
+
+    @Query("SELECT * FROM typeVisite")
+    abstract fun getTypeVisiteList(): LiveData<List<TypeVisite>>
 }

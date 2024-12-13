@@ -17,20 +17,21 @@ abstract class ContactsDao {
     @Query("SELECT * FROM contact")
     abstract fun getContactsList(): LiveData<List<Contact>>
 
-    @Query("SELECT * FROM contact WHERE idGestionnaire = :idGestionnaire")
-    abstract suspend fun getContactsByGestionnaireUUID(idGestionnaire: UUID): Contact
+    @Query("SELECT * FROM contact WHERE gestionnaireId = :gestionnaireId")
+    abstract suspend fun getContactsByGestionnaireUUID(gestionnaireId: UUID): Contact
 
-    @Query("SELECT * FROM contact WHERE idContact = :idContact")
-    abstract suspend fun getContactByUUID(idContact: UUID? = null): ContactWithRoles
+    @Query("SELECT * FROM contact WHERE contactId = :contactId")
+    @Transaction
+    abstract suspend fun getContactByUUID(contactId: UUID? = null): ContactWithRoles
 
-    @Query("SELECT * FROM contact WHERE idContact = :idContact")
-    abstract fun getCurrentContactByUUID(idContact: UUID? = null): LiveData<Contact?>
+    @Query("SELECT * FROM contact WHERE contactId = :contactId")
+    abstract fun getCurrentContactByUUID(contactId: UUID? = null): LiveData<Contact?>
 
-    @Query("SELECT * FROM gestionnaire WHERE idGestionnaire = :idGestionnaire")
-    abstract fun getAppartenanceInfoByGestUUID(idGestionnaire: UUID): LiveData<Gestionnaire>
+    @Query("SELECT * FROM gestionnaire WHERE gestionnaireId = :gestionnaireId")
+    abstract fun getAppartenanceInfoByGestUUID(gestionnaireId: UUID): LiveData<Gestionnaire>
 
-    @Query("UPDATE gestionnaire SET edited = 1 WHERE idGestionnaire = :idGestionnaire")
-    abstract suspend fun updateGestionnaireIsFlaged(idGestionnaire: UUID)
+    @Query("UPDATE gestionnaire SET edited = 1 WHERE gestionnaireId = :gestionnaireId")
+    abstract suspend fun updateGestionnaireIsFlaged(gestionnaireId: UUID)
 
     @Upsert
     abstract suspend fun upsertContact(contact: Contact)
@@ -38,39 +39,39 @@ abstract class ContactsDao {
     @Query("SELECT * FROM role")
     abstract fun getRolesList(): LiveData<List<Role>>
 
-    @Query("SELECT * FROM contactRole WHERE idContact = :idContact")
-    abstract fun getContactRolesByUUID(idContact: UUID? = null): LiveData<List<ContactRole>>
+    @Query("SELECT * FROM contactRole WHERE contactId = :contactId")
+    abstract fun getContactRolesByUUID(contactId: UUID? = null): LiveData<List<ContactRole>>
 
-    @Query("DELETE FROM contactRole WHERE idContact = :idContact")
-    abstract suspend fun truncateContactRolesByContactUUID(idContact: UUID)
+    @Query("DELETE FROM contactRole WHERE contactId = :contactId")
+    abstract suspend fun truncateContactRolesByContactUUID(contactId: UUID)
 
     @Insert
     abstract suspend fun insertContactRole(contactRole: ContactRole)
 
     @Transaction
     open suspend fun saveContact(contactWithRoles: ContactWithRoles) {
-        updateGestionnaireIsFlaged(contactWithRoles.contact.idGestionnaire!!)
+        updateGestionnaireIsFlaged(contactWithRoles.contact.gestionnaireId)
 
-        val idContact = contactWithRoles.contact.idContact
+        val contactId = contactWithRoles.contact.contactId
         upsertContact(contactWithRoles.contact.copy(edited = true))
 
         val listRole = contactWithRoles.roles.toList()
-        truncateContactRolesByContactUUID(idContact)
+        truncateContactRolesByContactUUID(contactId)
         listRole.forEach { role ->
-            insertContactRole(ContactRole(idContact, role.idRemocra))
+            insertContactRole(ContactRole(contactId, role.roleId))
         }
     }
 
     data class ContactWithRoles(
         @Embedded val contact: Contact,
         @Relation(
-            parentColumn = "idContact",
+            parentColumn = "contactId",
             entity = Role::class,
-            entityColumn = "idRemocra",
+            entityColumn = "roleId",
             associateBy = Junction(
                 value = ContactRole::class,
-                parentColumn = "idContact",
-                entityColumn = "idRole",
+                parentColumn = "contactId",
+                entityColumn = "roleId",
             ),
         )
         val roles: MutableList<Role> = mutableListOf(),

@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Embedded
 import androidx.room.Query
 import androidx.room.Relation
+import androidx.room.Transaction
 import java.util.UUID
 
 @Dao
@@ -12,77 +13,71 @@ abstract class TourneeDao {
 
     @Query(
         """
-        SELECT h.*, hv.statut FROM hydrant h
-        JOIN hydrantTournee ht ON ht.idRemocraHydrant = h.idRemocra
-        JOIN tournee t ON t.idRemocra = ht.idRemocraTournee
-        LEFT JOIN hydrantVisite hv ON hv.idHydrant = h.idHydrant AND hv.idTournee = :idTournee
-        WHERE t.idTournee = :idTournee
+        SELECT p.*, v.statut FROM pei p
+        JOIN lPeiTournee lpt ON  lpt.peiId = p.peiId
+        JOIN tournee t ON t.tourneeId =  lpt.tourneeId
+        LEFT JOIN visite v ON v.peiId = p.peiId AND v.tourneeId = :tourneeId
+        WHERE t.tourneeId = :tourneeId
         """,
     )
-    abstract fun getHydrantByTournee(idTournee: UUID): LiveData<List<TourneeHydrantAvancement>>
+    @Transaction
+    abstract fun getPeiByTournee(tourneeId: UUID): LiveData<List<TourneePeiAvancement>>
 
-    data class TourneeHydrantAvancement(
-        @Embedded val hydrant: Hydrant,
+    data class TourneePeiAvancement(
+        @Embedded val pei: Pei,
         @Relation(
-            parentColumn = "idNature",
-            entityColumn = "idRemocra",
-        ) val hydrantNature: TypeHydrantNature,
+            parentColumn = "natureId",
+            entityColumn = "natureId",
+        )
+        val nature: Nature,
         var statut: String? = "",
     )
 
     @Query(
         """
         SELECT t.* FROM tournee t
-        WHERE t.idTournee = :idTournee
+        WHERE t.tourneeId = :tourneeId
         """,
     )
-    abstract fun getTournee(idTournee: UUID): LiveData<Tournee>
+    abstract fun getTournee(tourneeId: UUID): LiveData<Tournee>
 
     @Query(
         """
-        SELECT t.idTournee FROM tournee t
-        WHERE t.idRemocra = :idRemocraTournee
+        SELECT v.visiteId FROM visite v
+        WHERE v.tourneeId = :tourneeId
         """,
     )
-    abstract fun getTourneeUUID(idRemocraTournee: Long): UUID
+    abstract fun getListVisiteIdByTournee(tourneeId: UUID): List<UUID>
 
     @Query(
         """
-        SELECT hv.idHydrantVisite FROM hydrantVisite hv
-        WHERE hv.idTournee = :idTournee
+        DELETE FROM lPeiTournee
+        WHERE tourneeId = :tourneeId
         """,
     )
-    abstract fun getListIdHydrantVisite(idTournee: UUID): List<UUID>
+    abstract fun deletePeiTournee(tourneeId: UUID)
 
     @Query(
         """
-        DELETE FROM hydrantTournee
-        WHERE idRemocraTournee = :idTournee
+        DELETE FROM lVisiteAnomalie
+        WHERE visiteId in (:listVisiteId)
         """,
     )
-    abstract fun deleteHydrantTournee(idTournee: Long)
+    abstract fun deleteLVisiteAnomalie(listVisiteId: List<UUID>)
 
     @Query(
         """
-        DELETE FROM hydrantVisiteAnomalie
-        WHERE idHydrantVisite in (:listIdHydrantVisite)
+        DELETE FROM visite
+        WHERE tourneeId = :tourneeId
         """,
     )
-    abstract fun deleteHydrantVisiteAnomalie(listIdHydrantVisite: List<UUID>)
-
-    @Query(
-        """
-        DELETE FROM hydrantVisite
-        WHERE idTournee = :idTournee
-        """,
-    )
-    abstract fun deleteHydrantVisite(idTournee: UUID)
+    abstract fun deleteVisite(tourneeId: UUID)
 
     @Query(
         """
         DELETE FROM tournee
-        WHERE idTournee = :idTournee
+        WHERE tourneeId = :tourneeId
         """,
     )
-    abstract fun deleteTournee(idTournee: UUID)
+    abstract fun deleteTournee(tourneeId: UUID)
 }

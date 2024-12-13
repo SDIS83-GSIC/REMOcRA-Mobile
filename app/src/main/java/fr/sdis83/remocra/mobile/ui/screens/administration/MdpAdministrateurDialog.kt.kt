@@ -47,17 +47,17 @@ import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
-import fr.sdis83.remocra.mobile.viewmodels.ParamConfViewModel
+import fr.sdis83.remocra.mobile.viewmodels.ParametreViewModel
 
 @Composable
 fun MdpAdministrateurDialog(administrationViewModel: AdministrationViewModel, onDismiss: () -> Unit) {
     val context = LocalContext.current
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-    val paramConfViewModel = ParamConfViewModel(
+    val parametreViewModel = ParametreViewModel(
         (context as LoginActivity).application.applicationContext as Application,
     )
-    val paramConfList by paramConfViewModel.paramsConf.observeAsState()
+    val paramConfList by parametreViewModel.parametres.observeAsState()
 
     Dialog(
         onDismissRequest = { onDismiss() },
@@ -130,7 +130,7 @@ fun MdpAdministrateurDialog(administrationViewModel: AdministrationViewModel, on
                     Button(
                         onClick = {
                             if (password.isNotBlank()) {
-                                if (password == paramConfList?.first { it.cle == GlobalConstants.MDP_ADMINISTRATEUR }?.valeur) {
+                                if (password == paramConfList?.first { it.parametreCode == GlobalConstants.MDP_ADMINISTRATEUR }?.parametreValeur) {
                                     administrationViewModel.setAdministrationScreen(true)
                                     val intent = Intent(
                                         context,

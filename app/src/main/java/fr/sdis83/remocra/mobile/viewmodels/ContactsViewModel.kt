@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class ContactsViewModel(application: Application, idContact: UUID?, idGestionnaire: UUID) :
+class ContactsViewModel(application: Application, contactId: UUID?, gestionnaireId: UUID) :
     AndroidViewModel(application) {
 
     companion object {
@@ -24,9 +24,9 @@ class ContactsViewModel(application: Application, idContact: UUID?, idGestionnai
     }
 
     private val contactsDao = RemocraDatabase.getInstance(application).contactsDao()
-    val contact: LiveData<Contact?> = contactsDao.getCurrentContactByUUID(idContact)
+    val contact: LiveData<Contact?> = contactsDao.getCurrentContactByUUID(contactId)
     val gestAppartenance: LiveData<Gestionnaire> =
-        contactsDao.getAppartenanceInfoByGestUUID(idGestionnaire)
+        contactsDao.getAppartenanceInfoByGestUUID(gestionnaireId)
 
     val roleList: LiveData<List<Role>> = contactsDao.getRolesList()
 
@@ -37,50 +37,48 @@ class ContactsViewModel(application: Application, idContact: UUID?, idGestionnai
     private val _contactState = MutableStateFlow(
         ContactsDao.ContactWithRoles(
             Contact(
-                idRemocra = null,
-                idGestionnaire = null,
-                idRemocraGestionnaire = null,
-                fonction = null,
-                civilite = null,
-                nom = null,
-                prenom = null,
-                numeroVoie = null,
-                suffixeVoie = null,
-                voie = null,
-                lieuDit = null,
-                codePostal = null,
-                ville = null,
-                pays = null,
-                telephone = null,
-                email = null,
+                contactId = UUID.randomUUID(),
+                gestionnaireId = gestionnaireId,
+                contactCivilite = null,
+                contactNom = null,
+                contactPrenom = null,
+                contactNumeroVoie = null,
+                contactSuffixeVoie = null,
+                contactLieuDitText = null,
+                contactVoieText = null,
+                contactCodePostal = null,
+                contactCommuneText = null,
+                contactPays = null,
+                contactTelephone = null,
+                contactEmail = null,
+                contactFonctionContactId = null,
             ),
         ),
     )
 
     var contactState: StateFlow<ContactsDao.ContactWithRoles> = _contactState.asStateFlow()
 
-    private suspend fun loadData(idContact: UUID?, idGestionnaire: UUID) {
-        if (idContact != null) {
-            _contactState.value = contactsDao.getContactByUUID(idContact)
+    private suspend fun loadData(contactId: UUID?, gestionnaireId: UUID) {
+        if (contactId != null) {
+            _contactState.value = contactsDao.getContactByUUID(contactId)
         } else {
             _contactState.value = ContactsDao.ContactWithRoles(
                 Contact(
-                    idRemocra = null,
-                    idGestionnaire = idGestionnaire,
-                    idRemocraGestionnaire = null,
-                    fonction = null,
-                    civilite = null,
-                    nom = null,
-                    prenom = null,
-                    numeroVoie = null,
-                    suffixeVoie = null,
-                    voie = null,
-                    lieuDit = null,
-                    codePostal = null,
-                    ville = null,
-                    pays = null,
-                    telephone = null,
-                    email = null,
+                    contactId = UUID.randomUUID(),
+                    gestionnaireId = gestionnaireId,
+                    contactCivilite = null,
+                    contactNom = null,
+                    contactPrenom = null,
+                    contactNumeroVoie = null,
+                    contactSuffixeVoie = null,
+                    contactLieuDitText = null,
+                    contactVoieText = null,
+                    contactCodePostal = null,
+                    contactCommuneText = null,
+                    contactPays = null,
+                    contactTelephone = null,
+                    contactEmail = null,
+                    contactFonctionContactId = null,
                 ),
             )
         }
@@ -88,7 +86,7 @@ class ContactsViewModel(application: Application, idContact: UUID?, idGestionnai
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            loadData(idContact, idGestionnaire)
+            loadData(contactId, gestionnaireId)
         }
     }
 

@@ -1,4 +1,4 @@
-package fr.sdis83.remocra.mobile.ui.screens.hydrants
+package fr.sdis83.remocra.mobile.ui.screens.pei
 
 import android.Manifest
 import android.app.Application
@@ -73,11 +73,11 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import fr.sdis83.remocra.mobile.R
-import fr.sdis83.remocra.mobile.database.Hydrant
-import fr.sdis83.remocra.mobile.database.HydrantPhoto
-import fr.sdis83.remocra.mobile.database.HydrantVisiteDao.HydrantVisiteWithAnomalies
+import fr.sdis83.remocra.mobile.database.Pei
+import fr.sdis83.remocra.mobile.database.PhotoPei
 import fr.sdis83.remocra.mobile.database.ReferentielDao
-import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
+import fr.sdis83.remocra.mobile.database.TypeVisite
+import fr.sdis83.remocra.mobile.database.VisiteDao.VisiteWithAnomalies
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.CameraCapture
 import fr.sdis83.remocra.mobile.ui.components.LabelledCheckbox
@@ -86,9 +86,9 @@ import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import fr.sdis83.remocra.mobile.utils.deleteFile
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.AgentViewModel
-import fr.sdis83.remocra.mobile.viewmodels.HydrantPhotoViewModel
-import fr.sdis83.remocra.mobile.viewmodels.HydrantVisiteViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
+import fr.sdis83.remocra.mobile.viewmodels.PhotoPeiViewModel
+import fr.sdis83.remocra.mobile.viewmodels.VisiteViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -104,10 +104,10 @@ private val DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy")
 private val HOUR_FORMAT = DateTimeFormatter.ofPattern("HH:mm")
 
 @Composable
-fun HydrantVisiteScreen(
+fun VisiteScreen(
     navController: NavController,
-    idTournee: UUID,
-    idHydrant: UUID,
+    tourneeId: UUID,
+    peiId: UUID,
     mapViewModel: MapViewModel,
 ) {
     val context = LocalContext.current
@@ -115,24 +115,24 @@ fun HydrantVisiteScreen(
     val gestionAgents by agentViewModel.gestionAgents.observeAsState()
     val listAgent1 by agentViewModel.listAgent1.observeAsState()
     val listAgent2 by agentViewModel.listAgent2.observeAsState()
-    val hydrantVisiteViewModel =
-        HydrantVisiteViewModel(context.applicationContext as Application, idTournee, idHydrant, gestionAgents)
+    val visiteViewModel =
+        VisiteViewModel(context.applicationContext as Application, tourneeId, peiId, gestionAgents)
 
-    val hydrantPhotoVisiteViewModel = HydrantPhotoViewModel(context.applicationContext as Application, idHydrant)
+    val photoPeiVisiteViewModel = PhotoPeiViewModel(context.applicationContext as Application, peiId)
 
-    val photos = hydrantPhotoVisiteViewModel.photos.observeAsState()
+    val photos = photoPeiVisiteViewModel.photos.observeAsState()
 
-    mapViewModel.goToHydrant(idHydrant, false)
-    HydrantVisiteScreenInner(hydrantVisiteViewModel, navController, photos.value, hydrantPhotoVisiteViewModel, gestionAgents, listAgent1, listAgent2)
+    mapViewModel.goToPei(peiId, false)
+    VisiteScreenInner(visiteViewModel, navController, photos.value, photoPeiVisiteViewModel, gestionAgents, listAgent1, listAgent2)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HydrantVisiteScreenInner(
-    hydrantVisiteViewModel: HydrantVisiteViewModel,
+fun VisiteScreenInner(
+    visiteViewModel: VisiteViewModel,
     navController: NavController,
-    photos: List<HydrantPhoto>?,
-    hydrantPhotoVisiteViewModel: HydrantPhotoViewModel,
+    photos: List<PhotoPei>?,
+    photoPeiVisiteViewModel: PhotoPeiViewModel,
     gestionAgents: String?,
     listAgent1: List<String>?,
     listAgent2: List<String>?,
@@ -141,7 +141,7 @@ fun HydrantVisiteScreenInner(
     val pagerState = rememberPagerState()
     val nbSteps = 3
 
-    val hydrantVisite by hydrantVisiteViewModel.hydrantVisiteState.collectAsState()
+    val visite by visiteViewModel.visiteState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.fillMaxSize()) {
@@ -157,13 +157,13 @@ fun HydrantVisiteScreenInner(
                 ) {
                     Button(onClick = {
                         navController.navigate(
-                            Screens.TourneeHydrants.route
+                            Screens.TourneePei.route
                                 .replace(
-                                    oldValue = "{idTournee}",
-                                    newValue = hydrantVisite.hydrantVisite.idTournee.toString(),
+                                    oldValue = "{tourneeId}",
+                                    newValue = visite.visite.tourneeId.toString(),
                                 ),
                         ) {
-                            popUpTo(Screens.TourneeHydrants.route) {
+                            popUpTo(Screens.TourneePei.route) {
                                 inclusive = true
                             }
                         }
@@ -175,20 +175,20 @@ fun HydrantVisiteScreenInner(
                     }
                     Text(
                         modifier = Modifier.padding(10.pxToDp, 0.pxToDp),
-                        text = "Visite du point d'eau n°${hydrantVisite.numeroHydrant} : ${pagerState.currentPage + 1} / $nbSteps",
+                        text = "Visite du point d'eau n°${visite.numeroPei} : ${pagerState.currentPage + 1} / $nbSteps",
                         fontSize = 5.em,
                         fontWeight = FontWeight.Bold,
                         lineHeight = 1.em,
                     )
                 }
-                HydrantVisiteForm(
+                VisiteForm(
                     coroutineScope = coroutineScope,
                     pagerState = pagerState,
-                    hydrantVisiteViewModel = hydrantVisiteViewModel,
+                    visiteViewModel = visiteViewModel,
                     navController = navController,
-                    hydrantVisite = hydrantVisite,
+                    visite = visite,
                     photos = photos,
-                    hydrantPhotoViewModel = hydrantPhotoVisiteViewModel,
+                    photoPeiViewModel = photoPeiVisiteViewModel,
                     gestionAgents = gestionAgents,
                     listAgent1 = listAgent1,
                     listAgent2 = listAgent2,
@@ -200,22 +200,22 @@ fun HydrantVisiteScreenInner(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HydrantVisiteForm(
+fun VisiteForm(
     coroutineScope: CoroutineScope,
     pagerState: PagerState,
-    hydrantVisiteViewModel: HydrantVisiteViewModel,
-    hydrantPhotoViewModel: HydrantPhotoViewModel,
+    visiteViewModel: VisiteViewModel,
+    photoPeiViewModel: PhotoPeiViewModel,
     navController: NavController,
-    hydrantVisite: HydrantVisiteWithAnomalies?,
-    photos: List<HydrantPhoto>?,
+    visite: VisiteWithAnomalies?,
+    photos: List<PhotoPei>?,
     gestionAgents: String?,
     listAgent1: List<String>?,
     listAgent2: List<String>?,
 ) {
-    if (hydrantVisite == null) return
+    if (visite == null) return
 
-    val typeSaisieList by hydrantVisiteViewModel.typeSaisieList.observeAsState()
-    val anomalieList by hydrantVisiteViewModel.anomalieList.collectAsState(listOf())
+    val typeSaisieList by visiteViewModel.typeVisiteList.observeAsState()
+    val anomalieList by visiteViewModel.anomalieList.collectAsState(listOf())
 
     HorizontalPager(
         modifier = Modifier
@@ -229,15 +229,15 @@ fun HydrantVisiteForm(
             0 -> StepOne(
                 onNext = {
                     coroutineScope.launch {
-                        if (hydrantVisite.hydrantVisite.isValid) {
-                            hydrantVisiteViewModel.save()
+                        if (visite.visite.isValid) {
+                            visiteViewModel.save()
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                     }
                 },
-                hydrantVisite = hydrantVisite,
-                onValueChange = hydrantVisiteViewModel::updateForm,
-                typeSaisieList = typeSaisieList ?: listOf(),
+                visite = visite,
+                onValueChange = visiteViewModel::updateForm,
+                typeVisite = typeSaisieList ?: listOf(),
                 gestionAgents = gestionAgents,
                 listAgent1 = listAgent1,
                 listAgent2 = listAgent2,
@@ -246,42 +246,42 @@ fun HydrantVisiteForm(
             1 -> StepTwo(
                 onPrevious = {
                     coroutineScope.launch {
-                        hydrantVisiteViewModel.save(close = false)
+                        visiteViewModel.save(close = false)
                         pagerState.animateScrollToPage(pagerState.currentPage - 1)
                     }
                 },
                 onNext = {
                     coroutineScope.launch {
-                        hydrantVisiteViewModel.save()
+                        visiteViewModel.save()
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     }
                 },
-                hydrantVisite = hydrantVisite,
-                onValueChange = hydrantVisiteViewModel::updateForm,
+                visite = visite,
+                onValueChange = visiteViewModel::updateForm,
                 anomalieList = anomalieList,
-                hydrantState = hydrantVisiteViewModel.hydrantState,
+                peiState = visiteViewModel.peiState,
             )
             2 -> StepThree(
                 onPrevious = {
                     coroutineScope.launch {
-                        hydrantVisiteViewModel.save(close = false)
+                        visiteViewModel.save(close = false)
                         pagerState.animateScrollToPage(pagerState.currentPage - 1)
                     }
                 },
                 onNext = {
                     coroutineScope.launch {
-                        hydrantVisiteViewModel.save(close = true)
-                        navController.popBackStack(Screens.TourneeHydrants.route, inclusive = false)
+                        visiteViewModel.save(close = true)
+                        navController.popBackStack(Screens.TourneePei.route, inclusive = false)
                     }
                 },
-                hydrantVisite = hydrantVisite,
-                onValueChange = hydrantVisiteViewModel::updateForm,
-                onPictureTaken = hydrantPhotoViewModel::onPictureTaken,
+                visite = visite,
+                onValueChange = visiteViewModel::updateForm,
+                onPictureTaken = photoPeiViewModel::onPictureTaken,
                 photos = photos,
                 deletePhoto = {
                     deleteFile(listOf(it.path))
                     coroutineScope.launch {
-                        hydrantPhotoViewModel.deleteHydrantPhoto(it)
+                        photoPeiViewModel.deletePhotoPei(it)
                     }
                 },
             )
@@ -292,9 +292,9 @@ fun HydrantVisiteForm(
 @Composable
 private fun StepOne(
     onNext: () -> Unit,
-    hydrantVisite: HydrantVisiteWithAnomalies,
-    onValueChange: (HydrantVisiteWithAnomalies) -> Unit = {},
-    typeSaisieList: List<TypeHydrantSaisie>,
+    visite: VisiteWithAnomalies,
+    onValueChange: (VisiteWithAnomalies) -> Unit = {},
+    typeVisite: List<TypeVisite>,
     gestionAgents: String?,
     listAgent1: List<String>?,
     listAgent2: List<String>?,
@@ -309,15 +309,15 @@ private fun StepOne(
                 year,
                 month + 1,
                 dayOfMonth,
-                hydrantVisite.hydrantVisite.dateVisite.hour,
-                hydrantVisite.hydrantVisite.dateVisite.minute,
-                hydrantVisite.hydrantVisite.dateVisite.second,
-                hydrantVisite.hydrantVisite.dateVisite.nano,
+                visite.visite.dateVisite.hour,
+                visite.visite.dateVisite.minute,
+                visite.visite.dateVisite.second,
+                visite.visite.dateVisite.nano,
                 ZoneId.systemDefault(),
             )
             onValueChange(
-                hydrantVisite.copy(
-                    hydrantVisite = hydrantVisite.hydrantVisite.copy(
+                visite.copy(
+                    visite = visite.visite.copy(
                         dateVisite = date,
                     ),
                 ),
@@ -332,18 +332,18 @@ private fun StepOne(
         context,
         { _, hour: Int, minute: Int ->
             val date = ZonedDateTime.of(
-                hydrantVisite.hydrantVisite.dateVisite.year,
-                hydrantVisite.hydrantVisite.dateVisite.monthValue,
-                hydrantVisite.hydrantVisite.dateVisite.dayOfMonth,
+                visite.visite.dateVisite.year,
+                visite.visite.dateVisite.monthValue,
+                visite.visite.dateVisite.dayOfMonth,
                 hour,
                 minute,
-                hydrantVisite.hydrantVisite.dateVisite.second,
-                hydrantVisite.hydrantVisite.dateVisite.nano,
+                visite.visite.dateVisite.second,
+                visite.visite.dateVisite.nano,
                 ZoneId.systemDefault(),
             )
             onValueChange(
-                hydrantVisite.copy(
-                    hydrantVisite = hydrantVisite.hydrantVisite.copy(
+                visite.copy(
+                    visite = visite.visite.copy(
                         dateVisite = date,
                     ),
                 ),
@@ -381,7 +381,7 @@ private fun StepOne(
         Row(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(
                 readOnly = true,
-                value = DATE_FORMAT.format(hydrantVisite.hydrantVisite.dateVisite),
+                value = DATE_FORMAT.format(visite.visite.dateVisite),
                 onValueChange = {},
                 trailingIcon = {
                     Icon(Icons.Default.EditCalendar, contentDescription = null)
@@ -397,7 +397,7 @@ private fun StepOne(
             )
             OutlinedTextField(
                 readOnly = true,
-                value = HOUR_FORMAT.format(hydrantVisite.hydrantVisite.dateVisite),
+                value = HOUR_FORMAT.format(visite.visite.dateVisite),
                 onValueChange = {},
                 trailingIcon = {
                     Icon(Icons.Default.Timer, contentDescription = null)
@@ -414,24 +414,24 @@ private fun StepOne(
         }
         Row(modifier = Modifier.fillMaxWidth()) {
             Spinner(
-                items = typeSaisieList,
-                value = typeSaisieList.find { i -> i.idRemocra == hydrantVisite.hydrantVisite.idTypeHydrantSaisie },
-                valueToString = TypeHydrantSaisie::nom,
+                items = typeVisite,
+                value = typeVisite.find { i -> i.typeVisiteId == visite.visite.typeVisiteId },
+                valueToString = TypeVisite::typeVisiteCode,
                 label = "Type de visite",
                 onSelectionChanged = {
-                    if (it.code == "CTRL") {
+                    if (it.typeVisiteCode == "CTRL") {
                         onValueChange(
-                            hydrantVisite.copy(
-                                hydrantVisite = hydrantVisite.hydrantVisite.copy(
-                                    idTypeHydrantSaisie = it.idRemocra,
+                            visite.copy(
+                                visite = visite.visite.copy(
+                                    typeVisiteId = it.typeVisiteId,
                                 ),
                             ),
                         )
                     } else {
                         onValueChange(
-                            hydrantVisite.copy(
-                                hydrantVisite = hydrantVisite.hydrantVisite.copy(
-                                    idTypeHydrantSaisie = it.idRemocra,
+                            visite.copy(
+                                visite = visite.visite.copy(
+                                    typeVisiteId = it.typeVisiteId,
                                     ctrlDebitPression = false,
                                     debit = null,
                                     pressionDyn = null,
@@ -445,19 +445,19 @@ private fun StepOne(
         }
         Row(modifier = Modifier.fillMaxWidth()) {
             Spinner(
-                value = hydrantVisite.hydrantVisite.agent1 ?: "",
+                value = visite.visite.agent1 ?: "",
                 items = listAgent1 ?: listOf(),
                 onSelectionChanged = {
                     onValueChange(
-                        hydrantVisite.copy(
-                            hydrantVisite = hydrantVisite.hydrantVisite.copy(agent1 = it),
+                        visite.copy(
+                            visite = visite.visite.copy(agent1 = it),
                         ),
                     )
                 },
                 onValueChange = {
                     onValueChange(
-                        hydrantVisite.copy(
-                            hydrantVisite = hydrantVisite.hydrantVisite.copy(agent1 = it),
+                        visite.copy(
+                            visite = visite.visite.copy(agent1 = it),
                         ),
                     )
                 },
@@ -470,19 +470,19 @@ private fun StepOne(
                 readOnly = false,
             )
             Spinner(
-                value = hydrantVisite.hydrantVisite.agent2 ?: "",
+                value = visite.visite.agent2 ?: "",
                 items = listAgent2 ?: listOf(),
                 onSelectionChanged = {
                     onValueChange(
-                        hydrantVisite.copy(
-                            hydrantVisite = hydrantVisite.hydrantVisite.copy(agent2 = it),
+                        visite.copy(
+                            visite = visite.visite.copy(agent2 = it),
                         ),
                     )
                 },
                 onValueChange = {
                     onValueChange(
-                        hydrantVisite.copy(
-                            hydrantVisite = hydrantVisite.hydrantVisite.copy(agent2 = it),
+                        visite.copy(
+                            visite = visite.visite.copy(agent2 = it),
                         ),
                     )
                 },
@@ -494,7 +494,7 @@ private fun StepOne(
                 readOnly = false,
             )
         }
-        if (typeSaisieList.find { it.idRemocra == hydrantVisite.hydrantVisite.idTypeHydrantSaisie }?.code == "CTRL") {
+        if (typeVisite.find { it.typeVisiteId == visite.visite.typeVisiteId }?.typeVisiteCode == "CTRL") {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(text = "Contrôle débit et pression")
             }
@@ -505,20 +505,20 @@ private fun StepOne(
                 Text(text = "Non")
                 Spacer(modifier = Modifier.width(16.pxToDp))
                 Switch(
-                    checked = hydrantVisite.hydrantVisite.ctrlDebitPression,
+                    checked = visite.visite.ctrlDebitPression,
                     onCheckedChange = {
                         if (it) {
                             onValueChange(
-                                hydrantVisite.copy(
-                                    hydrantVisite = hydrantVisite.hydrantVisite.copy(
+                                visite.copy(
+                                    visite = visite.visite.copy(
                                         ctrlDebitPression = true,
                                     ),
                                 ),
                             )
                         } else {
                             onValueChange(
-                                hydrantVisite.copy(
-                                    hydrantVisite = hydrantVisite.hydrantVisite.copy(
+                                visite.copy(
+                                    visite = visite.visite.copy(
                                         ctrlDebitPression = false,
                                         debit = null,
                                         pressionDyn = null,
@@ -532,15 +532,15 @@ private fun StepOne(
                 Spacer(modifier = Modifier.width(16.pxToDp))
                 Text(text = "Oui")
             }
-            if (hydrantVisite.hydrantVisite.ctrlDebitPression) {
+            if (visite.visite.ctrlDebitPression) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
-                        value = hydrantVisite.hydrantVisite.debit?.toString() ?: "",
+                        value = visite.visite.debit?.toString() ?: "",
                         onValueChange = {
                             it.toIntOrNull()?.let { value ->
                                 onValueChange(
-                                    hydrantVisite.copy(
-                                        hydrantVisite = hydrantVisite.hydrantVisite.copy(debit = value),
+                                    visite.copy(
+                                        visite = visite.visite.copy(debit = value),
                                     ),
                                 )
                             }
@@ -556,12 +556,12 @@ private fun StepOne(
                         modifier = Modifier.weight(1f),
                     )
                     OutlinedTextField(
-                        value = hydrantVisite.hydrantVisite.pressionDyn?.toString() ?: "",
+                        value = visite.visite.pressionDyn?.toString() ?: "",
                         onValueChange = {
                             it.toDoubleOrNull()?.let { value ->
                                 onValueChange(
-                                    hydrantVisite.copy(
-                                        hydrantVisite = hydrantVisite.hydrantVisite.copy(pressionDyn = value),
+                                    visite.copy(
+                                        visite = visite.visite.copy(pressionDyn = value),
                                     ),
                                 )
                             }
@@ -579,12 +579,12 @@ private fun StepOne(
                 }
                 Row(modifier = Modifier.fillMaxWidth()) {
                     OutlinedTextField(
-                        value = hydrantVisite.hydrantVisite.pression?.toString() ?: "",
+                        value = visite.visite.pression?.toString() ?: "",
                         onValueChange = {
                             it.toDoubleOrNull()?.let { value ->
                                 onValueChange(
-                                    hydrantVisite.copy(
-                                        hydrantVisite = hydrantVisite.hydrantVisite.copy(pression = value),
+                                    visite.copy(
+                                        visite = visite.visite.copy(pression = value),
                                     ),
                                 )
                             }
@@ -603,7 +603,7 @@ private fun StepOne(
             }
         }
         Row(modifier = Modifier.fillMaxWidth()) {
-            Button(onClick = onNext, enabled = hydrantVisite.hydrantVisite.isValid) {
+            Button(onClick = onNext, enabled = visite.visite.isValid) {
                 Text(stringResource(id = R.string.suivant))
             }
         }
@@ -614,16 +614,16 @@ private fun StepOne(
 private fun StepTwo(
     onPrevious: () -> Unit,
     onNext: () -> Unit,
-    hydrantVisite: HydrantVisiteWithAnomalies,
-    onValueChange: (HydrantVisiteWithAnomalies) -> Unit = {},
+    visite: VisiteWithAnomalies,
+    onValueChange: (VisiteWithAnomalies) -> Unit = {},
     anomalieList: List<ReferentielDao.AnomalieItem>,
-    hydrantState: StateFlow<Hydrant?>,
+    peiState: StateFlow<Pei?>,
 ) {
     val options =
-        anomalieList.groupBy { it.critere }.mapValues { entry ->
+        anomalieList.groupBy { it.categorie }.mapValues { entry ->
             entry.value.map { item ->
                 val checked =
-                    remember { mutableStateOf(hydrantVisite.anomalies.contains(item.anomalie)) }
+                    remember { mutableStateOf(visite.anomalies.contains(item.anomalie)) }
 
                 Option(
                     checked = checked.value,
@@ -631,26 +631,26 @@ private fun StepTwo(
                         checked.value = it
                         if (it) {
                             onValueChange(
-                                hydrantVisite.copy(
-                                    anomalies = hydrantVisite.anomalies.apply { add(item.anomalie) },
+                                visite.copy(
+                                    anomalies = visite.anomalies.apply { add(item.anomalie) },
                                 ),
                             )
                         } else {
                             onValueChange(
-                                hydrantVisite.copy(
-                                    anomalies = hydrantVisite.anomalies.apply { remove(item.anomalie) },
+                                visite.copy(
+                                    anomalies = visite.anomalies.apply { remove(item.anomalie) },
                                 ),
                             )
                         }
                     },
-                    text = item.anomalie.nom,
+                    text = item.anomalie.anomalieLibelle,
                     label = {
                         Text(
-                            text = item.anomalie.nom,
+                            text = item.anomalie.anomalieLibelle,
                             fontWeight = if (item.valIndispoTerrestre >= 5) FontWeight.Bold else null,
                         )
                     },
-                    enabled = hydrantVisite.hydrantVisite.hasAnomalieChanges,
+                    enabled = visite.visite.hasAnomalieChanges,
                 )
             }
         }
@@ -669,11 +669,11 @@ private fun StepTwo(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             LabelledCheckbox(
-                checked = !hydrantVisite.hydrantVisite.hasAnomalieChanges,
+                checked = !visite.visite.hasAnomalieChanges,
                 onCheckedChange = {
                     onValueChange(
-                        hydrantVisite.copy(
-                            hydrantVisite = hydrantVisite.hydrantVisite.copy(hasAnomalieChanges = !it),
+                        visite.copy(
+                            visite = visite.visite.copy(hasAnomalieChanges = !it),
                         ),
                     )
                 },
@@ -690,7 +690,7 @@ private fun StepTwo(
         ) {
             if (!options.isNullOrEmpty()) {
                 Column {
-                    options.keys.sortedBy { k -> k.code }.forEach { critere ->
+                    options.keys.sortedBy { k -> k.anomalieCategorieCode }.forEach { critere ->
                         val opened = remember { mutableStateOf(false) }
                         Row(
                             modifier = Modifier
@@ -709,7 +709,7 @@ private fun StepTwo(
                                 contentDescription = "Open/Close",
                             )
                             Spacer(modifier = Modifier.width(16.pxToDp))
-                            Text(fontWeight = FontWeight.Bold, text = critere.nom)
+                            Text(fontWeight = FontWeight.Bold, text = critere.anomalieCategorieLibelle)
                             Spacer(modifier = Modifier.width(16.pxToDp))
                             Text(text = "(${options[critere]!!.count { it.checked }}/${options[critere]!!.size})")
                         }
@@ -743,11 +743,11 @@ private fun StepTwo(
 private fun StepThree(
     onPrevious: () -> Unit,
     onNext: () -> Unit,
-    hydrantVisite: HydrantVisiteWithAnomalies,
-    onValueChange: (HydrantVisiteWithAnomalies) -> Unit = {},
+    visite: VisiteWithAnomalies,
+    onValueChange: (VisiteWithAnomalies) -> Unit = {},
     onPictureTaken: KFunction1<Bitmap, Unit>,
-    photos: List<HydrantPhoto>?,
-    deletePhoto: (HydrantPhoto) -> Unit,
+    photos: List<PhotoPei>?,
+    deletePhoto: (PhotoPei) -> Unit,
 ) {
     val context = LocalContext.current
     val requestPermissionLauncher =
@@ -795,11 +795,11 @@ private fun StepThree(
                 modifier = Modifier
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = 128.pxToDp),
-                value = hydrantVisite.hydrantVisite.observations ?: "",
+                value = visite.visite.observations ?: "",
                 onValueChange = {
                     onValueChange(
-                        hydrantVisite.copy(
-                            hydrantVisite = hydrantVisite.hydrantVisite.copy(observations = it),
+                        visite.copy(
+                            visite = visite.visite.copy(observations = it),
                         ),
                     )
                 },
@@ -840,7 +840,7 @@ private fun StepThree(
                 Text(stringResource(id = R.string.precedent))
             }
             Spacer(modifier = Modifier.width(16.pxToDp))
-            Button(onClick = onNext, enabled = hydrantVisite.hydrantVisite.isValid) {
+            Button(onClick = onNext, enabled = visite.visite.isValid) {
                 Text(stringResource(id = R.string.valider))
             }
         }
@@ -848,12 +848,12 @@ private fun StepThree(
 }
 
 @Composable
-private fun PhotoList(photos: List<HydrantPhoto>, deletePhoto: (HydrantPhoto) -> Unit) {
+private fun PhotoList(photos: List<PhotoPei>, deletePhoto: (PhotoPei) -> Unit) {
     LazyRow {
         items(photos) { photo ->
             Image(
                 painter = rememberAsyncImagePainter(File(photo.path)),
-                contentDescription = photo.idHydrantPhoto.toString(),
+                contentDescription = photo.photoId.toString(),
                 modifier = Modifier
                     .height(150.pxToDp)
                     .padding(10.pxToDp)

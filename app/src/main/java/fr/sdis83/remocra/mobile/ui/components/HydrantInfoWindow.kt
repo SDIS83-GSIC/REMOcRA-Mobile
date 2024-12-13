@@ -9,8 +9,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
-import fr.sdis83.remocra.mobile.database.Hydrant
-import fr.sdis83.remocra.mobile.database.HydrantVisite
+import fr.sdis83.remocra.mobile.database.Pei
+import fr.sdis83.remocra.mobile.database.Visite
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import org.osmdroid.views.MapView
@@ -38,12 +38,12 @@ class HydrantInfoWindow(mapView: MapView, val navController: NavController) : In
     override fun onOpen(item: Any?) {
         try {
             val overlay = item as OverlayWithIW
-            val hydrant = overlay.relatedObject as MapViewModel.HydrantGeoPoint
-            getTextView(mHydrantNumero).text = "Point d'eau N°${hydrant.numero}"
+            val hydrant = overlay.relatedObject as MapViewModel.PeiGeoPoint
+            getTextView(mHydrantNumero).text = "Point d'eau N°${hydrant.peiNumeroComplet}"
 
             getTextView(mHydrantDisponibilite).apply {
                 text = hydrant.dispoTerrestre?.name
-                setTextColor(if (hydrant.dispoTerrestre == Hydrant.Disponibilite.DISPO) Color.rgb(63, 191, 63) else Color.rgb(191, 63, 63))
+                setTextColor(if (hydrant.dispoTerrestre == Pei.Disponibilite.DISPO) Color.rgb(63, 191, 63) else Color.rgb(191, 63, 63))
             }
 
             val linkGpsTextView = getTextView(mOpenGps)
@@ -59,26 +59,26 @@ class HydrantInfoWindow(mapView: MapView, val navController: NavController) : In
             getTextView(mHydrantCaracteristiques).text = Html.fromHtml(hydrant.peiCaracteristiques ?: "", Html.FROM_HTML_MODE_COMPACT)
 
             val goToVisite = mView.findViewById<Button>(mGoToVisite)
-            if (hydrant.idTournee != null) {
+            if (hydrant.tourneeId != null) {
                 goToVisite.visibility = View.VISIBLE
-                goToVisite.text = if (hydrant.statutVisite == HydrantVisite.HydrantVisiteStatut.A_FAIRE || hydrant.statutVisite == null) {
+                goToVisite.text = if (hydrant.statutVisite == Visite.VisiteStatut.A_FAIRE || hydrant.statutVisite == null) {
                     "Démarrer la visite"
                 } else {
                     "Editer la visite"
                 }
                 goToVisite.setOnClickListener {
                     navController.navigate(
-                        Screens.Hydrant.route
+                        Screens.Pei.route
                             .replace(
-                                oldValue = "{idHydrant}",
-                                newValue = hydrant.idHydrant.toString(),
+                                oldValue = "{peiId}",
+                                newValue = hydrant.peiId.toString(),
                             )
                             .replace(
-                                oldValue = "{idTournee}",
-                                newValue = hydrant.idTournee.toString(),
+                                oldValue = "{tourneeId}",
+                                newValue = hydrant.tourneeId.toString(),
                             ),
                     ) {
-                        popUpTo(Screens.TourneeHydrants.route)
+                        popUpTo(Screens.TourneePei.route)
                     }
                 }
             } else {

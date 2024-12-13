@@ -38,11 +38,11 @@ fun SyncScreen(syncViewModel: SyncViewModel, navController: NavController) {
 
     val choixTourneeViewModel = ChoixTourneeViewModel(context.applicationContext as Application)
 
-    val hydrantVisiteCount by syncViewModel.hydrantVisiteCount.observeAsState()
-    val hydrantTourneeCount by syncViewModel.hydrantTourneeCount.observeAsState()
+    val visiteCount by syncViewModel.visiteCount.observeAsState()
+    val lPeiTourneeCount by syncViewModel.lPeiTourneeCount.observeAsState()
     val tourneeNotDoneCount by syncViewModel.tourneeNotDoneCount.observeAsState()
     val tourneeCount by syncViewModel.tourneeCount.observeAsState()
-    val hydrantsCreesCount by syncViewModel.hydrantsCreesCount.observeAsState()
+    val PeiCreesCount by syncViewModel.PeiCreesCount.observeAsState()
 
     var showCustomDialog by remember {
         mutableStateOf(false)
@@ -82,7 +82,7 @@ fun SyncScreen(syncViewModel: SyncViewModel, navController: NavController) {
                 horizontalAlignment = Alignment.Start,
             ) {
                 Text(
-                    text = stringResource(R.string.visites_finies, hydrantVisiteCount ?: 0, hydrantTourneeCount ?: 0),
+                    text = stringResource(R.string.visites_finies, visiteCount ?: 0, lPeiTourneeCount ?: 0),
                     fontWeight = FontWeight.Normal,
                     fontSize = 3.em,
                 )
@@ -92,7 +92,7 @@ fun SyncScreen(syncViewModel: SyncViewModel, navController: NavController) {
                     fontSize = 3.em,
                 )
                 Text(
-                    text = stringResource(R.string.hydrants_crees, 0, hydrantsCreesCount ?: 0),
+                    text = stringResource(R.string.hydrants_crees, 0, PeiCreesCount ?: 0),
                     fontWeight = FontWeight.Normal,
                     fontSize = 3.em,
                 )

@@ -24,9 +24,10 @@ import androidx.compose.ui.window.DialogProperties
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
+import java.util.UUID
 
 @Composable
-fun AnnulerReservationTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, idTournee: Long, onDismiss: () -> Unit) {
+fun AnnulerReservationTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel, tourneeId: UUID, onDismiss: () -> Unit) {
     val context = LocalContext.current
 
     Dialog(
@@ -78,7 +79,7 @@ fun AnnulerReservationTourneeDialog(choixTourneeViewModel: ChoixTourneeViewModel
                     Button(
                         onClick = {
                             // Fait un appel pour réserver les tournées selectionnées
-                            choixTourneeViewModel.annulerReservationTournee(context, idTournee)
+                            choixTourneeViewModel.annulerReservationTournee(context, tourneeId)
                             onDismiss()
                         },
                         Modifier

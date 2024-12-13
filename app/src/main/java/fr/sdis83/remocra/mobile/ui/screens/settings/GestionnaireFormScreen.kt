@@ -53,12 +53,12 @@ import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
-fun GestionnaireFormScreen(navController: NavController?, idGestionnaire: UUID?) {
+fun GestionnaireFormScreen(navController: NavController?, gestionnaireId: UUID?) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     val gestionnaireViewModel =
-        GestionnaireViewModel(context.applicationContext as Application, idGestionnaire)
+        GestionnaireViewModel(context.applicationContext as Application, gestionnaireId)
 
     GestionnaireFormScreenInner(
         gestionnaireViewModel,
@@ -76,7 +76,7 @@ fun GestionnaireFormScreenInner(
     val currentGestionnaire by gestionnaireViewModel.gestionnaireState.collectAsState() // Current gestionnaire
     val gestionnaire by gestionnaireViewModel.gestionnaire.observeAsState() // Construction du titre
     var mainTitle: String by remember { mutableStateOf("") }
-    val contextCreation: Boolean = gestionnaire?.idGestionnaire == null
+    val contextCreation: Boolean = gestionnaire?.gestionnaireId == null
     val contactsList = gestionnaireViewModel.contactsList.observeAsState(listOf())
 
     mainTitle = if (contextCreation) {
@@ -84,7 +84,7 @@ fun GestionnaireFormScreenInner(
         stringResource(R.string.addGestionnaireST)
     } else {
         // Context = Modification d'un gestionnaire
-        "${stringResource(R.string.editGestionnaireST)} ${gestionnaire?.nom}"
+        "${stringResource(R.string.editGestionnaireST)} ${gestionnaire?.gestionnaireLibelle}"
     }
 
     gestionnaireViewModel.updateForm(currentGestionnaire)
@@ -115,10 +115,10 @@ fun GestionnaireFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth(.5f)
                             .padding(end = 5.pxToDp),
-                        value = currentGestionnaire.nom ?: "",
+                        value = currentGestionnaire.gestionnaireLibelle ?: "",
                         onValueChange = { it: String ->
                             gestionnaireViewModel.updateForm(
-                                currentGestionnaire.copy(nom = it),
+                                currentGestionnaire.copy(gestionnaireLibelle = it),
                             )
                         },
                         label = { Text(text = stringResource(R.string.formGestionnaireName)) },
@@ -135,10 +135,10 @@ fun GestionnaireFormScreenInner(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 5.pxToDp),
-                        value = currentGestionnaire.code ?: "",
+                        value = currentGestionnaire.gestionnaireCode ?: "",
                         onValueChange = { it: String ->
                             gestionnaireViewModel.updateForm(
-                                currentGestionnaire.copy(code = it),
+                                currentGestionnaire.copy(gestionnaireCode = it),
                             )
                         },
                         label = { Text(text = stringResource(R.string.formGestionnaireSiren)) },
@@ -178,8 +178,8 @@ fun GestionnaireFormScreenInner(
                                             navController?.navigate(
                                                 Screens.CreateContact.route
                                                     .replace(
-                                                        oldValue = "{idGestionnaire}",
-                                                        newValue = gestionnaire?.idGestionnaire.toString(),
+                                                        oldValue = "{gestionnaireId}",
+                                                        newValue = gestionnaire?.gestionnaireId.toString(),
                                                     ),
                                             )
                                         },
@@ -231,12 +231,12 @@ fun GestionnaireFormScreenInner(
                                                                         .weight(1f),
                                                                 ) {
                                                                     Text(
-                                                                        text = "${contact.nom ?: ""} ${contact.prenom ?: ""}",
+                                                                        text = "${contact.contactNom ?: ""} ${contact.contactPrenom ?: ""}",
                                                                         fontWeight = FontWeight.Bold,
                                                                     )
-                                                                    contact.fonction?.let {
-                                                                        Text(text = "Fonction : ${contact.fonction}")
-                                                                    }
+                                                                    /*contact.fonction?.let {
+                                                                        Text(text = "Fonction : /*TODO contact.fonction*/")
+                                                                    }*/
                                                                 }
                                                                 Column {
                                                                     IconButton(
@@ -244,12 +244,12 @@ fun GestionnaireFormScreenInner(
                                                                             navController.navigate(
                                                                                 Screens.EditContact.route
                                                                                     .replace(
-                                                                                        oldValue = "{idGestionnaire}",
-                                                                                        newValue = contact.idGestionnaire.toString(),
+                                                                                        oldValue = "{gestionnaireId}",
+                                                                                        newValue = contact.gestionnaireId.toString(),
                                                                                     )
                                                                                     .replace(
-                                                                                        oldValue = "{idContact}",
-                                                                                        newValue = contact.idContact.toString(),
+                                                                                        oldValue = "{contactId}",
+                                                                                        newValue = contact.contactId.toString(),
                                                                                     ),
                                                                             )
                                                                         },
@@ -308,8 +308,8 @@ fun GestionnaireFormScreenInner(
                                     navController?.navigate(
                                         Screens.CreateContact.route
                                             .replace(
-                                                oldValue = "{idGestionnaire}",
-                                                newValue = currentGestionnaire.idGestionnaire.toString(),
+                                                oldValue = "{gestionnaireId}",
+                                                newValue = currentGestionnaire.gestionnaireId.toString(),
                                             ),
                                     ) {
                                         popUpTo(Screens.Settings.route)

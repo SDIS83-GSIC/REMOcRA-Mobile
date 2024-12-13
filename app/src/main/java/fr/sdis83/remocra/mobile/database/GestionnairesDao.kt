@@ -10,17 +10,17 @@ import java.util.UUID
 @Dao
 abstract class GestionnairesDao {
 
-    @Query("SELECT * FROM gestionnaire g WHERE g.code LIKE '%' || :search || '%' OR g.nom LIKE '%' ||:search || '%'")
+    @Query("SELECT * FROM gestionnaire g WHERE g.gestionnaireCode LIKE '%' || :search || '%' OR g.gestionnaireLibelle LIKE '%' ||:search || '%'")
     abstract fun getGestionnairesList(search: String): Flow<List<Gestionnaire>>
 
-    @Query("SELECT * FROM gestionnaire WHERE idGestionnaire = :idGestionnaire")
-    abstract suspend fun getGestionnaireByUUID(idGestionnaire: UUID): Gestionnaire
+    @Query("SELECT * FROM gestionnaire WHERE gestionnaireId = :gestionnaireId")
+    abstract suspend fun getGestionnaireByUUID(gestionnaireId: UUID): Gestionnaire
 
-    @Query("SELECT * FROM gestionnaire WHERE idGestionnaire = :idGestionnaire")
-    abstract fun getCurrentGestionnaireByUUID(idGestionnaire: UUID? = null): LiveData<Gestionnaire?>
+    @Query("SELECT * FROM gestionnaire WHERE gestionnaireId = :gestionnaireId")
+    abstract fun getCurrentGestionnaireByUUID(gestionnaireId: UUID? = null): LiveData<Gestionnaire?>
 
-    @Query("SELECT * FROM contact WHERE idGestionnaire = :idGestionnaire")
-    abstract fun getContactByGestionnaireUUID(idGestionnaire: UUID? = null): LiveData<List<Contact>>
+    @Query("SELECT * FROM contact WHERE gestionnaireId = :gestionnaireId")
+    abstract fun getContactByGestionnaireUUID(gestionnaireId: UUID?): LiveData<List<Contact>>
 
     @Upsert()
     abstract suspend fun upsertGestionnaire(gestionnaire: Gestionnaire)

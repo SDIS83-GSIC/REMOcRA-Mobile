@@ -1,28 +1,27 @@
 package fr.sdis83.remocra.mobile.services
 
 import android.content.Context
+import fr.sdis83.remocra.mobile.database.Anomalie
+import fr.sdis83.remocra.mobile.database.AnomalieCategorie
 import fr.sdis83.remocra.mobile.database.Contact
+import fr.sdis83.remocra.mobile.database.ContactRole
+import fr.sdis83.remocra.mobile.database.FonctionContact
 import fr.sdis83.remocra.mobile.database.Gestionnaire
-import fr.sdis83.remocra.mobile.database.Hydrant
-import fr.sdis83.remocra.mobile.database.ParamConf
+import fr.sdis83.remocra.mobile.database.LPeiAnomalie
+import fr.sdis83.remocra.mobile.database.Nature
+import fr.sdis83.remocra.mobile.database.NatureDeci
+import fr.sdis83.remocra.mobile.database.Parametre
+import fr.sdis83.remocra.mobile.database.Pei
 import fr.sdis83.remocra.mobile.database.Role
 import fr.sdis83.remocra.mobile.database.Tournee
 import fr.sdis83.remocra.mobile.database.TourneeDispo
-import fr.sdis83.remocra.mobile.database.TypeDroit
-import fr.sdis83.remocra.mobile.database.TypeHydrant
-import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalie
-import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalieNature
-import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalieNatureSaisie
-import fr.sdis83.remocra.mobile.database.TypeHydrantCritere
-import fr.sdis83.remocra.mobile.database.TypeHydrantNature
-import fr.sdis83.remocra.mobile.database.TypeHydrantNatureDeci
-import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
 import fr.sdis83.remocra.mobile.network.RetrofitBuilder
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import java.util.UUID
 interface ReferentielService {
     companion object {
         fun getRetroFitInstance(context: Context): ReferentielService =
@@ -46,48 +45,47 @@ interface ReferentielService {
     @FormUrlEncoded
     @POST("synchro/annulereservation")
     fun annuleReservation(
-        @Field("idTournee") idTournee: Long,
+        @Field("tourneeId") tourneeId: UUID,
     ): Call<String>
 
     data class ReferentielResponse(
-        val hydrants: List<Hydrant>,
-        val hydrantsAnomalies: List<HydrantAnomalieInput>,
-        val gestionnaires: List<Gestionnaire>,
-        val contacts: List<Contact>,
-        val roles: List<Role>,
-        val contactsRoles: List<ContactRoleInput>,
-        val typesHydrant: List<TypeHydrant>,
-        val typesHydrantNature: List<TypeHydrantNature>,
-        val typesHydrantNatureDeci: List<TypeHydrantNatureDeci>,
-        val typesHydrantAnomalie: List<TypeHydrantAnomalie>,
-        val typesHydrantAnomalieNature: List<TypeHydrantAnomalieNature>,
-        val typesHydrantAnomalieNatureSaisie: List<TypeHydrantAnomalieNatureSaisie>,
-        val typesHydrantCritere: List<TypeHydrantCritere>,
-        val typesHydrantSaisie: List<TypeHydrantSaisie>,
-        val paramsConf: List<ParamConf>,
-        val typesDroit: List<TypeDroit>,
-        val peiCaracteristiques: Map<Long, String>,
+        val listPei: List<Pei>,
+        val listPeiAnomalies: List<LPeiAnomalie>,
+        val listGestionnaire: List<Gestionnaire>,
+        val listFonctionContact: List<FonctionContact>,
+        val listContact: List<Contact>,
+        val listRole: List<Role>,
+        val listContactRole: List<ContactRole>,
+        val listTypePei: List<String>,
+        val listNature: List<Nature>,
+        val listNatureDeci: List<NatureDeci>,
+        val listAnomalie: List<Anomalie>,
+        val listPoidsAnomalie: List<PoidsAnomalieInput>,
+        val listAnomalieCategorie: List<AnomalieCategorie>,
+        val listTypeVisite: List<String>,
+        val listParametre: List<Parametre>,
+        val listDroit: List<String>,
+        val peiCaracteristiques: Map<UUID, String>,
         val utilisateurConnecte: String,
     )
 
-    data class ContactRoleInput(
-        val idContact: Long,
-        val idRole: Long,
-    )
-
-    data class HydrantAnomalieInput(
-        val idHydrant: Long,
-        val idAnomalie: Long,
+    data class PoidsAnomalieInput(
+        val poidsAnomalieId: UUID,
+        val poidsAnomalieAnomalieId: UUID,
+        val poidsAnomalieNatureId: UUID,
+        val poidsAnomalieTypeVisite: Collection<String>,
+        val poidsAnomalieValIndispoHbe: Int?,
+        val poidsAnomalieValIndispoTerrestre: Int?,
     )
 
     data class ReservationTourneesResponse(
-        var tourneesReservees: List<TourneeWithHydrant>,
+        var tourneesReservees: List<TourneeWithPei>,
         var tourneesNonReservees: List<Tournee>,
     )
 
-    data class TourneeWithHydrant(
-        val idRemocra: Long,
-        val nom: String,
-        val listeHydrant: List<Long>,
+    data class TourneeWithPei(
+        val tourneeId: UUID,
+        val tourneeLibelle: String,
+        val listePei: List<UUID>,
     )
 }

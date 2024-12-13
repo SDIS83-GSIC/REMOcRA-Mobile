@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import java.util.UUID
 
 class ChoixTourneeViewModel(application: Application) : AndroidViewModel(application) {
     companion object {
@@ -122,12 +123,12 @@ class ChoixTourneeViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun annulerReservationTournee(context: Context, idTournee: Long) {
+    fun annulerReservationTournee(context: Context, tourneeId: UUID) {
         val annuleReservationTourneeWorker =
             OneTimeWorkRequestBuilder<AnnuleReservationTourneeWorker>()
                 .setInputData(
                     Data.Builder()
-                        .putLong("idTournee", idTournee).build(),
+                        .putString("tourneeId", tourneeId.toString()).build(),
                 ).build()
 
         WorkManager.getInstance(getApplication()).let { workManager ->

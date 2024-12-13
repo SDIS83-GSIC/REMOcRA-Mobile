@@ -10,53 +10,69 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 @Entity(
-    tableName = "hydrant",
+    tableName = "typePei",
+    indices = [Index("typePeiId")],
+)
+data class TypePei(
+    @PrimaryKey val typePeiId: UUID = UUID.randomUUID(),
+    val typePeiCode: String,
+)
+
+@Entity(
+    tableName = "typeVisite",
+    indices = [Index("typeVisiteId")],
+)
+data class TypeVisite(
+    @PrimaryKey val typeVisiteId: UUID = UUID.randomUUID(),
+    val typeVisiteCode: String,
+)
+
+@Entity(
+    tableName = "pei",
     indices = [
-        Index("idHydrant"), Index(
-            "idRemocra",
-            unique = true,
-        ), Index("idNature"),
-        Index("idNatureDeci"), Index("idGestionnaire"),
+        Index("peiId"),
+        Index("natureId"),
+        Index("natureDeciId"),
+        Index("gestionnaireId"),
     ],
     foreignKeys = [
         ForeignKey(
-            entity = TypeHydrantNature::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idNature"],
+            entity = Nature::class,
+            parentColumns = ["natureId"],
+            childColumns = ["natureId"],
             onDelete = ForeignKey.SET_NULL,
         ),
         ForeignKey(
-            entity = TypeHydrantNatureDeci::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idNatureDeci"],
+            entity = NatureDeci::class,
+            parentColumns = ["natureDeciId"],
+            childColumns = ["natureDeciId"],
             onDelete = ForeignKey.SET_NULL,
         ),
         ForeignKey(
             entity = Gestionnaire::class,
-            parentColumns = ["idGestionnaire"],
-            childColumns = ["idGestionnaire"],
+            parentColumns = ["gestionnaireId"],
+            childColumns = ["gestionnaireId"],
             onDelete = ForeignKey.SET_NULL,
         ),
     ],
 )
-data class Hydrant(
-    @PrimaryKey val idHydrant: UUID = UUID.randomUUID(),
-    val idRemocra: Long?,
-    val idNature: Long?,
-    val idNatureDeci: Long?,
+data class Pei(
+    @PrimaryKey val peiId: UUID,
+    val natureId: UUID,
+    val natureDeciId: UUID,
     val dispoHbe: DisponibiliteHbe?,
     val dispoTerrestre: Disponibilite?,
     val x: Double,
     val y: Double,
     val lon: Double,
     val lat: Double,
-    val numero: String?,
-    val code: String?,
+    val peiNumeroComplet: String?,
+    val typePeiId: UUID,
     val adresseComplete: String?,
     val observation: String?,
-    val idGestionnaire: UUID?,
-    val idRemocraGestionnaire: Long?,
+    val gestionnaireId: UUID?,
     var peiCaracteristiques: String?,
+    var isNew: Boolean = false,
 ) {
     enum class Disponibilite {
         DISPO,
@@ -72,86 +88,88 @@ data class Hydrant(
 
 @Entity(
     tableName = "tournee",
-    indices = [Index("idTournee"), Index("idRemocra", unique = true)],
+    indices = [Index("tourneeId")],
 )
 data class Tournee(
-    @PrimaryKey val idTournee: UUID = UUID.randomUUID(),
-    val idRemocra: Long,
-    val hydrantCount: Int,
+    @PrimaryKey val tourneeId: UUID,
+    val peiCount: Int,
     val nom: String,
 ) {
     fun getColor(): Color =
-        when (idRemocra % 4) {
-            0L -> Color(191, 63, 63)
-            1L -> Color(63, 191, 63)
-            2L -> Color(63, 63, 191)
-            3L -> Color(191, 191, 63)
-            4L -> Color(63, 191, 191)
-            5L -> Color(191, 63, 191)
+        when (Math.random() % 4) { // TODO gérer la couleur des tournées
+            0.0 -> Color(191, 63, 63)
+            1.0 -> Color(63, 191, 63)
+            2.0 -> Color(63, 63, 191)
+            3.0 -> Color(191, 191, 63)
+            4.0 -> Color(63, 191, 191)
+            5.0 -> Color(191, 63, 191)
             else -> Color(127, 127, 127)
         }
 }
 
 @Entity(
-    tableName = "hydrantTournee",
-    indices = [Index("idHydrantTournee"), Index("idRemocraHydrant"), Index("idRemocraTournee")],
+    tableName = "lPeiTournee",
+    primaryKeys = ["peiId", "tourneeId"],
+    indices = [Index("peiId"), Index("tourneeId")],
     foreignKeys = [
         ForeignKey(
-            entity = Hydrant::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idRemocraHydrant"],
+            entity = Pei::class,
+            parentColumns = ["peiId"],
+            childColumns = ["peiId"],
             onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = Tournee::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idRemocraTournee"],
+            parentColumns = ["tourneeId"],
+            childColumns = ["tourneeId"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
-data class HydrantTournee(
-    @PrimaryKey val idHydrantTournee: UUID = UUID.randomUUID(),
-    val idRemocraHydrant: Long,
-    val idRemocraTournee: Long,
+data class LPeiTournee(
+    val peiId: UUID,
+    val tourneeId: UUID,
 )
 
 @Entity(
-    tableName = "hydrantVisite",
+    tableName = "visite",
     indices = [
         Index(
-            "idHydrantVisite",
+            "visiteId",
             unique = true,
-        ), Index("idHydrant"), Index("idTournee"), Index("idTypeHydrantSaisie"),
+        ),
+        Index("peiId"),
+        Index("tourneeId"),
+        Index("typeVisiteId"),
     ],
     foreignKeys = [
         ForeignKey(
-            entity = Hydrant::class,
-            parentColumns = ["idHydrant"],
-            childColumns = ["idHydrant"],
+            entity = Pei::class,
+            parentColumns = ["peiId"],
+            childColumns = ["peiId"],
             onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = Tournee::class,
-            parentColumns = ["idTournee"],
-            childColumns = ["idTournee"],
+            parentColumns = ["tourneeId"],
+            childColumns = ["tourneeId"],
             onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
-            entity = TypeHydrantSaisie::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idTypeHydrantSaisie"],
+            entity = TypeVisite::class,
+            parentColumns = ["typeVisiteId"],
+            childColumns = ["typeVisiteId"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
-data class HydrantVisite(
-    @PrimaryKey val idHydrantVisite: UUID = UUID.randomUUID(),
-    val idHydrant: UUID,
-    val idTournee: UUID,
+data class Visite(
+    @PrimaryKey val visiteId: UUID,
+    val peiId: UUID,
+    val tourneeId: UUID,
     val dateVisite: ZonedDateTime = ZonedDateTime.now(),
-    val statut: HydrantVisiteStatut = HydrantVisiteStatut.EN_COURS,
-    val idTypeHydrantSaisie: Long? = null,
+    val statut: VisiteStatut = VisiteStatut.EN_COURS,
+    val typeVisiteId: UUID? = null,
     var agent1: String? = null,
     var agent2: String? = null,
     var ctrlDebitPression: Boolean = false,
@@ -166,7 +184,7 @@ data class HydrantVisite(
 ) {
     val isValid: Boolean
         get() =
-            idTypeHydrantSaisie != null &&
+            typeVisiteId != null &&
                 (
                     ctrlDebitPression &&
                         debit != null && debit!! > 0 &&
@@ -178,7 +196,7 @@ data class HydrantVisite(
                         pression == null
                     )
 
-    enum class HydrantVisiteStatut {
+    enum class VisiteStatut {
         A_FAIRE,
         EN_COURS,
         TERMINE,
@@ -187,276 +205,245 @@ data class HydrantVisite(
 }
 
 @Entity(
-    tableName = "hydrantVisiteAnomalie",
-    indices = [Index("idHydrantVisite"), Index("idAnomalie")],
-    primaryKeys = ["idHydrantVisite", "idAnomalie"],
+    tableName = "lVisiteAnomalie",
+    indices = [Index("visiteId"), Index("anomalieId")],
+    primaryKeys = ["visiteId", "anomalieId"],
     foreignKeys = [
         ForeignKey(
-            entity = HydrantVisite::class,
-            parentColumns = ["idHydrantVisite"],
-            childColumns = ["idHydrantVisite"],
+            entity = Visite::class,
+            parentColumns = ["visiteId"],
+            childColumns = ["visiteId"],
             onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
-            entity = TypeHydrantAnomalie::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idAnomalie"],
+            entity = Anomalie::class,
+            parentColumns = ["anomalieId"],
+            childColumns = ["anomalieId"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
-data class HydrantVisiteAnomalie(
-    val idHydrantVisite: UUID,
-    val idAnomalie: Long,
+data class LVisiteAnomalie(
+    val visiteId: UUID,
+    val anomalieId: UUID,
 )
 
 @Entity(
-    tableName = "hydrantPhoto",
-    indices = [Index("idHydrantPhoto"), Index("idHydrant")],
+    tableName = "photoPei",
+    indices = [Index("photoId"), Index("peiId")],
     foreignKeys = [
         ForeignKey(
-            entity = Hydrant::class,
-            parentColumns = ["idHydrant"],
-            childColumns = ["idHydrant"],
+            entity = Pei::class,
+            parentColumns = ["peiId"],
+            childColumns = ["peiId"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
-data class HydrantPhoto(
-    @PrimaryKey val idHydrantPhoto: UUID = UUID.randomUUID(),
-    val idHydrant: UUID,
+data class PhotoPei(
+    @PrimaryKey val photoId: UUID = UUID.randomUUID(),
+    val peiId: UUID,
     val datePhoto: ZonedDateTime,
     val path: String,
 )
 
 @Entity(
-    tableName = "hydrantAnomalie",
-    indices = [Index("idHydrant"), Index("idAnomalie")],
-    primaryKeys = ["idHydrant", "idAnomalie"],
+    tableName = "lPeiAnomalie",
+    indices = [Index("peiId"), Index("anomalieId")],
+    primaryKeys = ["peiId", "anomalieId"],
     foreignKeys = [
         ForeignKey(
-            entity = Hydrant::class,
-            parentColumns = ["idHydrant"],
-            childColumns = ["idHydrant"],
+            entity = Pei::class,
+            parentColumns = ["peiId"],
+            childColumns = ["peiId"],
             onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
-            entity = TypeHydrantAnomalie::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idAnomalie"],
+            entity = Anomalie::class,
+            parentColumns = ["anomalieId"],
+            childColumns = ["anomalieId"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
-data class HydrantAnomalie(
-    val idHydrant: UUID,
-    val idAnomalie: Long,
+data class LPeiAnomalie(
+    val peiId: UUID,
+    val anomalieId: UUID,
 )
 
 @Entity(
-    tableName = "typeHydrantCritere",
-    indices = [Index("idTypeHydrantCritere"), Index("idRemocra", unique = true)],
+    tableName = "anomalieCategorie",
+    indices = [Index("anomalieCategorieId")],
 )
-data class TypeHydrantCritere(
-    @PrimaryKey val idTypeHydrantCritere: UUID = UUID.randomUUID(),
-    val idRemocra: Long,
-    val code: String,
-    val nom: String,
-    val actif: Boolean,
+data class AnomalieCategorie(
+    @PrimaryKey val anomalieCategorieId: UUID,
+    val anomalieCategorieCode: String,
+    val anomalieCategorieLibelle: String,
+    val anomalieCategorieActif: Boolean,
 )
 
 @Entity(
-    tableName = "typeHydrantAnomalie",
+    tableName = "anomalie",
     indices = [
-        Index("idTypeHydrantAnomalie"), Index(
-            "idRemocra",
-            unique = true,
-        ), Index("idCritere"),
+        Index("anomalieId"), Index("anomalieCategorieId"),
     ],
     foreignKeys = [
         ForeignKey(
-            entity = TypeHydrantCritere::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idCritere"],
+            entity = AnomalieCategorie::class,
+            parentColumns = ["anomalieCategorieId"],
+            childColumns = ["anomalieCategorieId"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
-data class TypeHydrantAnomalie(
-    @PrimaryKey val idTypeHydrantAnomalie: UUID = UUID.randomUUID(),
-    val idRemocra: Long,
-    val idCritere: Long,
-    val code: String,
-    val nom: String,
-    val actif: Boolean,
+data class Anomalie(
+    @PrimaryKey val anomalieId: UUID,
+    val anomalieCategorieId: UUID,
+    val anomalieCode: String,
+    val anomalieLibelle: String,
 )
 
 @Entity(
-    tableName = "typeHydrantAnomalieNature",
+    tableName = "poidsAnomalie",
     indices = [
-        Index("idTypeHydrantAnomalieNature"), Index(
-            "idRemocra",
-            unique = true,
-        ), Index("idTypeHydrantAnomalie"), Index("idTypeHydrantNature"),
+        Index("poidsAnomalieId"),
+        Index("poidsAnomalieAnomalieId"),
+        Index("poidsAnomalieNatureId"),
     ],
     foreignKeys = [
         ForeignKey(
-            entity = TypeHydrantAnomalie::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idTypeHydrantAnomalie"],
+            entity = Anomalie::class,
+            parentColumns = ["anomalieId"],
+            childColumns = ["poidsAnomalieAnomalieId"],
             onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
-            entity = TypeHydrantNature::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idTypeHydrantNature"],
+            entity = Nature::class,
+            parentColumns = ["natureId"],
+            childColumns = ["poidsAnomalieNatureId"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
-data class TypeHydrantAnomalieNature(
-    @PrimaryKey val idTypeHydrantAnomalieNature: UUID = UUID.randomUUID(),
-    val idRemocra: Long,
-    val idTypeHydrantAnomalie: Long,
-    val idTypeHydrantNature: Long,
-    val valIndispoTerrestre: Int,
-    val valIndispoHbe: Int,
-    val valIndispoAdmin: Int,
+data class PoidsAnomalie(
+    @PrimaryKey val poidsAnomalieId: UUID,
+    val poidsAnomalieAnomalieId: UUID,
+    val poidsAnomalieNatureId: UUID,
+    val valIndispoTerrestre: Int?,
+    val valIndispoHbe: Int?,
 )
 
 @Entity(
-    tableName = "typeHydrantAnomalieNatureSaisie",
+    tableName = "lPoidsAnomalieTypeVisite",
+    indices = [Index("poidsAnomalieId"), Index("typeVisiteId")],
+    primaryKeys = ["poidsAnomalieId", "typeVisiteId"],
+    foreignKeys = [
+        ForeignKey(
+            entity = PoidsAnomalie::class,
+            parentColumns = ["poidsAnomalieId"],
+            childColumns = ["poidsAnomalieId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+        ForeignKey(
+            entity = TypeVisite::class,
+            parentColumns = ["typeVisiteId"],
+            childColumns = ["typeVisiteId"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+)
+data class LPoidsAnomalieTypeVisite(
+    val poidsAnomalieId: UUID,
+    val typeVisiteId: UUID,
+)
+
+@Entity(
+    tableName = "nature",
     indices = [
-        Index("idTypeHydrantAnomalieNatureSaisie"), Index("idTypeHydrantAnomalieNature"), Index(
-            "idTypeHydrantSaisie",
-        ),
+        Index("natureId"),
+        Index("typePeiId"),
     ],
     foreignKeys = [
         ForeignKey(
-            entity = TypeHydrantAnomalieNature::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idTypeHydrantAnomalieNature"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-        ForeignKey(
-            entity = TypeHydrantSaisie::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idTypeHydrantSaisie"],
-            onDelete = ForeignKey.CASCADE,
-        ),
-    ],
-)
-data class TypeHydrantAnomalieNatureSaisie(
-    @PrimaryKey val idTypeHydrantAnomalieNatureSaisie: UUID = UUID.randomUUID(),
-    val idTypeHydrantAnomalieNature: Long,
-    val idTypeHydrantSaisie: Long,
-)
-
-@Entity(
-    tableName = "typeHydrant",
-    indices = [Index("idTypeHydrant"), Index("idRemocra", unique = true)],
-)
-data class TypeHydrant(
-    @PrimaryKey val idTypeHydrant: UUID = UUID.randomUUID(),
-    val idRemocra: Long,
-    val code: String,
-    val nom: String,
-    val actif: Boolean,
-)
-
-@Entity(
-    tableName = "typeHydrantNature",
-    indices = [
-        Index("idTypeHydrantNature"), Index(
-            "idRemocra",
-            unique = true,
-        ), Index("idTypeHydrant"),
-    ],
-    foreignKeys = [
-        ForeignKey(
-            entity = TypeHydrant::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idTypeHydrant"],
+            entity = TypePei::class,
+            parentColumns = ["typePeiId"],
+            childColumns = ["typePeiId"],
             onDelete = ForeignKey.SET_NULL,
         ),
     ],
 )
-data class TypeHydrantNature(
-    @PrimaryKey val idTypeHydrantNature: UUID = UUID.randomUUID(),
-    val idRemocra: Long,
-    val code: String,
-    val nom: String,
-    val idTypeHydrant: Long?,
-    val actif: Boolean,
+data class Nature(
+    @PrimaryKey val natureId: UUID,
+    val natureCode: String,
+    val natureLibelle: String,
+    val typePeiId: UUID,
 )
 
 @Entity(
-    tableName = "typeHydrantNatureDeci",
-    indices = [Index("idTypeHydrantNatureDeci"), Index("idRemocra", unique = true)],
+    tableName = "natureDeci",
+    indices = [Index("natureDeciId")],
 )
-data class TypeHydrantNatureDeci(
-    @PrimaryKey val idTypeHydrantNatureDeci: UUID = UUID.randomUUID(),
-    val idRemocra: Long,
-    val code: String,
-    val nom: String,
-    val actif: Boolean,
-)
-
-@Entity(
-    tableName = "typeHydrantSaisie",
-    indices = [Index("idTypeHydrantSaisie"), Index("idRemocra", unique = true)],
-)
-data class TypeHydrantSaisie(
-    @PrimaryKey val idTypeHydrantSaisie: UUID = UUID.randomUUID(),
-    val idRemocra: Long,
-    val code: String,
-    val nom: String,
-    val actif: Boolean,
+data class NatureDeci(
+    @PrimaryKey val natureDeciId: UUID,
+    val natureDeciCode: String,
+    val natureDeciLibelle: String,
 )
 
 @Entity(
     tableName = "gestionnaire",
-    indices = [Index("idGestionnaire")],
+    indices = [Index("gestionnaireId")],
 )
 data class Gestionnaire(
-    @PrimaryKey val idGestionnaire: UUID = UUID.randomUUID(),
-    val idRemocra: Long?,
-    val nom: String,
-    val code: String?,
-    val actif: Boolean,
+    @PrimaryKey val gestionnaireId: UUID,
+    val gestionnaireLibelle: String,
+    val gestionnaireCode: String,
     val edited: Boolean = false,
 )
 
 @Entity(
+    tableName = "fonctionContact",
+    indices = [Index("fonctionContactId")],
+)
+data class FonctionContact(
+    @PrimaryKey val fonctionContactId: UUID,
+    val fonctionContactCode: String,
+    val fonctionContactLibelle: String,
+)
+
+@Entity(
     tableName = "contact",
-    indices = [Index("idContact"), Index("idGestionnaire")],
+    indices = [Index("contactId"), Index("gestionnaireId"), Index("contactFonctionContactId")],
     foreignKeys = [
         ForeignKey(
             entity = Gestionnaire::class,
-            parentColumns = ["idGestionnaire"],
-            childColumns = ["idGestionnaire"],
+            parentColumns = ["gestionnaireId"],
+            childColumns = ["gestionnaireId"],
+            onDelete = ForeignKey.SET_NULL,
+        ),
+        ForeignKey(
+            entity = FonctionContact::class,
+            parentColumns = ["fonctionContactId"],
+            childColumns = ["contactFonctionContactId"],
             onDelete = ForeignKey.SET_NULL,
         ),
     ],
 )
 data class Contact(
-    @PrimaryKey val idContact: UUID = UUID.randomUUID(),
-    val idRemocra: Long?,
-    val idGestionnaire: UUID?,
-    val idRemocraGestionnaire: Long?,
-    val fonction: String?,
-    val civilite: Civilite?,
-    val nom: String?,
-    val prenom: String?,
-    val numeroVoie: String?,
-    val voie: String?,
-    val suffixeVoie: String?,
-    val lieuDit: String?,
-    val codePostal: String?,
-    val ville: String?,
-    val pays: String?,
-    val telephone: String?,
-    val email: String?,
+    @PrimaryKey val contactId: UUID,
+    val gestionnaireId: UUID,
+    val contactCivilite: Civilite?,
+    val contactNom: String?,
+    val contactPrenom: String?,
+    val contactNumeroVoie: String?,
+    val contactSuffixeVoie: String?,
+    val contactLieuDitText: String?,
+    val contactVoieText: String?,
+    val contactCodePostal: String?,
+    val contactCommuneText: String?,
+    val contactPays: String?,
+    val contactTelephone: String?,
+    val contactEmail: String?,
+    val contactFonctionContactId: UUID?,
     val edited: Boolean = false,
 ) {
     enum class Civilite {
@@ -467,67 +454,64 @@ data class Contact(
 
 @Entity(
     tableName = "contactRole",
-    indices = [Index("idContact"), Index("idRole")],
-    primaryKeys = ["idContact", "idRole"],
+    indices = [Index("contactId"), Index("roleId")],
+    primaryKeys = ["contactId", "roleId"],
     foreignKeys = [
         ForeignKey(
             entity = Contact::class,
-            parentColumns = ["idContact"],
-            childColumns = ["idContact"],
+            parentColumns = ["contactId"],
+            childColumns = ["contactId"],
             onDelete = ForeignKey.CASCADE,
         ),
         ForeignKey(
             entity = Role::class,
-            parentColumns = ["idRemocra"],
-            childColumns = ["idRole"],
+            parentColumns = ["roleId"],
+            childColumns = ["roleId"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
 data class ContactRole(
-    val idContact: UUID,
-    val idRole: Long,
+    val contactId: UUID,
+    val roleId: UUID,
 )
 
 @Entity(
     tableName = "role",
-    indices = [Index("idRole"), Index("idRemocra", unique = true)],
+    indices = [Index("roleId")],
 )
 data class Role(
-    @PrimaryKey val idRole: UUID = UUID.randomUUID(),
-    val idRemocra: Long,
-    val nom: String?,
-    val code: String,
-    val actif: Boolean,
+    @PrimaryKey val roleId: UUID,
+    val roleLibelle: String?,
+    val roleCode: String,
 )
 
 @Entity(
     tableName = "tourneeDispo",
-    indices = [Index("idTourneeDispo")],
+    indices = [Index("tourneeDispoId")],
 )
 data class TourneeDispo(
-    @PrimaryKey val idTourneeDispo: UUID = UUID.randomUUID(),
-    val idRemocra: Long?,
+    @PrimaryKey val tourneeDispoId: UUID,
     val nom: String?,
     var choisie: Boolean = false,
 )
 
 @Entity(
-    tableName = "paramConf",
-    indices = [Index("idParamConf")],
+    tableName = "parametre",
+    indices = [Index("parametreId")],
 )
-data class ParamConf(
-    @PrimaryKey val idParamConf: UUID = UUID.randomUUID(),
-    val cle: String,
-    val valeur: String,
+data class Parametre(
+    @PrimaryKey val parametreId: UUID,
+    val parametreCode: String,
+    val parametreValeur: String?,
 )
 
 @Entity(
     tableName = "typeDroit",
-    indices = [Index("idTypeDroit")],
+    indices = [Index("typeDroitId")],
 )
 data class TypeDroit(
-    @PrimaryKey val idTypeDroit: UUID = UUID.randomUUID(),
+    @PrimaryKey val typeDroitId: UUID = UUID.randomUUID(),
     val code: String,
 )
 

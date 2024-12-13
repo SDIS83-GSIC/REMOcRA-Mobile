@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.ReferentielService
-import java.util.UUID
 
 class TourneesDisposWorker constructor(
     context: Context,
@@ -30,7 +29,7 @@ class TourneesDisposWorker constructor(
 
         tourneesDao.truncateTourneesDispos()
         tourneesDisponiblesResponse.body()?.forEach {
-            tourneesDao.insertTourneeDispo(it.copy(idTourneeDispo = UUID.randomUUID()))
+            tourneesDao.insertTourneeDispo(it)
         }
 
         return Result.success()

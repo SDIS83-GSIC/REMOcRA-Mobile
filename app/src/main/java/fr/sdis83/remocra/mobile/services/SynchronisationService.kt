@@ -23,10 +23,8 @@ interface SynchronisationService {
     @FormUrlEncoded
     @POST("synchro/gestionnaires/")
     fun postGestionnaire(
-        @Field("idGestionnaire")
-        idGestionnaire: UUID,
-        @Field("idRemocra")
-        idRemocra: Long?,
+        @Field("gestionnaireId")
+        gestionnaireId: UUID,
         @Field("nomGestionnaire")
         nomGestionnaire: String,
         @Field("codeGestionnaire")
@@ -36,18 +34,16 @@ interface SynchronisationService {
     @FormUrlEncoded
     @POST("synchro/contacts/")
     fun postContact(
-        @Field("idContact")
-        idContact: UUID,
-        @Field("idGestionnaire")
-        idGestionnaire: UUID,
-        @Field("idRemocra")
-        idRemocra: Long?,
+        @Field("contactId")
+        contactId: UUID,
+        @Field("gestionnaireId")
+        gestionnaireId: UUID,
         @Field("nom")
         nom: String,
         @Field("prenom")
         prenom: String,
         @Field("fonction")
-        fonction: String?,
+        fonction: UUID?,
         @Field("civilite")
         civilite: String,
         @Field("numeroVoie")
@@ -73,31 +69,31 @@ interface SynchronisationService {
     @FormUrlEncoded
     @POST("synchro/contactsrole/")
     fun postContactsRole(
-        @Field("idContact")
-        idContact: UUID,
+        @Field("contactId")
+        contactId: UUID,
         @Field("idRoleRemocra")
-        idRoleRemocra: Long,
+        idRoleRemocra: UUID,
     ): Call<ResponseBody>
 
     @FormUrlEncoded
     @POST("synchro/createhydrant/")
     fun postHydrants(
-        @Field("idHydrant")
-        idHydrant: UUID,
+        @Field("peiId")
+        peiId: UUID,
         @Field("lat")
         lat: Double,
         @Field("lon")
         lon: Double,
         @Field("code")
         code: String,
-        @Field("idGestionnaire")
-        idGestionnaire: UUID?,
+        @Field("gestionnaireId")
+        gestionnaireId: UUID?,
         @Field("idGestionnaireRemocra")
-        idGestionnaireRemocra: Long?,
+        idGestionnaireRemocra: UUID?,
         @Field("idNatureDeci")
-        idNatureDeci: Long,
+        idNatureDeci: UUID,
         @Field("idNature")
-        idNature: Long,
+        idNature: UUID,
         @Field("observations")
         observations: String?,
     ): Call<ResponseBody>
@@ -105,14 +101,14 @@ interface SynchronisationService {
     @FormUrlEncoded
     @POST("synchro/synchrohydrantvisite/")
     fun postHydrantsVisites(
-        @Field("idHydrantVisite")
-        idHydrantVisite: UUID,
-        @Field("idHydrant")
-        idHydrant: Long,
+        @Field("visiteId")
+        visiteId: UUID,
+        @Field("peiId")
+        peiId: UUID,
         @Field("date")
         date: String,
         @Field("idTypeVisite")
-        idTypeVisite: Long,
+        idTypeVisite: UUID,
         @Field("ctrDebitPression")
         ctrDebitPression: Boolean,
         @Field("agent1")
@@ -134,17 +130,17 @@ interface SynchronisationService {
     @FormUrlEncoded
     @POST("synchro/synchrohydrantvisiteanomalie/")
     fun postHydrantVisiteAnomalie(
-        @Field("idHydrantVisite")
-        idHydrantVisite: UUID,
+        @Field("visiteId")
+        visiteId: UUID,
         @Field("idAnomalie")
-        idAnomalie: Long,
+        idAnomalie: UUID,
     ): Call<ResponseBody>
 
     @FormUrlEncoded
     @POST("synchro/synchrotournee/")
     fun postTournee(
         @Field("idTourneeRemocra")
-        idTourneeRemocra: Long,
+        idTourneeRemocra: UUID,
         @Field("nom")
         nom: String,
     ): Call<ResponseBody>
@@ -155,8 +151,8 @@ interface SynchronisationService {
     @POST("synchro/synchrohydrantphoto")
     @Multipart
     fun postHydrantPhoto(
-        @Part("idHydrant")
-        idHydrant: Long,
+        @Part("peiId")
+        peiId: UUID,
         @Part("datePhoto")
         datePhoto: String,
         @Part photo: MultipartBody.Part,

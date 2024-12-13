@@ -1,4 +1,4 @@
-package fr.sdis83.remocra.mobile.ui.screens.hydrants
+package fr.sdis83.remocra.mobile.ui.screens.pei
 
 import android.app.Application
 import androidx.compose.foundation.background
@@ -39,17 +39,17 @@ import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.utils.pxToDp
-import fr.sdis83.remocra.mobile.viewmodels.HydrantListViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
+import fr.sdis83.remocra.mobile.viewmodels.PeiListViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 @Composable
-fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) {
+fun PeiListScreen(navController: NavController, mapViewModel: MapViewModel) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    val hydrantListViewModel = HydrantListViewModel(context.applicationContext as Application)
-    val hydrantList by hydrantListViewModel.hydrantList.observeAsState()
+    val peiListViewModel = PeiListViewModel(context.applicationContext as Application)
+    val peiList by peiListViewModel.peiList.observeAsState()
 
     val openDialog = remember { mutableStateOf<UUID?>(null) }
 
@@ -77,7 +77,7 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                         fontWeight = FontWeight.Bold,
                     )
                 }
-                if (!hydrantList.isNullOrEmpty()) {
+                if (!peiList.isNullOrEmpty()) {
                     Row {
                         if (openDialog.value != null) {
                             AlertDialog(
@@ -95,7 +95,7 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                                         onClick = {
                                             openDialog.value?.let {
                                                 coroutineScope.launch {
-                                                    hydrantListViewModel.deleteHydrant(it)
+                                                    peiListViewModel.deletePei(it)
                                                     openDialog.value = null
                                                 }
                                             }
@@ -116,7 +116,7 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                             )
                         }
                         LazyColumn {
-                            items(hydrantList!!) { hydrantItem ->
+                            items(peiList!!) { peiItem ->
                                 Row(
                                     Modifier
                                         .padding(8.pxToDp)
@@ -132,10 +132,10 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                                     ) {
                                         Column {
                                             Row(modifier = Modifier.fillMaxWidth()) {
-                                                Text(text = hydrantItem.hydrant.numero ?: "N/A")
+                                                Text(text = peiItem.pei.peiNumeroComplet ?: "N/A")
                                                 Spacer(modifier = Modifier.width(16.pxToDp))
                                                 IconButton(onClick = {
-                                                    mapViewModel.goToHydrant(hydrantItem.hydrant.idHydrant, true)
+                                                    mapViewModel.goToPei(peiItem.pei.peiId, true)
                                                 }) {
                                                     Icon(
                                                         imageVector = Icons.Filled.GpsFixed,
@@ -144,7 +144,7 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                                                 }
                                                 Spacer(modifier = Modifier.width(16.pxToDp))
                                                 IconButton(onClick = {
-                                                    openDialog.value = hydrantItem.hydrant.idHydrant
+                                                    openDialog.value = peiItem.pei.peiId
                                                 }) {
                                                     Icon(
                                                         imageVector = Icons.Filled.Delete,
@@ -154,12 +154,12 @@ fun HydrantListScreen(navController: NavController, mapViewModel: MapViewModel) 
                                             }
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(
-                                                    text = hydrantItem.hydrantNature.nom,
+                                                    text = peiItem.nature.natureLibelle,
                                                 )
                                             }
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(
-                                                    text = hydrantItem.hydrantNatureDeci.nom,
+                                                    text = peiItem.natureDeci.natureDeciLibelle,
                                                 )
                                             }
                                         }

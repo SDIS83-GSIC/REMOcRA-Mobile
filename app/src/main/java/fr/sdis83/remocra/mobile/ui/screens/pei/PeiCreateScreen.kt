@@ -1,4 +1,4 @@
-package fr.sdis83.remocra.mobile.ui.screens.hydrants
+package fr.sdis83.remocra.mobile.ui.screens.pei
 
 import android.app.Application
 import android.util.Log
@@ -42,38 +42,38 @@ import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.Gestionnaire
-import fr.sdis83.remocra.mobile.database.TypeHydrantNature
-import fr.sdis83.remocra.mobile.database.TypeHydrantNatureDeci
+import fr.sdis83.remocra.mobile.database.Nature
+import fr.sdis83.remocra.mobile.database.NatureDeci
 import fr.sdis83.remocra.mobile.ui.components.SearchSpinner
 import fr.sdis83.remocra.mobile.ui.components.Spinner
 import fr.sdis83.remocra.mobile.utils.pxToDp
-import fr.sdis83.remocra.mobile.viewmodels.HydrantCreateViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
+import fr.sdis83.remocra.mobile.viewmodels.PeiCreateViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 
 @Composable
-fun HydrantCreateScreen(
+fun PeiCreateScreen(
     navController: NavController,
     mapViewModel: MapViewModel,
 ) {
     val context = LocalContext.current
-    val hydrantCreateViewModel = HydrantCreateViewModel(context.applicationContext as Application)
+    val peiCreateViewModel = PeiCreateViewModel(context.applicationContext as Application)
 
-    HydrantCreateScreen(hydrantCreateViewModel, mapViewModel, navController)
+    PeiCreateScreen(peiCreateViewModel, mapViewModel, navController)
 }
 
 @Composable
-private fun HydrantCreateScreen(
-    hydrantCreateViewModel: HydrantCreateViewModel,
+private fun PeiCreateScreen(
+    peiCreateViewModel: PeiCreateViewModel,
     mapViewModel: MapViewModel,
     navController: NavController,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val hydrantForm by hydrantCreateViewModel.hydrantCreateState.collectAsState()
+    val peiForm by peiCreateViewModel.peiCreateState.collectAsState()
 
-    Log.e("hydrantForm", hydrantForm.toString())
+    Log.e("peiForm", peiForm.toString())
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.fillMaxSize()) {
@@ -103,12 +103,12 @@ private fun HydrantCreateScreen(
                         .fillMaxWidth()
                         .padding(10.pxToDp),
                 ) {
-                    HydrantCreateForm(
+                    PeiCreateForm(
                         coroutineScope = coroutineScope,
                         mapViewModel = mapViewModel,
-                        hydrantCreateViewModel = hydrantCreateViewModel,
+                        peiCreateViewModel = peiCreateViewModel,
                         navController = navController,
-                        hydrantForm = hydrantForm,
+                        peiForm = peiForm,
                     )
                 }
             }
@@ -117,16 +117,16 @@ private fun HydrantCreateScreen(
 }
 
 @Composable
-private fun HydrantCreateForm(
+private fun PeiCreateForm(
     coroutineScope: CoroutineScope,
     mapViewModel: MapViewModel,
-    hydrantCreateViewModel: HydrantCreateViewModel,
+    peiCreateViewModel: PeiCreateViewModel,
     navController: NavController,
-    hydrantForm: HydrantCreateViewModel.HydrantForm,
+    peiForm: PeiCreateViewModel.PeiForm,
 ) {
-    val typeHydrantNatureList by hydrantCreateViewModel.typeHydrantNatureList.observeAsState()
-    val typeHydrantNatureDeciList by hydrantCreateViewModel.typeHydrantNatureDeciList.observeAsState()
-    val gestionnaireList by hydrantCreateViewModel.gestionnaireList.observeAsState()
+    val natureList by peiCreateViewModel.natureList.observeAsState()
+    val natureDeciList by peiCreateViewModel.natureDeciList.observeAsState()
+    val gestionnaireList by peiCreateViewModel.gestionnaireList.observeAsState()
     var withGps by remember { mutableStateOf(false) }
     var x: Double? by remember { mutableStateOf(null) }
     var y: Double? by remember { mutableStateOf(null) }
@@ -147,9 +147,9 @@ private fun HydrantCreateForm(
             }
     }
 
-    if (withGps && hydrantForm.x != x && hydrantForm.y != y) {
-        hydrantCreateViewModel.updateForm(
-            hydrantForm.copy(
+    if (withGps && peiForm.x != x && peiForm.y != y) {
+        peiCreateViewModel.updateForm(
+            peiForm.copy(
                 x = x,
                 y = y,
                 lon = x,
@@ -170,8 +170,8 @@ private fun HydrantCreateForm(
                 onValueChange = {
                     it.toDoubleOrNull()?.let { value ->
                         x = value
-                        hydrantCreateViewModel.updateForm(
-                            hydrantForm.copy(
+                        peiCreateViewModel.updateForm(
+                            peiForm.copy(
                                 x = value,
                                 lon = value, // FIXME
                             ),
@@ -192,8 +192,8 @@ private fun HydrantCreateForm(
                 onValueChange = {
                     it.toDoubleOrNull()?.let { value ->
                         y = value
-                        hydrantCreateViewModel.updateForm(
-                            hydrantForm.copy(
+                        peiCreateViewModel.updateForm(
+                            peiForm.copy(
                                 y = value,
                                 lat = value, // FIXME
                             ),
@@ -219,13 +219,13 @@ private fun HydrantCreateForm(
         Row(modifier = Modifier.fillMaxWidth()) {
             Spinner(
                 modifier = Modifier.weight(1f),
-                items = typeHydrantNatureList ?: listOf(),
-                value = typeHydrantNatureList?.find { i -> i.idRemocra == hydrantForm.nature?.idRemocra },
-                valueToString = TypeHydrantNature::nom,
+                items = natureList ?: listOf(),
+                value = natureList?.find { i -> i.natureId == peiForm.nature?.natureId },
+                valueToString = Nature::natureLibelle,
                 label = stringResource(id = R.string.type),
                 onSelectionChanged = {
-                    hydrantCreateViewModel.updateForm(
-                        hydrantForm.copy(
+                    peiCreateViewModel.updateForm(
+                        peiForm.copy(
                             nature = it,
                         ),
                     )
@@ -233,13 +233,13 @@ private fun HydrantCreateForm(
             )
             Spinner(
                 modifier = Modifier.weight(1f),
-                items = typeHydrantNatureDeciList ?: listOf(),
-                value = typeHydrantNatureDeciList?.find { i -> i.idRemocra == hydrantForm.natureDeci?.idRemocra },
-                valueToString = TypeHydrantNatureDeci::nom,
+                items = natureDeciList ?: listOf(),
+                value = natureDeciList?.find { i -> i.natureDeciId == peiForm.natureDeci?.natureDeciId },
+                valueToString = NatureDeci::natureDeciLibelle,
                 label = stringResource(id = R.string.statut),
                 onSelectionChanged = {
-                    hydrantCreateViewModel.updateForm(
-                        hydrantForm.copy(
+                    peiCreateViewModel.updateForm(
+                        peiForm.copy(
                             natureDeci = it,
                         ),
                     )
@@ -248,13 +248,13 @@ private fun HydrantCreateForm(
         }
         Row(modifier = Modifier.fillMaxWidth()) {
             SearchSpinner(
-                items = gestionnaireList?.sortedBy { it.nom } ?: listOf(),
-                value = gestionnaireList?.find { i -> i.idGestionnaire == hydrantForm.gestionnaire?.idGestionnaire },
-                valueToString = Gestionnaire::nom,
+                items = gestionnaireList?.sortedBy { it.gestionnaireLibelle } ?: listOf(),
+                value = gestionnaireList?.find { i -> i.gestionnaireId == peiForm.gestionnaire?.gestionnaireId },
+                valueToString = Gestionnaire::gestionnaireLibelle,
                 label = stringResource(id = R.string.gestionnaire),
                 onSelectionChanged = {
-                    hydrantCreateViewModel.updateForm(
-                        hydrantForm.copy(
+                    peiCreateViewModel.updateForm(
+                        peiForm.copy(
                             gestionnaire = it,
                         ),
                     )
@@ -266,10 +266,10 @@ private fun HydrantCreateForm(
                 modifier = Modifier
                     .fillMaxWidth()
                     .defaultMinSize(minHeight = 128.pxToDp),
-                value = hydrantForm.observation ?: "",
+                value = peiForm.observation ?: "",
                 onValueChange = {
-                    hydrantCreateViewModel.updateForm(
-                        hydrantForm = hydrantForm.copy(observation = it),
+                    peiCreateViewModel.updateForm(
+                        peiForm = peiForm.copy(observation = it),
                     )
                 },
                 label = {
@@ -285,11 +285,11 @@ private fun HydrantCreateForm(
             Button(
                 onClick = {
                     coroutineScope.launch {
-                        hydrantCreateViewModel.save()
+                        peiCreateViewModel.save()
                         navController.popBackStack()
                     }
                 },
-                enabled = hydrantForm.isValid,
+                enabled = peiForm.isValid,
             ) {
                 Text(stringResource(id = R.string.valider))
             }

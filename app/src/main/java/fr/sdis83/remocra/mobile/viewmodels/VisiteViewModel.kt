@@ -5,13 +5,13 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import fr.sdis83.remocra.mobile.database.Agent
-import fr.sdis83.remocra.mobile.database.Hydrant
-import fr.sdis83.remocra.mobile.database.HydrantVisite
-import fr.sdis83.remocra.mobile.database.HydrantVisiteDao.HydrantVisiteWithAnomalies
+import fr.sdis83.remocra.mobile.database.Anomalie
+import fr.sdis83.remocra.mobile.database.Pei
 import fr.sdis83.remocra.mobile.database.ReferentielDao
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
-import fr.sdis83.remocra.mobile.database.TypeHydrantAnomalie
-import fr.sdis83.remocra.mobile.database.TypeHydrantSaisie
+import fr.sdis83.remocra.mobile.database.TypeVisite
+import fr.sdis83.remocra.mobile.database.Visite
+import fr.sdis83.remocra.mobile.database.VisiteDao.VisiteWithAnomalies
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,56 +24,57 @@ import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.launch
 import java.util.UUID
 
-class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydrant: UUID, gestionAgents: String?) :
+class VisiteViewModel(application: Application, tourneeId: UUID, peiId: UUID, gestionAgents: String?) :
     AndroidViewModel(application) {
 
-    private val hydrantVisiteDao = RemocraDatabase.getInstance(application).hydrantVisiteDao()
-    private val hydrantDao = RemocraDatabase.getInstance(application).hydrantDao()
+    private val hydrantVisiteDao = RemocraDatabase.getInstance(application).visiteDao()
+    private val hydrantDao = RemocraDatabase.getInstance(application).peiDao()
     private val referentielDao = RemocraDatabase.getInstance(application).referentielDao()
     private val agentDao = RemocraDatabase.getInstance(application).agentDao()
 
-    val typeSaisieList: LiveData<List<TypeHydrantSaisie>> = referentielDao.getTypeSaisieList()
+    val typeVisiteList: LiveData<List<TypeVisite>> = referentielDao.getTypeVisiteList()
 
-    private val _hydrant: MutableStateFlow<Hydrant?> = MutableStateFlow(null)
-    val hydrantState: StateFlow<Hydrant?> =
-        _hydrant.asStateFlow()
+    private val _pei: MutableStateFlow<Pei?> = MutableStateFlow(null)
+    val peiState: StateFlow<Pei?> =
+        _pei.asStateFlow()
 
-    private lateinit var existingAnomalies: List<TypeHydrantAnomalie>
+    private lateinit var existingAnomalies: List<Anomalie>
 
-    private val _hydrantVisiteState = MutableStateFlow(
-        HydrantVisiteWithAnomalies(
-            hydrantVisite = HydrantVisite(
-                idTournee = idTournee,
-                idHydrant = idHydrant,
+    private val _visiteState = MutableStateFlow(
+        VisiteWithAnomalies(
+            visite = Visite(
+                visiteId = UUID.randomUUID(),
+                tourneeId = tourneeId,
+                peiId = peiId,
                 hasAnomalieChanges = true,
             ),
-            numeroHydrant = hydrantState.value?.numero,
+            numeroPei = peiState.value?.peiNumeroComplet,
         ),
     )
-    val hydrantVisiteState: StateFlow<HydrantVisiteWithAnomalies> =
-        _hydrantVisiteState.asStateFlow()
+    val visiteState: StateFlow<VisiteWithAnomalies> =
+        _visiteState.asStateFlow()
 
     val anomalieList: Flow<List<ReferentielDao.AnomalieItem>> =
-        merge(hydrantVisiteState, hydrantState).flatMapLatest {
-            if (hydrantVisiteState.value == null || hydrantState.value == null) {
+        merge(visiteState, peiState).flatMapLatest {
+            if (visiteState.value == null || peiState.value == null) {
                 flowOf(listOf())
             } else {
                 referentielDao.getAnomalieItemList(
-                    hydrantVisiteState.value.hydrantVisite.idTypeHydrantSaisie,
-                    hydrantState.value!!.idNature,
+                    visiteState.value.visite.typeVisiteId,
+                    peiState.value!!.natureId,
                 )
             }
         }
 
-    suspend fun loadData(idTournee: UUID, idHydrant: UUID, gestionAgents: String?) {
-        _hydrant.value = hydrantDao.getHydrantByIdHydrant(idHydrant)
-        existingAnomalies = hydrantVisiteDao.getExistingVisiteAnomalie(idHydrant)
+    suspend fun loadData(tourneeId: UUID, peiId: UUID, gestionAgents: String?) {
+        _pei.value = hydrantDao.getPeiByPeiId(peiId)
+        existingAnomalies = hydrantVisiteDao.getExistingVisiteAnomalie(peiId)
 
         var loadAnomalies = false
 
         var hydrantVisite = hydrantVisiteDao.getCurrentVisite(
-            idTournee = idTournee,
-            idHydrant = idHydrant,
+            tourneeId = tourneeId,
+            peiId = peiId,
         )
 
         // Gestion des agents
@@ -90,9 +91,10 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
         }
 
         if (hydrantVisite == null) {
-            hydrantVisite = HydrantVisite(
-                idTournee = idTournee,
-                idHydrant = idHydrant,
+            hydrantVisite = Visite(
+                visiteId = UUID.randomUUID(),
+                tourneeId = tourneeId,
+                peiId = peiId,
                 hasAnomalieChanges = true,
                 agent1 = agent1,
                 agent2 = agent2,
@@ -100,41 +102,41 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
             loadAnomalies = true
         }
 
-        _hydrantVisiteState.value = HydrantVisiteWithAnomalies(
-            hydrantVisite = hydrantVisite,
+        _visiteState.value = VisiteWithAnomalies(
+            visite = hydrantVisite,
             anomalies =
             if (loadAnomalies) {
-                hydrantVisiteDao.getExistingVisiteAnomalie(idHydrant).toMutableList()
+                hydrantVisiteDao.getExistingVisiteAnomalie(peiId).toMutableList()
             } else if (hydrantVisite.hasAnomalieChanges) {
-                hydrantVisiteDao.getCurrentVisiteAnomalie(idHydrant, idTournee).toMutableList()
+                hydrantVisiteDao.getCurrentVisiteAnomalie(peiId, tourneeId).toMutableList()
             } else {
-                hydrantVisiteDao.getExistingVisiteAnomalie(idHydrant).toMutableList()
+                hydrantVisiteDao.getExistingVisiteAnomalie(peiId).toMutableList()
             },
-            numeroHydrant = hydrantState.value?.numero,
+            numeroPei = peiState.value?.peiNumeroComplet,
         )
     }
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            loadData(idTournee, idHydrant, gestionAgents)
+            loadData(tourneeId, peiId, gestionAgents)
         }
     }
 
     suspend fun save(close: Boolean = false) {
-        if (_hydrantVisiteState.value.hydrantVisite.isValid) {
+        if (_visiteState.value.visite.isValid) {
             if (close) {
-                _hydrantVisiteState.value =
-                    _hydrantVisiteState.value.copy(
-                        hydrantVisite = _hydrantVisiteState.value.hydrantVisite.copy(
-                            statut = HydrantVisite.HydrantVisiteStatut.TERMINE,
+                _visiteState.value =
+                    _visiteState.value.copy(
+                        visite = _visiteState.value.visite.copy(
+                            statut = Visite.VisiteStatut.TERMINE,
                         ),
                     )
             }
-            hydrantVisiteDao.upsertHydrantVisite(_hydrantVisiteState.value)
+            hydrantVisiteDao.upsertVisite(_visiteState.value)
 
             // On save les agents aussi
-            val agent1 = _hydrantVisiteState.value.hydrantVisite.agent1
-            val agent2 = _hydrantVisiteState.value.hydrantVisite.agent2
+            val agent1 = _visiteState.value.visite.agent1
+            val agent2 = _visiteState.value.visite.agent2
 
             upsertAgent(agent1, 1)
             upsertAgent(agent2, 2)
@@ -163,12 +165,12 @@ class HydrantVisiteViewModel(application: Application, idTournee: UUID, idHydran
         }
     }
 
-    fun updateForm(hydrantVisite: HydrantVisiteWithAnomalies) {
-        if (!hydrantVisite.hydrantVisite.hasAnomalieChanges) {
-            _hydrantVisiteState.value =
+    fun updateForm(hydrantVisite: VisiteWithAnomalies) {
+        if (!hydrantVisite.visite.hasAnomalieChanges) {
+            _visiteState.value =
                 hydrantVisite.copy(anomalies = existingAnomalies.toMutableList())
         } else {
-            _hydrantVisiteState.value = hydrantVisite
+            _visiteState.value = hydrantVisite
         }
     }
 

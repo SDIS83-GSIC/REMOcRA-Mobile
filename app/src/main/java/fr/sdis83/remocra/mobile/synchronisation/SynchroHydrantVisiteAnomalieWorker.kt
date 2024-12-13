@@ -17,12 +17,12 @@ class SynchroHydrantVisiteAnomalieWorker constructor(
         val synchronisationDao = RemocraDatabase.getInstance(applicationContext).synchronisationDao()
         val retrofitBuilder = SynchronisationService.getRetroFitInstance(applicationContext)
 
-        val hydrantsVisitesAnomalie = synchronisationDao.getAllHydrantVisiteAnomalie()
+        val hydrantsVisitesAnomalie = synchronisationDao.getAllVisiteAnomalie()
 
         hydrantsVisitesAnomalie.forEach { hydrantVisiteAnomalie ->
             val res = retrofitBuilder.postHydrantVisiteAnomalie(
-                idHydrantVisite = hydrantVisiteAnomalie.idHydrantVisite,
-                idAnomalie = hydrantVisiteAnomalie.idAnomalie,
+                visiteId = hydrantVisiteAnomalie.visiteId,
+                idAnomalie = hydrantVisiteAnomalie.anomalieId,
             ).execute()
 
             when (res.code()) {

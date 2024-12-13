@@ -20,17 +20,16 @@ class SynchroHydrantVisiteWorker constructor(
         val synchronisationDao = RemocraDatabase.getInstance(applicationContext).synchronisationDao()
         val retrofitBuilder = SynchronisationService.getRetroFitInstance(applicationContext)
 
-        val hydrantsVisites = synchronisationDao.getAllHydrantVisite()
-        val hydrants = synchronisationDao.getAllHydrant()
-        val hydrantPhotos = synchronisationDao.getHydrantPhoto()
+        val hydrantsVisites = synchronisationDao.getAllVisite()
+        val hydrants = synchronisationDao.getAllPei()
+        val hydrantPhotos = synchronisationDao.getPhotoPei()
 
         hydrantsVisites.forEach { hydrantVisite ->
-            val idHydrant = hydrants.first { it.idHydrant == hydrantVisite.idHydrant }.idRemocra!!
             val res = retrofitBuilder.postHydrantsVisites(
-                idHydrantVisite = hydrantVisite.idHydrantVisite,
-                idHydrant = idHydrant,
+                visiteId = hydrantVisite.visiteId,
+                peiId = hydrantVisite.peiId,
                 date = hydrantVisite.dateVisite.formatDate(),
-                idTypeVisite = hydrantVisite.idTypeHydrantSaisie!!,
+                idTypeVisite = hydrantVisite.typeVisiteId!!,
                 ctrDebitPression = hydrantVisite.ctrlDebitPression,
                 agent1 = hydrantVisite.agent1,
                 agent2 = hydrantVisite.agent2,
@@ -47,11 +46,11 @@ class SynchroHydrantVisiteWorker constructor(
             }
 
             // Puis on s'occupe des photos
-            val photos = hydrantPhotos.filter { hydrantVisite.idHydrant == it.idHydrant }
+            val photos = hydrantPhotos.filter { hydrantVisite.peiId == it.peiId }
             if (photos.isNotEmpty()) {
                 photos.forEach {
                     val resHydranPhoto = retrofitBuilder.postHydrantPhoto(
-                        idHydrant = idHydrant,
+                        peiId = it.peiId,
                         datePhoto = it.datePhoto.formatDate(),
                         photo = createImageFormData(
                             "photo",

@@ -11,8 +11,8 @@ import org.osmdroid.util.BoundingBox
  */
 fun zoomSurTournee(tournee: Tournee, mapViewModel: MapViewModel) {
     // On zoom sur la tournée sélectionnée
-    val listeHydrant = mapViewModel.tourneeList.value?.get(tournee)
-    val boundingBox = getBoundingBox(listeHydrant)
+    val listePei = mapViewModel.tourneeList.value?.get(tournee)
+    val boundingBox = getBoundingBox(listePei)
     if (boundingBox != null) {
         mapViewModel.scaleToBox(boundingBox)
     }
@@ -24,15 +24,15 @@ fun zoomSurTournee(tournee: Tournee, mapViewModel: MapViewModel) {
  */
 fun zoomSurTournees(mapViewModel: MapViewModel) {
     // On zoom sur la tournée sélectionnée
-    val listeHydrant = mapViewModel.tourneeList.value?.values?.flatten()
-    val boundingBox = getBoundingBox(listeHydrant)
+    val listePei = mapViewModel.tourneeList.value?.values?.flatten()
+    val boundingBox = getBoundingBox(listePei)
     if (boundingBox != null) {
         mapViewModel.scaleToBox(boundingBox)
     }
 }
 
-private fun getBoundingBox(listeHydrant: List<MapViewModel.HydrantGeoPoint>?) =
-    listeHydrant?.toSet()?.let {
+private fun getBoundingBox(listePei: List<MapViewModel.PeiGeoPoint>?) =
+    listePei?.toSet()?.let {
         BoundingBox(
             it.minOf { h -> h.lat },
             it.maxOf { h -> h.lon },

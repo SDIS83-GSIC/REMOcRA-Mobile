@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.work.Data
 import androidx.work.WorkerParameters
-import fr.sdis83.remocra.mobile.database.HydrantTournee
+import fr.sdis83.remocra.mobile.database.LPeiTournee
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.database.Tournee
 import fr.sdis83.remocra.mobile.services.ReferentielService
@@ -26,7 +26,7 @@ class ReserveTourneesWorker constructor(
         // On passe toutes les tournées choisies au serveur pour pouvoir les réserver
         val tourneesReserveesResponse = retrofitBuilder.reserveTourneesDisponibles(
             tourneesDao.getTourneesAReserver()
-                .map { it.idRemocra.toString() }
+                .map { it.tourneeDispoId.toString() }
                 .toTypedArray(),
         ).execute()
 
@@ -37,22 +37,20 @@ class ReserveTourneesWorker constructor(
 
         // On stocke les tournées en cours dans l'appli
         tourneesReserveesResponse.body()?.tourneesReservees?.forEach { tournee ->
-            val idTournee = UUID.randomUUID()
+            val tourneeId = UUID.randomUUID()
             tourneesDao.insertTournee(
                 Tournee(
-                    idTournee = idTournee,
-                    idRemocra = tournee.idRemocra,
-                    nom = tournee.nom,
-                    hydrantCount = tournee.listeHydrant.size,
+                    tourneeId = tourneeId,
+                    nom = tournee.tourneeLibelle,
+                    peiCount = tournee.listePei.size,
                 ),
             )
 
-            tournee.listeHydrant.forEach { idHydrant ->
-                tourneesDao.insertLienHydrantTournee(
-                    HydrantTournee(
-                        idHydrantTournee = UUID.randomUUID(),
-                        idRemocraHydrant = idHydrant,
-                        idRemocraTournee = tournee.idRemocra,
+            tournee.listePei.forEach { peiId ->
+                tourneesDao.insertLPeiTournee(
+                    LPeiTournee(
+                        peiId = peiId,
+                        tourneeId = tournee.tourneeId,
                     ),
                 )
             }

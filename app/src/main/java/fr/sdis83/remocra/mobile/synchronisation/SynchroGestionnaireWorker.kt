@@ -21,10 +21,9 @@ class SynchroGestionnaireWorker constructor(
 
         gestionnaires.forEach { gestionnaire ->
             val res = retrofitBuilder.postGestionnaire(
-                idGestionnaire = gestionnaire.idGestionnaire,
-                idRemocra = gestionnaire.idRemocra,
-                codeGestionnaire = gestionnaire.code,
-                nomGestionnaire = gestionnaire.nom,
+                gestionnaireId = gestionnaire.gestionnaireId,
+                codeGestionnaire = gestionnaire.gestionnaireCode,
+                nomGestionnaire = gestionnaire.gestionnaireLibelle,
             ).execute()
 
             when (res.code()) {
