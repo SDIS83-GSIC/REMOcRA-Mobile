@@ -12,7 +12,6 @@ import fr.sdis83.remocra.mobile.database.NatureDeci
 import fr.sdis83.remocra.mobile.database.Parametre
 import fr.sdis83.remocra.mobile.database.Pei
 import fr.sdis83.remocra.mobile.database.Tournee
-import fr.sdis83.remocra.mobile.database.TourneeDispo
 import fr.sdis83.remocra.mobile.network.RetrofitBuilder
 import retrofit2.Call
 import retrofit2.http.Field
@@ -31,8 +30,8 @@ interface ReferentielService {
     @GET("referentiel")
     fun getReferentiel(): Call<ReferentielResponse>
 
-    @GET("synchro/tourneesdispos")
-    fun getTourneesDisponibles(): Call<List<TourneeDispo>>
+    @GET("synchro/tournees-dispos")
+    fun getTourneesDisponibles(): Call<List<TourneeInput>>
 
     @FormUrlEncoded
     @POST("synchro/reservertournees")
@@ -125,5 +124,10 @@ interface ReferentielService {
         val tourneeId: UUID,
         val tourneeLibelle: String,
         val listePei: List<UUID>,
+    )
+
+    data class TourneeInput(
+        val tourneeId: UUID,
+        val tourneeLibelle: String,
     )
 }

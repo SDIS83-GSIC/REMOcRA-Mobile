@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
+import fr.sdis83.remocra.mobile.database.TourneeDispo
 import fr.sdis83.remocra.mobile.services.ReferentielService
 
 class TourneesDisposWorker constructor(
@@ -29,7 +30,12 @@ class TourneesDisposWorker constructor(
 
         tourneesDao.truncateTourneesDispos()
         tourneesDisponiblesResponse.body()?.forEach {
-            tourneesDao.insertTourneeDispo(it)
+            tourneesDao.insertTourneeDispo(
+                TourneeDispo(
+                    it.tourneeId,
+                    it.tourneeLibelle,
+                ),
+            )
         }
 
         return Result.success()
