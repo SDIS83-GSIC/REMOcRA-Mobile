@@ -39,7 +39,7 @@ interface ReferentielService {
     ): Call<ReservationTourneesResponse>
 
     @FormUrlEncoded
-    @POST("synchro/annulereservation")
+    @POST("synchro/annule-reservation")
     fun annuleReservation(
         @Field("tourneeId") tourneeId: UUID,
     ): Call<String>
