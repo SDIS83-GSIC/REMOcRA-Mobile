@@ -8,7 +8,6 @@ import fr.sdis83.remocra.mobile.database.LPeiTournee
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.database.Tournee
 import fr.sdis83.remocra.mobile.services.ReferentielService
-import java.util.UUID
 
 class ReserveTourneesWorker constructor(
     context: Context,
@@ -37,16 +36,15 @@ class ReserveTourneesWorker constructor(
 
         // On stocke les tournées en cours dans l'appli
         tourneesReserveesResponse.body()?.tourneesReservees?.forEach { tournee ->
-            val tourneeId = UUID.randomUUID()
             tourneesDao.insertTournee(
                 Tournee(
-                    tourneeId = tourneeId,
+                    tourneeId = tournee.tourneeId,
                     nom = tournee.tourneeLibelle,
-                    peiCount = tournee.listePei.size,
+                    peiCount = tournee.listPeiId.size,
                 ),
             )
 
-            tournee.listePei.forEach { peiId ->
+            tournee.listPeiId.forEach { peiId ->
                 tourneesDao.insertLPeiTournee(
                     LPeiTournee(
                         peiId = peiId,
@@ -61,7 +59,7 @@ class ReserveTourneesWorker constructor(
         val outputData = Data.Builder()
             .putString(
                 "NON_RESERVEES",
-                tourneesReserveesResponse.body()?.tourneesNonReservees?.map { it.nom }
+                tourneesReserveesResponse.body()?.tourneesNonReservees?.map { it.tourneeLibelle }
                     ?.joinToString(", "),
             )
             .build()
