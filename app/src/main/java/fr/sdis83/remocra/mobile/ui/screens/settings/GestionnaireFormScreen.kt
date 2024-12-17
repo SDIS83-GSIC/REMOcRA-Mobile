@@ -75,6 +75,7 @@ fun GestionnaireFormScreenInner(
 ) {
     val currentGestionnaire by gestionnaireViewModel.gestionnaireState.collectAsState() // Current gestionnaire
     val gestionnaire by gestionnaireViewModel.gestionnaire.observeAsState() // Construction du titre
+    val fonctionContactList by gestionnaireViewModel.fonctionContactList.observeAsState()
     var mainTitle: String by remember { mutableStateOf("") }
     val contextCreation: Boolean = gestionnaire?.gestionnaireId == null
     val contactsList = gestionnaireViewModel.contactsList.observeAsState(listOf())
@@ -234,9 +235,9 @@ fun GestionnaireFormScreenInner(
                                                                         text = "${contact.contactNom ?: ""} ${contact.contactPrenom ?: ""}",
                                                                         fontWeight = FontWeight.Bold,
                                                                     )
-                                                                    /*contact.fonction?.let {
-                                                                        Text(text = "Fonction : /*TODO contact.fonction*/")
-                                                                    }*/
+                                                                    contact.contactFonctionContactId?.let {
+                                                                        Text(text = "Fonction : ${fonctionContactList?.find{ f -> f.fonctionContactId == it}?.fonctionContactLibelle}")
+                                                                    }
                                                                 }
                                                                 Column {
                                                                     IconButton(

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.Agent
+import fr.sdis83.remocra.mobile.database.FonctionContact
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.LPoidsAnomalieTypeVisite
 import fr.sdis83.remocra.mobile.database.Nature
@@ -214,12 +215,19 @@ class ReferentielWorker constructor(
             val dataInMobileFonctionContact = referentielDao.getListFonctionContact()
 
             // On insère les données qui ne sont pas déjà dans la tablette
-            referentielDao.insertListFonctionContact(listFonctionContact ?: listOf())
+            referentielDao.insertListFonctionContact(
+                listFonctionContact.map {
+                    FonctionContact(
+                        fonctionContactId = it.id,
+                        fonctionContactCode = it.code,
+                        fonctionContactLibelle = it.libelle,
+                    )
+                },
+            )
 
             val fonctionContactToRemove = dataInMobileFonctionContact
                 .filterNot { data ->
-                    listFonctionContact?.map { it.fonctionContactId }
-                        ?.contains(data.fonctionContactId) == true
+                    listFonctionContact.map { it.id }.contains(data.fonctionContactId)
                 }
 
             // ///////////////////////////////////////////////////////////////////////////////////////////CONTACT

@@ -31,8 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.Contact
+import fr.sdis83.remocra.mobile.database.FonctionContact
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
+import fr.sdis83.remocra.mobile.ui.components.Spinner
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ContactsViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -62,6 +64,7 @@ fun ContactFormScreenInner(
     val currentContact by contactsViewModel.contactState.collectAsState() // Current Contact
     val contact by contactsViewModel.contact.observeAsState() // Infos statiques Contact
     val gestAppartenance by contactsViewModel.gestAppartenance.observeAsState() // Infos statiques gestionnaire
+    val listFonctionContact by contactsViewModel.listFonctionContact.observeAsState()
 
     /*Civilite*/
     val radioOptions = Contact.Civilite.values().toList()
@@ -113,21 +116,20 @@ fun ContactFormScreenInner(
                         .fillMaxWidth()
                         .padding(horizontal = 20.pxToDp),
                 ) {
-                    OutlinedTextField(
-                        modifier = Modifier
-                            .fillMaxWidth(.5f),
-                        value = "", // TODO fontion !
-                        onValueChange = { it: String ->
-                          /*  contactsViewModel.updateForm(
+                    Spinner(
+                        items = listFonctionContact ?: listOf(),
+                        value = listFonctionContact?.find { i -> i.fonctionContactId == currentContact.contact.contactFonctionContactId },
+                        valueToString = FonctionContact::fonctionContactLibelle,
+                        label = "Fonction",
+                        onSelectionChanged = {
+                            contactsViewModel.updateForm(
                                 currentContact.copy(
-                                    contact = currentContact.contact.copy(fonction = it),
+                                    contact = currentContact.contact.copy(
+                                        contactFonctionContactId = it.fonctionContactId,
+                                    ),
                                 ),
-                            )*/
+                            )
                         },
-                        label = { Text(text = stringResource(R.string.formContactFonction)) },
-                        placeholder = { Text(text = stringResource(R.string.formContactFonctionPH)) },
-                        singleLine = true,
-                        // enabled = !viewModel.isBusy,
                     )
                 }
                 Row(

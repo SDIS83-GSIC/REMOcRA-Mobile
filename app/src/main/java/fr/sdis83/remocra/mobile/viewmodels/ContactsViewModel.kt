@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.database.ContactsDao
+import fr.sdis83.remocra.mobile.database.FonctionContact
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.database.Role
@@ -27,6 +28,8 @@ class ContactsViewModel(application: Application, contactId: UUID?, gestionnaire
     val contact: LiveData<Contact?> = contactsDao.getCurrentContactByUUID(contactId)
     val gestAppartenance: LiveData<Gestionnaire> =
         contactsDao.getAppartenanceInfoByGestUUID(gestionnaireId)
+
+    val listFonctionContact: LiveData<List<FonctionContact>> = contactsDao.getFonctionContact()
 
     val roleList: LiveData<List<Role>> = contactsDao.getRolesList()
 

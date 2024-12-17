@@ -41,7 +41,7 @@
     <string name="editGestionnaireST">"Modification du gestionnaire : "</string>
     <string name="formGestionnaireName">Nom *</string>
     <string name="formGestionnaireNamePH">Nom du gestionnaire</string> <!-- PH pour Place Holder -->
-    <string name="formGestionnaireSiren">N° Siren</string>
+    <string name="formGestionnaireSiren">N° Siren ou code unique</string>
     <string name="formGestionnaireSirenPH">351624761</string>
     <string name="associatedContactSubST">Contact(s) associé(s)</string>
     <string name="addContactClickText">Ajouter un contact</string>

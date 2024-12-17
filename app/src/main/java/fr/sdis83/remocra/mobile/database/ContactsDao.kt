@@ -45,6 +45,9 @@ abstract class ContactsDao {
     @Query("DELETE FROM contactRole WHERE contactId = :contactId")
     abstract suspend fun truncateContactRolesByContactUUID(contactId: UUID)
 
+    @Query("SELECT *  FROM fonctionContact")
+    abstract fun getFonctionContact(): LiveData<List<FonctionContact>>
+
     @Insert
     abstract suspend fun insertContactRole(contactRole: ContactRole)
 

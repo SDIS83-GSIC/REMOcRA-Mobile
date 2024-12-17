@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import fr.sdis83.remocra.mobile.database.Contact
+import fr.sdis83.remocra.mobile.database.FonctionContact
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import kotlinx.coroutines.Dispatchers
@@ -23,8 +24,10 @@ class GestionnaireViewModel(application: Application, gestionnaireId: UUID?) : A
     }
 
     val gestionnairesDao = RemocraDatabase.getInstance(application).gestionnairesDao()
+    val contactDao = RemocraDatabase.getInstance(application).contactsDao()
     val gestionnaire: LiveData<Gestionnaire?> = gestionnairesDao.getCurrentGestionnaireByUUID(gestionnaireId)
     val contactsList: LiveData<List<Contact>> = gestionnairesDao.getContactByGestionnaireUUID(gestionnaireId)
+    val fonctionContactList: LiveData<List<FonctionContact>> = contactDao.getFonctionContact()
 
     suspend fun upsertGestionnaire(gestionnaire: Gestionnaire) {
         gestionnairesDao.upsertGestionnaire(gestionnaire.copy(edited = true))
