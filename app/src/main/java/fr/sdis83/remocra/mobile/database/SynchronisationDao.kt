@@ -19,6 +19,9 @@ abstract class SynchronisationDao {
     @Query("SELECT * FROM pei where isNew = 1")
     abstract fun getAllNewPei(): List<Pei>
 
+    @Query("SELECT * FROM typePei")
+    abstract fun getAllTypePei(): List<TypePei>
+
     @Query("SELECT * FROM visite where statut = :statutFini")
     abstract fun getAllVisite(statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE): List<Visite>
 
@@ -54,6 +57,20 @@ abstract class SynchronisationDao {
     )
     abstract fun getPhotoPei(): List<PhotoPei>
 
+    @Query(
+        """
+        SELECT * FROM lPeiTournee
+        """,
+    )
+    abstract fun getAllLPeiTournee(): List<LPeiTournee>
+
+    @Query(
+        """
+        SELECT * FROM typeVisite
+        """,
+    )
+    abstract fun getAllTypeVisite(): List<TypeVisite>
+
     @Query("DELETE FROM gestionnaire where edited = 1")
     abstract fun deleteGestionnaireSynchronises()
 
@@ -74,19 +91,17 @@ abstract class SynchronisationDao {
             DELETE FROM lVisiteAnomalie where visiteId in (
                 SELECT visiteId FROM visite
                 join tournee on tournee.tourneeId = visite.tourneeId 
-                WHERE visite.statut = :statutFini and tournee.tourneeId in (:idsTournee))
+                WHERE visite.statut = :statutFini and tournee.tourneeId = :tourneeId)
         """,
     )
-    abstract fun deleteHydrantVisiteAnomalie(idsTournee: List<UUID>, statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE)
+    abstract fun deleteVisiteAnomalie(tourneeId: UUID, statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE)
 
     @Query(
         """
-            SELECT path FROM photoPei where peiId in (
-                SELECT peiId FROM visite 
-                WHERE statut = :statutFini)
+            SELECT path FROM photoPei where peiId in (:listePeiId)
         """,
     )
-    abstract fun getPhotoPeiFini(statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE): List<String>
+    abstract fun getPhotoPeiFini(listePeiId: List<UUID>): List<String>
 
     @Query(
         """
@@ -100,15 +115,15 @@ abstract class SynchronisationDao {
             DELETE FROM visite where visiteId in (
                 SELECT visiteId FROM visite  
                 join tournee on tournee.tourneeId = visite.tourneeId
-                WHERE visite.statut = :statutFini and tournee.tourneeId in (:idsTournee))
+                WHERE visite.statut = :statutFini and tournee.tourneeId = :tourneeId)
         """,
     )
-    abstract fun deleteVisite(idsTournee: List<UUID>, statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE)
+    abstract fun deleteVisite(tourneeId: UUID, statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE)
 
     @Query(
         """
-        DELETE FROM tournee where tourneeId in (:idsTournee)       
+        DELETE FROM tournee where tourneeId = :tourneeId      
         """,
     )
-    abstract fun deleteTourneesSynchronisees(idsTournee: List<UUID>)
+    abstract fun deleteTourneeSynchronisee(tourneeId: UUID)
 }

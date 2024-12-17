@@ -3,66 +3,65 @@ package fr.sdis83.remocra.mobile.database
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Embedded
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Relation
 import androidx.room.Transaction
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 
 @Dao
 abstract class ReferentielDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListTypePei(listTypePei: Collection<TypePei>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListNature(listNature: Collection<Nature>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListNatureDeci(listNatureDeci: Collection<NatureDeci>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListTypeVisite(listTypeVisite: Collection<TypeVisite>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListAnomalieCategorie(listAnomalieCategorie: Collection<AnomalieCategorie>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListAnomalie(listAnomalie: Collection<Anomalie>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListPei(listPei: Collection<Pei>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListLPeiAnomalie(listLPeiAnomalie: Collection<LPeiAnomalie>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListPoidsAnomalie(listPoidsAnomalie: Collection<PoidsAnomalie>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListLPoidsAnomalieTypeVisite(listLPoidsAnomalieTypeVisite: Collection<LPoidsAnomalieTypeVisite>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListRole(roles: Collection<Role>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListGestionnaire(gestionnaires: Collection<Gestionnaire>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListFonctionContact(fonctionsContacts: Collection<FonctionContact>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListContact(contacts: Collection<Contact>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListContactRole(contactsRoles: Collection<ContactRole>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListParamConf(listParametre: Collection<Parametre>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Upsert
     abstract fun insertListTypeDroit(listTypeDroit: Collection<TypeDroit>)
 
     @Query("DELETE FROM lPeiAnomalie where peiId not in (SELECT visite.peiId FROM visite where statut!= 'A_FAIRE')")

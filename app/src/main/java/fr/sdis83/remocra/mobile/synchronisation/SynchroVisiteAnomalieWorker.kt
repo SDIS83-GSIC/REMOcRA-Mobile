@@ -7,29 +7,22 @@ import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.SynchronisationService
 import fr.sdis83.remocra.mobile.workers.WorkerRemocra
 
-class SynchroNewHydrantWorker constructor(
+class SynchroVisiteAnomalieWorker constructor(
     context: Context,
     workerParams: WorkerParameters,
 ) : WorkerRemocra(context, workerParams) {
-    private val TAG = "SynchroNewHydrantWorker"
+    private val TAG = "SynchroVisiteAnomalieWorker"
 
     override fun doExecute(): Result = try {
         val synchronisationDao = RemocraDatabase.getInstance(applicationContext).synchronisationDao()
         val retrofitBuilder = SynchronisationService.getRetroFitInstance(applicationContext)
 
-        val newHydrants = synchronisationDao.getAllNewPei()
+        val visitesAnomalie = synchronisationDao.getAllVisiteAnomalie()
 
-        newHydrants.forEach { hydrant ->
-            val res = retrofitBuilder.postHydrants(
-                peiId = hydrant.peiId,
-                lat = hydrant.lat,
-                lon = hydrant.lon,
-                code = "",
-                gestionnaireId = hydrant.gestionnaireId,
-                idGestionnaireRemocra = hydrant.gestionnaireId,
-                idNature = hydrant.natureId,
-                idNatureDeci = hydrant.natureDeciId,
-                observations = hydrant.observation,
+        visitesAnomalie.forEach { visiteAnomalie ->
+            val res = retrofitBuilder.postVisiteAnomalie(
+                visiteId = visiteAnomalie.visiteId,
+                anomalieId = visiteAnomalie.anomalieId,
             ).execute()
 
             when (res.code()) {

@@ -3,6 +3,7 @@ package fr.sdis83.remocra.mobile.synchronisation
 import android.content.Context
 import android.util.Log
 import androidx.work.WorkerParameters
+import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.SynchronisationService
 import fr.sdis83.remocra.mobile.workers.WorkerRemocra
@@ -23,19 +24,25 @@ class SynchroContactWorker constructor(
             val res = retrofitBuilder.postContact(
                 contactId = contact.contactId,
                 gestionnaireId = contact.gestionnaireId,
-                nom = contact.contactNom ?: "",
-                prenom = contact.contactPrenom ?: "",
-                fonction = contact.contactFonctionContactId,
-                civilite = contact.contactCivilite?.name ?: "",
-                codePostal = contact.contactCodePostal ?: "",
-                voie = contact.contactVoieText ?: "",
-                suffixeVoie = contact.contactSuffixeVoie,
-                lieuDit = contact.contactLieuDitText,
-                numeroVoie = contact.contactNumeroVoie,
-                pays = contact.contactPays ?: "",
-                telephone = contact.contactTelephone,
-                ville = contact.contactCommuneText ?: "",
-                email = contact.contactEmail ?: "",
+                contactNom = contact.contactNom,
+                contactPrenom = contact.contactPrenom,
+                contactFonctionContactId = contact.contactFonctionContactId,
+                contactCivilite = contact.contactCivilite?.name?.let {
+                    if (it == Contact.Civilite.M.name) {
+                        "MONSIEUR"
+                    } else {
+                        "MADAME"
+                    }
+                },
+                contactCodePostal = contact.contactCodePostal,
+                contactVoieText = contact.contactVoieText,
+                contactSuffixeVoie = contact.contactSuffixeVoie,
+                contactLieuDitText = contact.contactLieuDitText,
+                contactNumeroVoie = contact.contactNumeroVoie,
+                contactPays = contact.contactPays,
+                contactTelephone = contact.contactTelephone,
+                contactCommuneText = contact.contactCommuneText,
+                contactEmail = contact.contactEmail,
             ).execute()
 
             when (res.code()) {

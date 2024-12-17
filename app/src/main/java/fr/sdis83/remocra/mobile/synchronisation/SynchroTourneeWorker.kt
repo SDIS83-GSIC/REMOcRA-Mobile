@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.SynchronisationService
-import fr.sdis83.remocra.mobile.utils.deleteFile
 import fr.sdis83.remocra.mobile.workers.WorkerRemocra
 
 class SynchroTourneeWorker constructor(
@@ -22,8 +21,8 @@ class SynchroTourneeWorker constructor(
 
         tournees.forEach { tournee ->
             val res = retrofitBuilder.postTournee(
-                idTourneeRemocra = tournee.tourneeId,
-                nom = tournee.nom,
+                tourneeId = tournee.tourneeId,
+                tourneeLibelle = tournee.nom,
             ).execute()
 
             when (res.code()) {
@@ -32,25 +31,6 @@ class SynchroTourneeWorker constructor(
             }
         }
 
-        // On supprime les données
-        val idsTournee = tournees.map { it.tourneeId }
-        synchronisationDao.apply {
-            deleteNewPeiSynchronises()
-            deleteContactsRoleSynchronises()
-            deleteContactsSynchronises()
-            deleteGestionnaireSynchronises()
-
-            deleteHydrantVisiteAnomalie(idsTournee)
-
-            val photos = getPhotoPeiFini()
-            deleteFile(photos)
-            deletePhotoPei(photos)
-
-            deleteVisite(idsTournee)
-            deleteTourneesSynchronisees(idsTournee)
-        }
-
-        retrofitBuilder.incomingToRemocra().execute()
         Result.success()
     } catch (e: Throwable) {
         Log.e(TAG, "Error executing work: " + e.message, e)

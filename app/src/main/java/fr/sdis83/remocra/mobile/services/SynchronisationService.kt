@@ -9,8 +9,8 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Multipart
 import retrofit2.http.POST
-import retrofit2.http.PUT
 import retrofit2.http.Part
+import retrofit2.http.Path
 import java.util.UUID
 
 interface SynchronisationService {
@@ -25,10 +25,10 @@ interface SynchronisationService {
     fun postGestionnaire(
         @Field("gestionnaireId")
         gestionnaireId: UUID,
-        @Field("nomGestionnaire")
-        nomGestionnaire: String,
-        @Field("codeGestionnaire")
-        codeGestionnaire: String?,
+        @Field("gestionnaireLibelle")
+        gestionnaireLibelle: String,
+        @Field("gestionnaireCode")
+        gestionnaireCode: String?,
     ): Call<ResponseBody>
 
     @FormUrlEncoded
@@ -38,123 +38,128 @@ interface SynchronisationService {
         contactId: UUID,
         @Field("gestionnaireId")
         gestionnaireId: UUID,
-        @Field("nom")
-        nom: String,
-        @Field("prenom")
-        prenom: String,
-        @Field("fonction")
-        fonction: UUID?,
-        @Field("civilite")
-        civilite: String,
-        @Field("numeroVoie")
-        numeroVoie: String?,
-        @Field("suffixeVoie")
-        suffixeVoie: String?,
-        @Field("voie")
-        voie: String,
-        @Field("lieuDit")
-        lieuDit: String?,
-        @Field("codePostal")
-        codePostal: String,
-        @Field("ville")
-        ville: String,
-        @Field("pays")
-        pays: String,
-        @Field("telephone")
-        telephone: String?,
-        @Field("email")
-        email: String,
+        @Field("contactNom")
+        contactNom: String?,
+        @Field("contactPrenom")
+        contactPrenom: String?,
+        @Field("contactFonctionContactId")
+        contactFonctionContactId: UUID?,
+        @Field("contactCivilite")
+        contactCivilite: String?,
+        @Field("contactNumeroVoie")
+        contactNumeroVoie: String?,
+        @Field("contactSuffixeVoie")
+        contactSuffixeVoie: String?,
+        @Field("contactVoieText")
+        contactVoieText: String?,
+        @Field("contactLieuDitText")
+        contactLieuDitText: String?,
+        @Field("contactCodePostal")
+        contactCodePostal: String?,
+        @Field("contactCommuneText")
+        contactCommuneText: String?,
+        @Field("contactPays")
+        contactPays: String?,
+        @Field("contactTelephone")
+        contactTelephone: String?,
+        @Field("contactEmail")
+        contactEmail: String?,
     ): Call<ResponseBody>
 
     @FormUrlEncoded
-    @POST("synchro/contactsrole/")
+    @POST("synchro/contacts-roles/")
     fun postContactsRole(
         @Field("contactId")
         contactId: UUID,
-        @Field("idRoleRemocra")
-        idRoleRemocra: UUID,
+        @Field("roleId")
+        roleId: UUID,
     ): Call<ResponseBody>
 
     @FormUrlEncoded
-    @POST("synchro/createhydrant/")
-    fun postHydrants(
+    @POST("synchro/create-pei/")
+    fun postPei(
         @Field("peiId")
         peiId: UUID,
         @Field("lat")
         lat: Double,
         @Field("lon")
         lon: Double,
-        @Field("code")
-        code: String,
+        @Field("peiTypePei")
+        peiTypePei: String,
         @Field("gestionnaireId")
         gestionnaireId: UUID?,
-        @Field("idGestionnaireRemocra")
-        idGestionnaireRemocra: UUID?,
-        @Field("idNatureDeci")
-        idNatureDeci: UUID,
-        @Field("idNature")
-        idNature: UUID,
-        @Field("observations")
-        observations: String?,
+        @Field("natureDeciId")
+        natureDeciId: UUID,
+        @Field("natureId")
+        natureId: UUID,
+        @Field("peiObservation")
+        peiObservation: String?,
     ): Call<ResponseBody>
 
     @FormUrlEncoded
-    @POST("synchro/synchrohydrantvisite/")
-    fun postHydrantsVisites(
+    @POST("synchro/synchro-visite/")
+    fun postVisites(
         @Field("visiteId")
         visiteId: UUID,
+        @Field("tourneeId")
+        tourneeId: UUID,
         @Field("peiId")
         peiId: UUID,
-        @Field("date")
-        date: String,
-        @Field("idTypeVisite")
-        idTypeVisite: UUID,
+        @Field("visiteDate")
+        visiteDate: String,
+        @Field("visiteTypeVisite")
+        visiteTypeVisite: String,
         @Field("ctrDebitPression")
         ctrDebitPression: Boolean,
-        @Field("agent1")
-        agent1: String?,
-        @Field("agent2")
-        agent2: String?,
-        @Field("debit")
-        debit: Int?,
-        @Field("pression")
-        pression: Double?,
-        @Field("pressionDyn")
-        pressionDyn: Double?,
-        @Field("observations")
-        observations: String?,
+        @Field("visiteAgent1")
+        visiteAgent1: String?,
+        @Field("visiteAgent2")
+        visiteAgent2: String?,
+        @Field("visiteCtrlDebitPressionDebit")
+        visiteCtrlDebitPressionDebit: Int?,
+        @Field("visiteCtrlDebitPressionPression")
+        visiteCtrlDebitPressionPression: Double?,
+        @Field("visiteCtrlDebitPressionPressionDyn")
+        visiteCtrlDebitPressionPressionDyn: Double?,
+        @Field("visiteObservations")
+        visiteObservations: String?,
         @Field("hasAnomalieChanges")
         hasAnomalieChange: Boolean,
     ): Call<ResponseBody>
 
     @FormUrlEncoded
-    @POST("synchro/synchrohydrantvisiteanomalie/")
-    fun postHydrantVisiteAnomalie(
+    @POST("synchro/synchro-visite-anomalie/")
+    fun postVisiteAnomalie(
         @Field("visiteId")
         visiteId: UUID,
-        @Field("idAnomalie")
-        idAnomalie: UUID,
+        @Field("anomalieId")
+        anomalieId: UUID,
     ): Call<ResponseBody>
 
     @FormUrlEncoded
-    @POST("synchro/synchrotournee/")
+    @POST("synchro/synchro-tournee/")
     fun postTournee(
-        @Field("idTourneeRemocra")
-        idTourneeRemocra: UUID,
-        @Field("nom")
-        nom: String,
+        @Field("tourneeId")
+        tourneeId: UUID,
+        @Field("tourneeLibelle")
+        tourneeLibelle: String,
     ): Call<ResponseBody>
 
-    @PUT("synchro/incomingtoremocra/")
-    fun incomingToRemocra(): Call<ResponseBody>
+    @POST("synchro/incoming-to-remocra/{tourneeId}")
+    fun incomingToRemocra(
+        @Path("tourneeId")
+        tourneeId: UUID,
+    ): Call<ResponseBody>
 
-    @POST("synchro/synchrohydrantphoto")
+    @POST("synchro/synchro-photo")
     @Multipart
-    fun postHydrantPhoto(
+    fun postPhotoPei(
+        @Part("photoId")
+        photoId: UUID,
         @Part("peiId")
         peiId: UUID,
-        @Part("datePhoto")
-        datePhoto: String,
+        @Part("photoDate")
+        photoDate: String,
         @Part photo: MultipartBody.Part,
     ): Call<ResponseBody>
 }

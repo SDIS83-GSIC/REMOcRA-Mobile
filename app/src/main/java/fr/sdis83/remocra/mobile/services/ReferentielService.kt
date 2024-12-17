@@ -6,7 +6,6 @@ import fr.sdis83.remocra.mobile.database.AnomalieCategorie
 import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.database.ContactRole
 import fr.sdis83.remocra.mobile.database.FonctionContact
-import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.LPeiAnomalie
 import fr.sdis83.remocra.mobile.database.NatureDeci
 import fr.sdis83.remocra.mobile.database.Parametre
@@ -47,7 +46,7 @@ interface ReferentielService {
     data class ReferentielResponse(
         val listPei: List<PeiInput>,
         val listPeiAnomalies: List<LPeiAnomalie>,
-        val listGestionnaire: List<Gestionnaire>,
+        val listGestionnaire: List<IdCodeLibelleInput>,
         val listFonctionContact: List<FonctionContact>? = listOf(),
         val listContact: List<Contact>,
         val listRole: List<IdCodeLibelleInput>,

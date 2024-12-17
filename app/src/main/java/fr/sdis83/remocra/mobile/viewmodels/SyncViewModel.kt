@@ -12,10 +12,11 @@ import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.synchronisation.SynchroContactRoleWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroContactWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroGestionnaireWorker
-import fr.sdis83.remocra.mobile.synchronisation.SynchroHydrantVisiteAnomalieWorker
-import fr.sdis83.remocra.mobile.synchronisation.SynchroHydrantVisiteWorker
-import fr.sdis83.remocra.mobile.synchronisation.SynchroNewHydrantWorker
+import fr.sdis83.remocra.mobile.synchronisation.SynchroNewPeiWorker
+import fr.sdis83.remocra.mobile.synchronisation.SynchroTourneeFinWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroTourneeWorker
+import fr.sdis83.remocra.mobile.synchronisation.SynchroVisiteAnomalieWorker
+import fr.sdis83.remocra.mobile.synchronisation.SynchroVisiteWorker
 import fr.sdis83.remocra.mobile.workers.ReferentielWorker
 
 class SyncViewModel(application: Application) : AndroidViewModel(application) {
@@ -53,18 +54,22 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
         val synchroContactRole = OneTimeWorkRequestBuilder<SynchroContactRoleWorker>()
             .build()
 
-        val synchroNewHydrants = OneTimeWorkRequestBuilder<SynchroNewHydrantWorker>()
+        val synchroNewPei = OneTimeWorkRequestBuilder<SynchroNewPeiWorker>()
             .build()
-
-        val synchroHydrantVisiteWorker = OneTimeWorkRequestBuilder<SynchroHydrantVisiteWorker>()
-            .build()
-
-        val synchroHydrantVisiteAnomalieWorker =
-            OneTimeWorkRequestBuilder<SynchroHydrantVisiteAnomalieWorker>()
-                .build()
 
         val synchroTourneeWorker = OneTimeWorkRequestBuilder<SynchroTourneeWorker>()
             .build()
+
+        val synchroVisiteWorker = OneTimeWorkRequestBuilder<SynchroVisiteWorker>()
+            .build()
+
+        val synchroVisiteAnomalieWorker =
+            OneTimeWorkRequestBuilder<SynchroVisiteAnomalieWorker>()
+                .build()
+
+        val synchroTourneeFinWorker =
+            OneTimeWorkRequestBuilder<SynchroTourneeFinWorker>()
+                .build()
 
         val referentielWorker = OneTimeWorkRequestBuilder<ReferentielWorker>()
             .build()
@@ -74,10 +79,11 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
                 .beginWith(synchroGestionnaire)
                 .then(synchroContact)
                 .then(synchroContactRole)
-                .then(synchroNewHydrants)
-                .then(synchroHydrantVisiteWorker)
-                .then(synchroHydrantVisiteAnomalieWorker)
+                .then(synchroNewPei)
                 .then(synchroTourneeWorker)
+                .then(synchroVisiteWorker)
+                .then(synchroVisiteAnomalieWorker)
+                .then(synchroTourneeFinWorker)
                 // On recharge le référentiel à la toute fin pour avoir les données à jour
                 .then(referentielWorker)
                 .enqueue()

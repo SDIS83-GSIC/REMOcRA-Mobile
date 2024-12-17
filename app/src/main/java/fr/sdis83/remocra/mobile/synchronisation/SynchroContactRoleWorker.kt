@@ -22,7 +22,7 @@ class SynchroContactRoleWorker constructor(
         contactsRoles.forEach { role ->
             val res = retrofitBuilder.postContactsRole(
                 contactId = role.contactId,
-                idRoleRemocra = role.roleId,
+                roleId = role.roleId,
             ).execute()
 
             when (res.code()) {
