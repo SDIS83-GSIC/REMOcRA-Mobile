@@ -125,7 +125,13 @@ interface ReferentielService {
     data class TourneeWithPei(
         val tourneeId: UUID,
         val tourneeLibelle: String,
-        val listPeiId: List<UUID>,
+        val listPeiIdWithOrdre: List<PeiWithOrdre>,
+    )
+
+    data class PeiWithOrdre(
+        val tourneeId: UUID,
+        val peiId: UUID,
+        val lTourneePeiOrdre: Int,
     )
 
     data class TourneeInput(

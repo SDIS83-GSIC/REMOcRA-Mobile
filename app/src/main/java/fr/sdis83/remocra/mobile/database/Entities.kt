@@ -130,6 +130,7 @@ data class Tournee(
 data class LPeiTournee(
     val peiId: UUID,
     val tourneeId: UUID,
+    val ordre: Int,
 )
 
 @Entity(

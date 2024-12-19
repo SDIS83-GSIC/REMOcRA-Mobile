@@ -40,15 +40,16 @@ class ReserveTourneesWorker constructor(
                 Tournee(
                     tourneeId = tournee.tourneeId,
                     nom = tournee.tourneeLibelle,
-                    peiCount = tournee.listPeiId.size,
+                    peiCount = tournee.listPeiIdWithOrdre.size,
                 ),
             )
 
-            tournee.listPeiId.forEach { peiId ->
+            tournee.listPeiIdWithOrdre.forEach {
                 tourneesDao.insertLPeiTournee(
                     LPeiTournee(
-                        peiId = peiId,
-                        tourneeId = tournee.tourneeId,
+                        peiId = it.peiId,
+                        tourneeId = it.tourneeId,
+                        ordre = it.lTourneePeiOrdre,
                     ),
                 )
             }

@@ -18,6 +18,7 @@ abstract class TourneeDao {
         JOIN tournee t ON t.tourneeId =  lpt.tourneeId
         LEFT JOIN visite v ON v.peiId = p.peiId AND v.tourneeId = :tourneeId
         WHERE t.tourneeId = :tourneeId
+        ORDER BY lpt.ordre
         """,
     )
     @Transaction
