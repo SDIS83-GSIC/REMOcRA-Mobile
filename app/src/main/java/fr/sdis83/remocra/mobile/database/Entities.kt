@@ -97,13 +97,13 @@ data class Tournee(
     val nom: String,
 ) {
     fun getColor(): Color =
-        when (Math.random() % 4) { // TODO gérer la couleur des tournées
-            0.0 -> Color(191, 63, 63)
-            1.0 -> Color(63, 191, 63)
-            2.0 -> Color(63, 63, 191)
-            3.0 -> Color(191, 191, 63)
-            4.0 -> Color(63, 191, 191)
-            5.0 -> Color(191, 63, 191)
+        when (nom.hashCode() % 4) {
+            0 -> Color(191, 63, 63)
+            1 -> Color(63, 191, 63)
+            2 -> Color(63, 63, 191)
+            3 -> Color(191, 191, 63)
+            4 -> Color(63, 191, 191)
+            5 -> Color(191, 63, 191)
             else -> Color(127, 127, 127)
         }
 }
