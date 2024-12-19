@@ -72,7 +72,7 @@ fun PeiListScreen(navController: NavController, mapViewModel: MapViewModel) {
                     }
                     Spacer(Modifier.height(16.pxToDp))
                     Text(
-                        text = stringResource(id = R.string.hydrantCrees),
+                        text = stringResource(id = R.string.PeiCrees),
                         fontSize = 5.em,
                         fontWeight = FontWeight.Bold,
                     )
@@ -85,10 +85,10 @@ fun PeiListScreen(navController: NavController, mapViewModel: MapViewModel) {
                                     openDialog.value = null
                                 },
                                 title = {
-                                    Text(text = stringResource(id = R.string.suppressionHydrant))
+                                    Text(text = stringResource(id = R.string.suppressionPei))
                                 },
                                 text = {
-                                    Text(stringResource(id = R.string.confirmSuppressionHydrant))
+                                    Text(stringResource(id = R.string.confirmSuppressionPei))
                                 },
                                 confirmButton = {
                                     Button(

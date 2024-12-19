@@ -12,7 +12,7 @@
     <string name="synchronisation">Synchronisation</string>
     <string name="derniere_synchro">Dernière synchronisation le XX/XX/XXXX à XXhXX</string>
     <string name="visites_finies">%1d / %1d visites de points d\'eau validées</string>
-    <string name="hydrants_crees">%1d / %1d points d\'eau créés synchronisés</string>
+    <string name="pei_crees">%1d / %1d points d\'eau créés synchronisés</string>
     <string name="tournees_finies">%1d / %1d tournées non terminées</string>
     <string name="choix_tournees">Choix des tournées</string>
     <string name="synchro_tournees">Synchroniser les tournées</string>
@@ -80,11 +80,11 @@
 <!-- Listing Screen -->
     <string name="listingGestionnaireST">Liste des gestionnaires</string>
 
-<!--    Création / Listing  Hydrant Sreen-->
-    <string name="creationHydrant">Création d\'un point d\'eau</string>
-    <string name="suppressionHydrant">Suppression du point d\'eau</string>
-    <string name="confirmSuppressionHydrant">Voulez-vous supprimer le point d\'eau ?</string>
-    <string name="hydrantCrees">Points d\'eau créés</string>
+<!--    Création / Listing  PEI Screen-->
+    <string name="creationPei">Création d\'un point d\'eau</string>
+    <string name="suppressionPei">Suppression du point d\'eau</string>
+    <string name="confirmSuppressionPei">Voulez-vous supprimer le point d\'eau ?</string>
+    <string name="PeiCrees">Points d\'eau créés</string>
     <string name="observations">Observations</string>
     <string name="gestionnaire">Gestionnaire</string>
     <string name="statut">Statut</string>
@@ -95,7 +95,7 @@
     <string name="noDroitCreationPei">Vous ne possèdez pas les droits de création de PEI</string>
     <string name="noDroitCreationGestionnaire">Vous ne possèdez pas les droits de modification /création de gestionnaires</string>
 
-<!--    Hydrant Visite-->
+<!--    Visite-->
     <string name="suivant">Suivant</string>
     <string name="precedent">Précédent</string>
 

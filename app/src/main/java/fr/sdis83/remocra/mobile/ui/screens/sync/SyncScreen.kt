@@ -92,7 +92,7 @@ fun SyncScreen(syncViewModel: SyncViewModel, navController: NavController) {
                     fontSize = 3.em,
                 )
                 Text(
-                    text = stringResource(R.string.hydrants_crees, 0, PeiCreesCount ?: 0),
+                    text = stringResource(R.string.pei_crees, 0, PeiCreesCount ?: 0),
                     fontWeight = FontWeight.Normal,
                     fontSize = 3.em,
                 )

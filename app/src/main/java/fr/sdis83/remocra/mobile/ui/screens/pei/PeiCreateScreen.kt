@@ -93,7 +93,7 @@ private fun PeiCreateScreen(
                         )
                     }
                     Text(
-                        text = stringResource(id = R.string.creationHydrant),
+                        text = stringResource(id = R.string.creationPei),
                         fontSize = 5.em,
                         fontWeight = FontWeight.Bold,
                     )
