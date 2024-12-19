@@ -89,6 +89,16 @@ class ReferentielWorker constructor(
                 listNatureDeci.map { it.natureDeciId }.contains(data.natureDeciId)
             }
 
+            // /////////////////////////////////////////////////////////////////////////////////////////// DOMAINE
+            val dataInMobileDomaine = referentielDao.getListDomaine()
+
+            // On insère les données qui ne sont pas déjà dans la tablette
+            referentielDao.insertListDomaine(listDomaine)
+
+            val domaineToRemove = dataInMobileDomaine.filterNot { data ->
+                listDomaine.map { it.domaineId }.contains(data.domaineId)
+            }
+
             // ///////////////////////////////////////////////////////////////////////////////////////////TYPE VISITE
             val dataInMobileTypeVisite = referentielDao.getListTypeVisite()
 
@@ -265,6 +275,7 @@ class ReferentielWorker constructor(
                         observation = it.peiObservation,
                         gestionnaireId = it.gestionnaireId,
                         peiCaracteristiques = peiCaracteristiques[it.peiId],
+                        domaineId = it.domaineId,
                     )
                 },
             )
@@ -310,6 +321,7 @@ class ReferentielWorker constructor(
                 deleteRole(roleToRemove.map { it.roleId })
                 deleteNature(natureToRemove.map { it.natureId })
                 deleteNatureDeci(natureDeciToRemove.map { it.natureDeciId })
+                deleteDomaine(domaineToRemove.map { it.domaineId })
                 deleteTypePei(typePeiToRemove.map { it.typePeiId })
                 deletePoidsAnomalie(poidsAnomalieToRemove.map { it.poidsAnomalieId })
                 deleteAnomalie(anomalieToRemove.map { it.anomalieId })

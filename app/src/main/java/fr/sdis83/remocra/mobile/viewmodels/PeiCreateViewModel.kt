@@ -3,6 +3,7 @@ package fr.sdis83.remocra.mobile.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import fr.sdis83.remocra.mobile.database.Domaine
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.Nature
 import fr.sdis83.remocra.mobile.database.NatureDeci
@@ -23,6 +24,7 @@ class PeiCreateViewModel(application: Application) : AndroidViewModel(applicatio
     private val referentielDao = RemocraDatabase.getInstance(application).referentielDao()
 
     val gestionnaireList: LiveData<List<Gestionnaire>> = referentielDao.getGestionnaireList()
+    val domaineList: LiveData<List<Domaine>> = referentielDao.getDomaineList()
     val natureList: LiveData<List<Nature>> =
         referentielDao.getNatureList()
     val natureDeciList: LiveData<List<NatureDeci>> =
@@ -48,6 +50,7 @@ class PeiCreateViewModel(application: Application) : AndroidViewModel(applicatio
     data class PeiForm(
         val nature: Nature? = null,
         val natureDeci: NatureDeci? = null,
+        val domaine: Domaine? = null,
         val x: Double? = null,
         val y: Double? = null,
         val lon: Double? = null,
@@ -86,6 +89,7 @@ class PeiCreateViewModel(application: Application) : AndroidViewModel(applicatio
                     gestionnaireId = this.gestionnaire?.gestionnaireId,
                     peiCaracteristiques = null,
                     isNew = true,
+                    domaineId = this.domaine!!.domaineId,
                 )
             }
     }

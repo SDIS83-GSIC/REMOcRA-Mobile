@@ -18,7 +18,7 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 @Database(
-    version = 4,
+    version = 5,
     entities = [
         Pei::class,
         Gestionnaire::class,
@@ -44,6 +44,7 @@ import java.util.UUID
         TypeDroit::class,
         Agent::class,
         FonctionContact::class,
+        Domaine::class,
     ],
 )
 @TypeConverters(Converters::class)

@@ -5,6 +5,7 @@ import fr.sdis83.remocra.mobile.database.Anomalie
 import fr.sdis83.remocra.mobile.database.AnomalieCategorie
 import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.database.ContactRole
+import fr.sdis83.remocra.mobile.database.Domaine
 import fr.sdis83.remocra.mobile.database.LPeiAnomalie
 import fr.sdis83.remocra.mobile.database.NatureDeci
 import fr.sdis83.remocra.mobile.database.Parametre
@@ -59,6 +60,7 @@ interface ReferentielService {
         val listTypeVisite: List<CodeLibelleTypeVisite>,
         val listParametre: List<Parametre>,
         val listDroit: List<String>,
+        val listDomaine: List<Domaine>,
         val peiCaracteristiques: Map<UUID, String>,
         val utilisateurConnecte: String,
     )
@@ -74,6 +76,7 @@ interface ReferentielService {
         val peiId: UUID,
         val natureId: UUID,
         val natureDeciId: UUID,
+        val domaineId: UUID,
         val dispoHbe: Pei.DisponibiliteHbe?,
         val dispoTerrestre: Pei.Disponibilite,
         val x: Double,

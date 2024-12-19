@@ -29,12 +29,23 @@ data class TypeVisite(
 )
 
 @Entity(
+    tableName = "domaine",
+    indices = [Index("domaineId")],
+)
+data class Domaine(
+    @PrimaryKey val domaineId: UUID,
+    val domaineCode: String,
+    val domaineLibelle: String,
+)
+
+@Entity(
     tableName = "pei",
     indices = [
         Index("peiId"),
         Index("natureId"),
         Index("natureDeciId"),
         Index("gestionnaireId"),
+        Index("domaineId"),
     ],
     foreignKeys = [
         ForeignKey(
@@ -55,12 +66,19 @@ data class TypeVisite(
             childColumns = ["gestionnaireId"],
             onDelete = ForeignKey.SET_NULL,
         ),
+        ForeignKey(
+            entity = Domaine::class,
+            parentColumns = ["domaineId"],
+            childColumns = ["domaineId"],
+            onDelete = ForeignKey.SET_NULL,
+        ),
     ],
 )
 data class Pei(
     @PrimaryKey val peiId: UUID,
     val natureId: UUID,
     val natureDeciId: UUID,
+    val domaineId: UUID,
     val dispoHbe: DisponibiliteHbe?,
     val dispoTerrestre: Disponibilite?,
     val x: Double,

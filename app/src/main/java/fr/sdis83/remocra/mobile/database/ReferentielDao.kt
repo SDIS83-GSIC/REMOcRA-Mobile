@@ -23,6 +23,9 @@ abstract class ReferentielDao {
     abstract fun insertListNatureDeci(listNatureDeci: Collection<NatureDeci>)
 
     @Upsert
+    abstract fun insertListDomaine(listeDomaine: Collection<Domaine>)
+
+    @Upsert
     abstract fun insertListTypeVisite(listTypeVisite: Collection<TypeVisite>)
 
     @Upsert
@@ -130,6 +133,9 @@ abstract class ReferentielDao {
     @Query("SELECT * FROM nature")
     abstract fun getListNature(): List<Nature>
 
+    @Query("SELECT * FROM domaine")
+    abstract fun getListDomaine(): List<Domaine>
+
     @Query("DELETE FROM nature where natureId in (:listNatureId)")
     abstract fun deleteNature(listNatureId: List<UUID>)
 
@@ -138,6 +144,9 @@ abstract class ReferentielDao {
 
     @Query("DELETE FROM natureDeci where natureDeciId in (:listNatureDeciId)")
     abstract fun deleteNatureDeci(listNatureDeciId: List<UUID>)
+
+    @Query("DELETE FROM domaine where domaineId in (:listDomaineId)")
+    abstract fun deleteDomaine(listDomaineId: List<UUID>)
 
     @Query("SELECT * FROM typeVisite")
     abstract fun getListTypeVisite(): List<TypeVisite>
@@ -227,6 +236,9 @@ abstract class ReferentielDao {
 
     @Query("SELECT * FROM gestionnaire")
     abstract fun getGestionnaireList(): LiveData<List<Gestionnaire>>
+
+    @Query("SELECT * FROM domaine")
+    abstract fun getDomaineList(): LiveData<List<Domaine>>
 
     data class AnomalieItem(
         @Embedded val anomalie: Anomalie,

@@ -41,6 +41,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.database.Domaine
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.Nature
 import fr.sdis83.remocra.mobile.database.NatureDeci
@@ -127,6 +128,7 @@ private fun PeiCreateForm(
     val natureList by peiCreateViewModel.natureList.observeAsState()
     val natureDeciList by peiCreateViewModel.natureDeciList.observeAsState()
     val gestionnaireList by peiCreateViewModel.gestionnaireList.observeAsState()
+    val domaineList by peiCreateViewModel.domaineList.observeAsState()
     var withGps by remember { mutableStateOf(false) }
     var x: Double? by remember { mutableStateOf(null) }
     var y: Double? by remember { mutableStateOf(null) }
@@ -256,6 +258,21 @@ private fun PeiCreateForm(
                     peiCreateViewModel.updateForm(
                         peiForm.copy(
                             gestionnaire = it,
+                        ),
+                    )
+                },
+            )
+        }
+        Row(modifier = Modifier.fillMaxWidth()) {
+            SearchSpinner(
+                items = domaineList?.sortedBy { it.domaineLibelle } ?: listOf(),
+                value = domaineList?.find { i -> i.domaineId == peiForm.domaine?.domaineId },
+                valueToString = Domaine::domaineLibelle,
+                label = stringResource(id = R.string.domaine),
+                onSelectionChanged = {
+                    peiCreateViewModel.updateForm(
+                        peiForm.copy(
+                            domaine = it,
                         ),
                     )
                 },
