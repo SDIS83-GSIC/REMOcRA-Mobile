@@ -76,9 +76,9 @@ abstract class PeiDao {
 
     @Transaction
     @Query("SELECT * FROM pei WHERE isNew = 1")
-    abstract fun getPeiCreatedList(): LiveData<List<HydrantCreated>>
+    abstract fun getPeiCreatedList(): LiveData<List<PeiCreated>>
 
-    data class HydrantCreated(
+    data class PeiCreated(
         @Embedded
         val pei: Pei,
         @Relation(

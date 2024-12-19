@@ -41,7 +41,7 @@ class ReferentielWorker constructor(
 
         Log.i(TAG, "Téléchargement du référentiel")
         referentielResponse.body()!!.apply {
-            // ///////////////////////////////////////////////////////////////////////////////////////////TYPE HYDRANT
+            // ///////////////////////////////////////////////////////////////////////////////////////////TYPE PEI
             val dataInMobileTypePei = referentielDao.getListTypePei()
 
             // On insère les données qui ne sont pas déjà dans la tablette

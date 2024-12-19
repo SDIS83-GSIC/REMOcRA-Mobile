@@ -32,14 +32,14 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private val hydrantVisiteDao = RemocraDatabase.getInstance(getApplication()).visiteDao()
+    private val visiteDao = RemocraDatabase.getInstance(getApplication()).visiteDao()
     private val tourneesDao = RemocraDatabase.getInstance(getApplication()).tourneesDao()
 
-    val visiteCount = hydrantVisiteDao.getPeiVisiteCount()
-    val lPeiTourneeCount = hydrantVisiteDao.getLPeiTourneeCount()
+    val visiteCount = visiteDao.getPeiVisiteCount()
+    val lPeiTourneeCount = visiteDao.getLPeiTourneeCount()
     val tourneeNotDoneCount = tourneesDao.getTourneeNotDoneCount()
     val tourneeCount = tourneesDao.getTourneeCount()
-    val PeiCreesCount = tourneesDao.getHydrantsCreesCount()
+    val PeiCreesCount = tourneesDao.getPeiCreesCount()
     val isBusy = MutableLiveData(false)
 
     private var referentielStatus = mutableStateOf(JobStatus.WAITING)

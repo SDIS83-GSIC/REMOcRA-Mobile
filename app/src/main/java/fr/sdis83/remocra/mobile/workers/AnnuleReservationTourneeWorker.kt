@@ -32,14 +32,14 @@ class AnnuleReservationTourneeWorker constructor(
             return Result.failure()
         }
 
-        // Etape 1 : on supprime le lien entre les hydrants et la tournée à supprimer
+        // Etape 1 : on supprime le lien entre les PEI et la tournée à supprimer
         tourneeDao.deletePeiTournee(tourneeId)
 
-        // Etape 2 : Suppression des hydrants visites anomalies
+        // Etape 2 : Suppression des visites anomalies
         val listvisiteId = tourneeDao.getListVisiteIdByTournee(tourneeId)
         tourneeDao.deleteLVisiteAnomalie(listvisiteId)
 
-        // Etape 3 : Les hydrants visites
+        // Etape 3 : Les visites
         tourneeDao.deleteVisite(tourneeId)
 
         // Etape 4 : Les tournées

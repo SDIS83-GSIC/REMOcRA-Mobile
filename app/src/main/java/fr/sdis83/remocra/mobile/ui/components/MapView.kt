@@ -121,13 +121,13 @@ fun MapView(
     val iwOverlay = remember {
         Marker(mapState).apply {
             icon = context.getDrawable(R.drawable.baseline_arrow_drop_down_24)
-            infoWindow = HydrantInfoWindow(
+            infoWindow = PeiInfoWindow(
                 mapState, navController,
             )
         }
     }
 
-    val hydrantOverlay = remember {
+    val peiOverlay = remember {
         mutableStateOf(
             SimpleFastPointOverlayCustom(
                 SimplePointTheme(listOf<MapViewModel.PeiGeoPoint>()),
@@ -141,7 +141,7 @@ fun MapView(
         )
     }
 
-    val newHydrantOverlay = remember {
+    val newPeiOverlay = remember {
         mutableStateOf(
             SimpleFastPointOverlayCustom(
                 SimplePointTheme(listOf<MapViewModel.PeiGeoPoint>()),
@@ -208,20 +208,20 @@ fun MapView(
             )
         }
 
-        mapViewModel.hydrantTourneeSelected.observeForever { hydrant ->
-            if (hydrant != null && tourneeOverlay.value.values.firstOrNull { it.listPeiGeoPoint.contains(hydrant) } != null) {
-                tourneeOverlay.value.values.first { it.listPeiGeoPoint.contains(hydrant) }.selectedPoint =
-                    tourneeOverlay.value.values.first { it.listPeiGeoPoint.contains(hydrant) }.listPeiGeoPoint.indexOf(hydrant)
+        mapViewModel.peiTourneeSelected.observeForever { pei ->
+            if (pei != null && tourneeOverlay.value.values.firstOrNull { it.listPeiGeoPoint.contains(pei) } != null) {
+                tourneeOverlay.value.values.first { it.listPeiGeoPoint.contains(pei) }.selectedPoint =
+                    tourneeOverlay.value.values.first { it.listPeiGeoPoint.contains(pei) }.listPeiGeoPoint.indexOf(pei)
             }
         }
-        mapViewModel.hydrantNewSelected.observeForever { hydrant ->
-            if (hydrant != null) {
-                newHydrantOverlay.value.selectedPoint = newHydrantOverlay.value.listPeiGeoPoint.indexOf(hydrant)
+        mapViewModel.peiNewSelected.observeForever { pei ->
+            if (pei != null) {
+                newPeiOverlay.value.selectedPoint = newPeiOverlay.value.listPeiGeoPoint.indexOf(pei)
             }
         }
 
-        mapViewModel.hydrantList.observeForever {
-            hydrantOverlay.value =
+        mapViewModel.peiList.observeForever {
+            peiOverlay.value =
                 SimpleFastPointOverlayCustom(
                     SimplePointTheme(
                         it,
@@ -261,13 +261,13 @@ fun MapView(
                     iwOverlay,
                 ),
             )
-            mapState.overlays.add(hydrantOverlay.value)
-            mapState.overlays.add(newHydrantOverlay.value)
+            mapState.overlays.add(peiOverlay.value)
+            mapState.overlays.add(newPeiOverlay.value)
             mapState.overlays.addAll(tourneeOverlay.value.values)
-            Log.e("hydrantOverlay", mapState.overlays.size.toString())
+            Log.e("peiOverlay", mapState.overlays.size.toString())
         }
-        mapViewModel.newHydrantList.observeForever {
-            newHydrantOverlay.value =
+        mapViewModel.newPeiList.observeForever {
+            newPeiOverlay.value =
                 SimpleFastPointOverlayCustom(
                     SimplePointTheme(
                         it,
@@ -304,20 +304,20 @@ fun MapView(
                     iwOverlay,
                 ),
             )
-            mapState.overlays.add(hydrantOverlay.value)
-            mapState.overlays.add(newHydrantOverlay.value)
+            mapState.overlays.add(peiOverlay.value)
+            mapState.overlays.add(newPeiOverlay.value)
             mapState.overlays.addAll(tourneeOverlay.value.values)
-            Log.e("newHydrantOverlay", mapState.overlays.size.toString())
+            Log.e("newPeiOverlay", mapState.overlays.size.toString())
         }
         mapViewModel.tourneeList.observeForever { list ->
             tourneeOverlay.value =
                 list.mapValues {
-                    val listHydrantGeoPoint = it.value
+                    val listPeiGeoPoint = it.value
                     SimpleFastPointOverlayCustom(
                         SimplePointTheme(
-                            listHydrantGeoPoint,
+                            listPeiGeoPoint,
                         ),
-                        listHydrantGeoPoint,
+                        listPeiGeoPoint,
                         SimpleFastPointOverlayOptions.getDefaultStyle().apply {
                             val color = Color.argb(
                                 it.key.getColor().alpha,
@@ -355,8 +355,8 @@ fun MapView(
                     iwOverlay,
                 ),
             )
-            mapState.overlays.add(hydrantOverlay.value)
-            mapState.overlays.add(newHydrantOverlay.value)
+            mapState.overlays.add(peiOverlay.value)
+            mapState.overlays.add(newPeiOverlay.value)
             mapState.overlays.addAll(tourneeOverlay.value.values)
             Log.e("tourneeOverlay", mapState.overlays.size.toString())
         }

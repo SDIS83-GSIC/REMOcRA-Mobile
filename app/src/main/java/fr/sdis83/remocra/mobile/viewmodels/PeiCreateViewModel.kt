@@ -36,8 +36,8 @@ class PeiCreateViewModel(application: Application) : AndroidViewModel(applicatio
 
     suspend fun save() {
         val code = _peiCreateState.value.nature!!.typePeiId
-        _peiCreateState.value.toPei(peiDao.getLatestCreated().plus(1).toString(), code)?.let { hydrant ->
-            peiDao.insertPei(hydrant)
+        _peiCreateState.value.toPei(peiDao.getLatestCreated().plus(1).toString(), code)?.let { pei ->
+            peiDao.insertPei(pei)
         }
     }
 

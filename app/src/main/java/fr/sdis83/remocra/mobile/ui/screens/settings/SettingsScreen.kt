@@ -124,10 +124,10 @@ fun SettingScreen(navController: NavController?, droitViewModel: DroitViewModel)
                             text = stringResource(R.string.createPeiSubST),
                             fontWeight = FontWeight.Normal,
                         )
-                        Button(onClick = { navController?.navigate(Screens.HydrantCreate.route) }) {
+                        Button(onClick = { navController?.navigate(Screens.PeiCreate.route) }) {
                             Text(text = stringResource(R.string.createPeiBTN))
                         }
-                        Button(onClick = { navController?.navigate(Screens.HydrantList.route) }) {
+                        Button(onClick = { navController?.navigate(Screens.PeiList.route) }) {
                             Text(text = stringResource(R.string.listingPeiBTN))
                         }
                     }

@@ -9,12 +9,12 @@ import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed class Screens(val route: String, val title: String? = null, val icon: ImageVector? = null, var isVisible: Boolean = true) {
     object Settings : Screens("settings", "Ajout de données", Icons.Filled.Settings)
-    object HydrantList : Screens("settings/hydrants")
-    object HydrantCreate : Screens("settings/hydrants/create")
+    object PeiList : Screens("settings/pei")
+    object PeiCreate : Screens("settings/pei/create")
     object Sync : Screens("sync", "Synchronisation", Icons.Filled.Sync)
     object Tournees : Screens("tournees", "Tournées", Icons.Filled.Checklist)
-    object TourneePei : Screens("tournees/{tourneeId}/hydrants")
-    object Pei : Screens("tournees/{tourneeId}/hydrants/{peiId}")
+    object TourneePei : Screens("tournees/{tourneeId}/pei")
+    object Pei : Screens("tournees/{tourneeId}/pei/{peiId}")
     object ListGestionnaire : Screens("listing_gest_screen")
     object CreateGestionnaire : Screens("gestionnaire_screen")
     object EditGestionnaire : Screens("gestionnaire_screen/{gestionnaireId}")

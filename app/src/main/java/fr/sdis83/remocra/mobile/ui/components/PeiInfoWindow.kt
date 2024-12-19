@@ -17,14 +17,14 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.OverlayWithIW
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 
-class HydrantInfoWindow(mapView: MapView, val navController: NavController) : InfoWindow(R.layout.map_bubble, mapView) {
+class PeiInfoWindow(mapView: MapView, val navController: NavController) : InfoWindow(R.layout.map_bubble, mapView) {
 
-    val mHydrantNumero = R.id.hydrant_numero
+    val mPeiNumero = R.id.pei_numero
     val mOpenGps = R.id.open_gps
     val mGoToVisite = R.id.go_to_visite
-    var mHydrantDisponibilite = R.id.hydrant_disponibilite
-    var mHydrantAdresse = R.id.hydrant_adresse
-    var mHydrantCaracteristiques = R.id.hydrant_caracteristiques
+    var mPeiDisponibilite = R.id.pei_disponibilite
+    var mPeiAdresse = R.id.pei_adresse
+    var mPeiCaracteristiques = R.id.pei_caracteristiques
 
     init {
         mView.setOnTouchListener { _, motionEvent: MotionEvent ->
@@ -38,30 +38,30 @@ class HydrantInfoWindow(mapView: MapView, val navController: NavController) : In
     override fun onOpen(item: Any?) {
         try {
             val overlay = item as OverlayWithIW
-            val hydrant = overlay.relatedObject as MapViewModel.PeiGeoPoint
-            getTextView(mHydrantNumero).text = "Point d'eau N°${hydrant.peiNumeroComplet}"
+            val pei = overlay.relatedObject as MapViewModel.PeiGeoPoint
+            getTextView(mPeiNumero).text = "Point d'eau N°${pei.peiNumeroComplet}"
 
-            getTextView(mHydrantDisponibilite).apply {
-                text = hydrant.dispoTerrestre?.name
-                setTextColor(if (hydrant.dispoTerrestre == Pei.Disponibilite.DISPO) Color.rgb(63, 191, 63) else Color.rgb(191, 63, 63))
+            getTextView(mPeiDisponibilite).apply {
+                text = pei.dispoTerrestre?.name
+                setTextColor(if (pei.dispoTerrestre == Pei.Disponibilite.DISPO) Color.rgb(63, 191, 63) else Color.rgb(191, 63, 63))
             }
 
             val linkGpsTextView = getTextView(mOpenGps)
             linkGpsTextView.movementMethod = LinkMovementMethod.getInstance()
             linkGpsTextView.text = Html.fromHtml(
                 "<a href=\"https://maps.google.com/?q=" +
-                    "${hydrant.lat},${hydrant.lon}\">Ouvrir le GPS</a>",
+                    "${pei.lat},${pei.lon}\">Ouvrir le GPS</a>",
                 Html.FROM_HTML_MODE_COMPACT,
             )
 
-            getTextView(mHydrantAdresse).text = if (hydrant.adresseComplete != null) Html.fromHtml(hydrant.adresseComplete, Html.FROM_HTML_MODE_COMPACT) else ""
+            getTextView(mPeiAdresse).text = if (pei.adresseComplete != null) Html.fromHtml(pei.adresseComplete, Html.FROM_HTML_MODE_COMPACT) else ""
 
-            getTextView(mHydrantCaracteristiques).text = Html.fromHtml(hydrant.peiCaracteristiques ?: "", Html.FROM_HTML_MODE_COMPACT)
+            getTextView(mPeiCaracteristiques).text = Html.fromHtml(pei.peiCaracteristiques ?: "", Html.FROM_HTML_MODE_COMPACT)
 
             val goToVisite = mView.findViewById<Button>(mGoToVisite)
-            if (hydrant.tourneeId != null) {
+            if (pei.tourneeId != null) {
                 goToVisite.visibility = View.VISIBLE
-                goToVisite.text = if (hydrant.statutVisite == Visite.VisiteStatut.A_FAIRE || hydrant.statutVisite == null) {
+                goToVisite.text = if (pei.statutVisite == Visite.VisiteStatut.A_FAIRE || pei.statutVisite == null) {
                     "Démarrer la visite"
                 } else {
                     "Editer la visite"
@@ -71,11 +71,11 @@ class HydrantInfoWindow(mapView: MapView, val navController: NavController) : In
                         Screens.Pei.route
                             .replace(
                                 oldValue = "{peiId}",
-                                newValue = hydrant.peiId.toString(),
+                                newValue = pei.peiId.toString(),
                             )
                             .replace(
                                 oldValue = "{tourneeId}",
-                                newValue = hydrant.tourneeId.toString(),
+                                newValue = pei.tourneeId.toString(),
                             ),
                     ) {
                         popUpTo(Screens.TourneePei.route)

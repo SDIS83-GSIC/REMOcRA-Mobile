@@ -23,18 +23,18 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
 
     private var mapView: MapView? = null
 
-    var hydrantTourneeSelected: MutableLiveData<PeiGeoPoint?> = MutableLiveData()
-    var hydrantNewSelected: MutableLiveData<PeiGeoPoint?> = MutableLiveData()
+    var peiTourneeSelected: MutableLiveData<PeiGeoPoint?> = MutableLiveData()
+    var peiNewSelected: MutableLiveData<PeiGeoPoint?> = MutableLiveData()
 
     fun register(mapView: MapView) {
         this.mapView = mapView
     }
 
-    private val hydrantDao = RemocraDatabase.getInstance(applicationContext).peiDao()
+    private val peiDao = RemocraDatabase.getInstance(applicationContext).peiDao()
 
-    val hydrantList = hydrantDao.getPeiList()
-    val newHydrantList = hydrantDao.getNewPeiList()
-    val tourneeList = hydrantDao.getTourneeMap()
+    val peiList = peiDao.getPeiList()
+    val newPeiList = peiDao.getNewPeiList()
+    val tourneeList = peiDao.getTourneeMap()
 
     var showCenter = mutableStateOf(false)
         private set
@@ -75,10 +75,10 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
         mapView?.zoomToBoundingBox(boundingBox, true)
     }
 
-    fun goToPei(idhydrant: UUID, isNew: Boolean) {
+    fun goToPei(idPei: UUID, isNew: Boolean) {
         CoroutineScope(Dispatchers.IO).launch {
-            val hydrant = hydrantDao.getPeiGeoPointByIdPei(idhydrant)
-            hydrant.let {
+            val pei = peiDao.getPeiGeoPointByIdPei(idPei)
+            pei.let {
                 setCenter(
                     PeiGeoPoint(
                         it.lat,
@@ -110,11 +110,11 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
                     ),
                 )
                 if (isNew) {
-                    hydrantTourneeSelected.postValue(null)
-                    hydrantNewSelected.postValue(hydrant)
+                    peiTourneeSelected.postValue(null)
+                    peiNewSelected.postValue(pei)
                 } else {
-                    hydrantNewSelected.postValue(null)
-                    hydrantTourneeSelected.postValue(hydrant)
+                    peiNewSelected.postValue(null)
+                    peiTourneeSelected.postValue(pei)
                 }
             }
         }

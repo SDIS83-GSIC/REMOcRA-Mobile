@@ -53,7 +53,7 @@ abstract class TourneesDao {
     @Query(
         """
         SELECT count(*) FROM tournee t
-        -- pas optimal de passer par hydrantCount mais ça passe
+        -- pas optimal de passer par peiCount mais ça passe
         WHERE t.peiCount >
           (SELECT count(*) FROM visite hv WHERE hv.tourneeId = t.tourneeId AND hv.statut == 'TERMINE')
          """,
@@ -69,7 +69,7 @@ abstract class TourneesDao {
         WHERE isNew = 1
          """,
     )
-    abstract fun getHydrantsCreesCount(): LiveData<Int>
+    abstract fun getPeiCreesCount(): LiveData<Int>
 
     @Query("SELECT * FROM tourneeDispo t WHERE t.nom LIKE '%' || :search || '%' ")
     abstract fun getTourneeDisponibleFiltree(search: String): Flow<List<TourneeDispo>>

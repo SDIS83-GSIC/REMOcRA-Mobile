@@ -56,13 +56,13 @@ fun NavGraph(
             }
             ExportScreen(navController)
         }
-        composable(route = Screens.HydrantCreate.route) {
+        composable(route = Screens.PeiCreate.route) {
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
             }
             PeiCreateScreen(navController, mapViewModel)
         }
-        composable(route = Screens.HydrantList.route) {
+        composable(route = Screens.PeiList.route) {
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = true, isFullscreen = false)
             }
