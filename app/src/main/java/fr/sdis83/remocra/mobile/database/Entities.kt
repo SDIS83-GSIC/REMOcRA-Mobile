@@ -25,6 +25,7 @@ data class TypePei(
 data class TypeVisite(
     @PrimaryKey val typeVisiteId: UUID = UUID.randomUUID(),
     val typeVisiteCode: String,
+    val typeVisiteLibelle: String,
 )
 
 @Entity(

@@ -56,7 +56,7 @@ interface ReferentielService {
         val listAnomalie: List<Anomalie>,
         val listPoidsAnomalie: List<PoidsAnomalieInput>,
         val listAnomalieCategorie: List<AnomalieCategorie>,
-        val listTypeVisite: List<String>,
+        val listTypeVisite: List<CodeLibelleTypeVisite>,
         val listParametre: List<Parametre>,
         val listDroit: List<String>,
         val peiCaracteristiques: Map<UUID, String>,
@@ -101,6 +101,11 @@ interface ReferentielService {
         val id: UUID,
         val code: String,
         val libelle: String,
+    )
+
+    data class CodeLibelleTypeVisite(
+        val codeTypeVisite: String,
+        val libelleTypeVisite: String,
     )
 
     data class PoidsAnomalieInput(

@@ -95,15 +95,16 @@ class ReferentielWorker constructor(
             // On insère les données qui ne sont pas déjà dans la tablette
             referentielDao.insertListTypeVisite(
                 listTypeVisite
-                    .filter { !dataInMobileTypeVisite.map { it.typeVisiteCode }.contains(it) }.map {
+                    .filter { !dataInMobileTypeVisite.map { it.typeVisiteCode }.contains(it.codeTypeVisite) }.map {
                         TypeVisite(
-                            typeVisiteCode = it,
+                            typeVisiteCode = it.codeTypeVisite,
+                            typeVisiteLibelle = it.libelleTypeVisite,
                         )
                     },
             )
 
             val typeVisiteToRemove = dataInMobileTypeVisite
-                .filterNot { data -> listTypeVisite.contains(data.typeVisiteCode) }
+                .filterNot { data -> listTypeVisite.map { it.codeTypeVisite }.contains(data.typeVisiteCode) }
 
             // /////////////////////////////////////////////////////////////////////////////////////////// ANOMALIE CATEGORIE
             val dataInMobileAnomalieCategorie = referentielDao.getListAnomalieCategorie()

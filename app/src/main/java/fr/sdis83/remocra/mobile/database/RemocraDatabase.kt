@@ -18,7 +18,7 @@ import java.time.ZonedDateTime
 import java.util.UUID
 
 @Database(
-    version = 2,
+    version = 3,
     entities = [
         Pei::class,
         Gestionnaire::class,

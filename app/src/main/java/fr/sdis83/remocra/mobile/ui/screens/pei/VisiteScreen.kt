@@ -416,7 +416,7 @@ private fun StepOne(
             Spinner(
                 items = typeVisite,
                 value = typeVisite.find { i -> i.typeVisiteId == visite.visite.typeVisiteId },
-                valueToString = TypeVisite::typeVisiteCode,
+                valueToString = TypeVisite::typeVisiteLibelle,
                 label = "Type de visite",
                 onSelectionChanged = {
                     if (it.typeVisiteCode == "CTRL") {
