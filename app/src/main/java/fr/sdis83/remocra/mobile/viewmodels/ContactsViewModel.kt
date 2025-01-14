@@ -4,12 +4,15 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.database.ContactsDao
 import fr.sdis83.remocra.mobile.database.FonctionContact
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.database.Role
+import fr.sdis83.remocra.mobile.workers.JsonNewGestionnaireWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -35,6 +38,10 @@ class ContactsViewModel(application: Application, contactId: UUID?, gestionnaire
 
     suspend fun upsertContactWithRoles(contactWithRoles: ContactsDao.ContactWithRoles) {
         contactsDao.saveContact(contactWithRoles)
+
+        val jsonNewGestionnaireWorker = OneTimeWorkRequestBuilder<JsonNewGestionnaireWorker>().build()
+        WorkManager.getInstance(getApplication()).beginWith(jsonNewGestionnaireWorker)
+            .enqueue()
     }
 
     private val _contactState = MutableStateFlow(

@@ -2,13 +2,18 @@ package fr.sdis83.remocra.mobile.utils
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Environment
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
+import com.google.gson.GsonBuilder
+import fr.sdis83.remocra.mobile.serializer.ZonedDateTimeSerializer
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import java.io.FileOutputStream
+import java.io.ObjectOutputStream
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -63,3 +68,24 @@ fun dateAfterNow(date: String) =
         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
             .withZone(ZoneId.systemDefault()),
     ).isAfter(ZonedDateTime.now())
+
+fun <T> jsonToFile(objet: T, nameFile: String): String {
+    val path = Environment.getExternalStorageDirectory().toString() + "/$nameFile.json"
+
+    val data = File(path)
+    if (!data.createNewFile()) {
+        data.delete()
+        data.createNewFile()
+    }
+    val objectOutputStream = ObjectOutputStream(FileOutputStream(data))
+    objectOutputStream.writeObject(
+        GsonBuilder()
+            // On utilise un serializer pour que la date se génère correctement
+            .registerTypeAdapter(ZonedDateTime::class.java, ZonedDateTimeSerializer()).create()
+            .toJson(objet),
+    )
+
+    objectOutputStream.close()
+
+    return path
+}

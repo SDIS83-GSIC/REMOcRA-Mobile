@@ -33,6 +33,33 @@ abstract class VisiteDao {
         peiId: UUID,
     ): List<Anomalie>
 
+    @Query("SELECT * from visite where tourneeId = :idTournee")
+    abstract fun getVisites(idTournee: UUID): List<Visite>
+
+    @Query(
+        """
+    SELECT tha.* FROM anomalie tha
+    JOIN lpeianomalie ha ON tha.anomalieId = ha.anomalieId
+    WHERE ha.peiId = :peiId
+    """,
+    )
+    abstract fun getExistingVisiteAnomalieByIdPei(
+        peiId: UUID,
+    ): List<Anomalie>
+
+    @Query(
+        """
+    SELECT tha.* FROM anomalie tha
+    JOIN lVisiteAnomalie hva ON tha.anomalieId = hva.anomalieId
+    JOIN visite hv ON hv.visiteId = hva.visiteId
+    WHERE hv.peiId = :peiId AND hv.tourneeId = :idTournee
+    """,
+    )
+    abstract fun getCurrentVisiteAnomalieByIdPei(
+        peiId: UUID,
+        idTournee: UUID,
+    ): List<Anomalie>
+
     @Query(
         """
         SELECT a.* FROM anomalie a

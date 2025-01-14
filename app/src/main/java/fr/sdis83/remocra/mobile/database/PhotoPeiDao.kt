@@ -18,4 +18,7 @@ abstract class PhotoPeiDao {
 
     @Delete
     abstract suspend fun deletePhotoPei(photoPei: PhotoPei)
+
+    @Query("SELECT path from photoPei where peiId = :peiId")
+    abstract fun getListCheminPhoto(peiId: UUID): List<String>
 }

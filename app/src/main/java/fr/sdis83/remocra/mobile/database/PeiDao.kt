@@ -93,4 +93,7 @@ abstract class PeiDao {
 
     @Query("DELETE FROM pei WHERE peiId = :peiId")
     abstract suspend fun deletePei(peiId: UUID)
+
+    @Query("SELECT peiNumeroComplet FROM pei WHERE peiId = :peiId")
+    abstract fun getNumeroPei(peiId: UUID): String
 }

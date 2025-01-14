@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.SynchronisationService
-import fr.sdis83.remocra.mobile.utils.deleteFile
 import fr.sdis83.remocra.mobile.workers.WorkerRemocra
 
 class SynchroTourneeFinWorker constructor(
@@ -34,9 +33,6 @@ class SynchroTourneeFinWorker constructor(
             // On supprime les données
             synchronisationDao.apply {
                 deleteVisiteAnomalie(tournee.tourneeId)
-                val photos = getPhotoPeiFini(mapLPeiTournee[tournee.tourneeId]?.map { it.peiId } ?: listOf())
-                deleteFile(photos)
-                deletePhotoPei(photos)
 
                 deleteVisite(tournee.tourneeId)
                 deleteTourneeSynchronisee(tournee.tourneeId)

@@ -81,4 +81,12 @@ abstract class TourneeDao {
         """,
     )
     abstract fun deleteTournee(tourneeId: UUID)
+
+    @Query(
+        """
+        SELECT t.* FROM tournee t
+        WHERE t.tourneeId = :idTournee
+        """,
+    )
+    abstract fun getTourneeEnCours(idTournee: UUID): Tournee
 }

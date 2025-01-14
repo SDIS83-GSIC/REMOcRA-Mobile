@@ -3,12 +3,15 @@ package fr.sdis83.remocra.mobile.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import fr.sdis83.remocra.mobile.database.Domaine
 import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.Nature
 import fr.sdis83.remocra.mobile.database.NatureDeci
 import fr.sdis83.remocra.mobile.database.Pei
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
+import fr.sdis83.remocra.mobile.workers.JsonNewPeiWorker
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,6 +44,10 @@ class PeiCreateViewModel(application: Application) : AndroidViewModel(applicatio
         _peiCreateState.value.toPei(peiDao.getLatestCreated().plus(1).toString(), code)?.let { pei ->
             peiDao.insertPei(pei)
         }
+
+        val jsonNewPeiWorker = OneTimeWorkRequestBuilder<JsonNewPeiWorker>().build()
+        WorkManager.getInstance(getApplication()).beginWith(jsonNewPeiWorker)
+            .enqueue()
     }
 
     fun updateForm(peiForm: PeiForm) {

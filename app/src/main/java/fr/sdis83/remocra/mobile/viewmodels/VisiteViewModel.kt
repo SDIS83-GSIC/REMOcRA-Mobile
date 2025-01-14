@@ -4,6 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import fr.sdis83.remocra.mobile.database.Agent
 import fr.sdis83.remocra.mobile.database.Anomalie
 import fr.sdis83.remocra.mobile.database.Pei
@@ -13,6 +16,7 @@ import fr.sdis83.remocra.mobile.database.TypeVisite
 import fr.sdis83.remocra.mobile.database.Visite
 import fr.sdis83.remocra.mobile.database.VisiteDao.VisiteWithAnomalies
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
+import fr.sdis83.remocra.mobile.workers.JsonTourneeWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -141,6 +145,14 @@ class VisiteViewModel(application: Application, tourneeId: UUID, peiId: UUID, ge
             upsertAgent(agent1, 1)
             upsertAgent(agent2, 2)
         }
+
+        val jsonTourneeWorker = OneTimeWorkRequestBuilder<JsonTourneeWorker>().setInputData(
+            Data.Builder()
+                .putString("idTournee", _visiteState.value.visite.tourneeId.toString()).build(),
+        ).build()
+
+        WorkManager.getInstance(getApplication()).beginWith(jsonTourneeWorker)
+            .enqueue()
     }
 
     private suspend fun upsertAgent(agentRenseigne: String?, numeroAgent: Int) {
