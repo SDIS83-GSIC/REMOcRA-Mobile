@@ -119,7 +119,7 @@ fun MapView(
         }
 
     val iwOverlay = remember {
-        Marker(mapState).apply {
+        return@remember Marker(mapState).apply {
             icon = context.getDrawable(R.drawable.baseline_arrow_drop_down_24)
             infoWindow = PeiInfoWindow(
                 mapState, navController,
@@ -162,7 +162,7 @@ fun MapView(
     }
 
     val locationOverlay = remember {
-        MyLocationNewOverlay(GpsMyLocationProvider(context), mapState).apply {
+        return@remember MyLocationNewOverlay(GpsMyLocationProvider(context), mapState).apply {
             enableMyLocation()
             isOptionsMenuEnabled = true
         }
@@ -469,7 +469,7 @@ fun MapView(
 fun rememberMapViewWithLifecycle(center: IGeoPoint?, zoom: Double?): MapView {
     val context = LocalContext.current
     val mapView = remember {
-        MapView(context).apply {
+        return@remember MapView(context).apply {
             id = R.id.map_layout
             clipToOutline = true
             setTileSource(TileSourceFactory.MAPNIK)

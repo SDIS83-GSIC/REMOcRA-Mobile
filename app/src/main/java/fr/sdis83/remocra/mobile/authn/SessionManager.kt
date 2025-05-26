@@ -2,8 +2,9 @@ package fr.sdis83.remocra.mobile.authn
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
+import com.okta.authfoundation.credential.Credential
 import fr.sdis83.remocra.mobile.R
-import fr.sdis83.remocra.mobile.services.AuthService
 
 class SessionManager(context: Context) {
     private var prefs: SharedPreferences =
@@ -14,11 +15,16 @@ class SessionManager(context: Context) {
         const val DATE_PROCHAINE_DECONNEXION = "date_prochaine_deconnexion"
     }
 
-    fun saveAuthToken(loginResponse: AuthService.LoginResponse) {
+    fun saveAuthToken(credential: Credential) {
         val editor = prefs.edit()
-        editor.putString(USER_TOKEN, loginResponse.token)
-        editor.putString(DATE_PROCHAINE_DECONNEXION, loginResponse.dateProchaineDeconnexion)
+        editor.putString(USER_TOKEN, credential.token?.accessToken)
         editor.apply()
+    }
+
+    fun saveDateDeconnexion(dateProchaineConnexion: String?) {
+        prefs.edit() {
+            putString(DATE_PROCHAINE_DECONNEXION, dateProchaineConnexion)
+        }
     }
 
     fun getAuthToken(): String? {
@@ -30,9 +36,9 @@ class SessionManager(context: Context) {
     }
 
     fun invalidateAuthToken() {
-        val editor = prefs.edit()
-        editor.remove(USER_TOKEN)
-        editor.remove(DATE_PROCHAINE_DECONNEXION)
-        editor.apply()
+        prefs.edit() {
+            remove(USER_TOKEN)
+            remove(DATE_PROCHAINE_DECONNEXION)
+        }
     }
 }

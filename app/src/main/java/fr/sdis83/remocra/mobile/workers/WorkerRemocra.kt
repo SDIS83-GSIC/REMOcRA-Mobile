@@ -6,33 +6,41 @@ import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import fr.sdis83.remocra.mobile.LoginActivity
+import com.okta.authfoundationbootstrap.CredentialBootstrap
+import fr.sdis83.remocra.mobile.MainActivity
 import fr.sdis83.remocra.mobile.authn.SessionManager
-import fr.sdis83.remocra.mobile.services.AuthService
 import fr.sdis83.remocra.mobile.utils.dateAfterNow
-import java.lang.Exception
+import kotlinx.coroutines.runBlocking
 
-abstract class WorkerRemocra constructor(
+abstract class WorkerRemocra(
     context: Context,
     workerParams: WorkerParameters,
 ) : Worker(context, workerParams) {
 
     abstract fun doExecute(): Result
 
-    final override fun doWork(): Result {
-        val retrofitBuilder = AuthService.getRetroFitInstance(applicationContext)
+    override fun doWork(): Result {
         val sessionManager = SessionManager(applicationContext)
 
         if (sessionManager.getAuthToken().isNullOrEmpty()) {
             return Result.failure()
         }
 
-        try {
-            val tokenResponse = retrofitBuilder.checkToken().execute()
-            if (!tokenResponse.isSuccessful) {
+        var result: Result? = null
+        runBlocking {
+            if (CredentialBootstrap.defaultCredential().getValidAccessToken() == null) {
+                if (sessionManager.getDateDeconnexion() != null &&
+                    dateAfterNow(sessionManager.getDateDeconnexion()!!)
+                ) {
+                    Log.w("WorkerRemocra", "Mode déconnecté, on ne fait pas l'appel au serveur ET on ne redirige pas vers le login")
+                    result = Result.success()
+
+                    return@runBlocking
+                }
+
                 val intent = Intent(
                     applicationContext,
-                    LoginActivity::class.java,
+                    MainActivity::class.java,
                 )
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -42,17 +50,12 @@ abstract class WorkerRemocra constructor(
                     null,
                 )
 
-                return Result.failure()
+                result = Result.failure()
             }
-        } catch (e: Exception) {
-            if (sessionManager.getDateDeconnexion() != null &&
-                dateAfterNow(sessionManager.getDateDeconnexion()!!)
-            ) {
-                Log.w("WorkerRemocra", "Mode déconnecté, on ne fait pas l'appel au serveur ET on ne redirige pas vers le login")
-                return Result.success()
-            } else {
-                return Result.failure()
-            }
+        }
+
+        if (result != null) {
+            return result!!
         }
 
         return doExecute()

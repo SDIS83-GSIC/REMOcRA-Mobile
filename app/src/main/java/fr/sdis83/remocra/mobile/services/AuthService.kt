@@ -1,14 +1,9 @@
 package fr.sdis83.remocra.mobile.services
 
 import android.content.Context
-import com.google.gson.annotations.SerializedName
 import fr.sdis83.remocra.mobile.network.RetrofitBuilder
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.create
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
 import retrofit2.http.PUT
 
 interface AuthService {
@@ -19,35 +14,19 @@ interface AuthService {
             RetrofitBuilder.setNewUrl(context).create(AuthService::class.java)
     }
 
-    @PUT("authentication/token")
-    fun checkToken(): Call<ResponseBody>
-
     /**
      * Retourne le mdp passe admin s'il existe
      */
-    @PUT("authentication/check")
-    fun checkUrl(): Call<String?>
+    @PUT("check")
+    fun checkUrl(): Call<MobileData>
 
-    @FormUrlEncoded
-    @POST("authentication/login")
-    fun doLogin(
-        @Field("username")
-        username: String,
-        @Field("password")
-        password: String,
-        @Field("versionName")
-        versionName: String,
-    ): Call<LoginResponse>
+    data class MobileData(
+        val dateProchaineConnexion: String?,
+        val keycloakConfig: KeycloakConfig,
+    )
 
-    data class LoginResponse(
-        @SerializedName("token")
-        var token: String,
-
-        @SerializedName("username")
-        var username: String,
-
-        // Si le mode déconnexion est actif, on sauvegarde la date de prochaine de déconnexion
-        @SerializedName("dateProchaineDeconnexion")
-        var dateProchaineDeconnexion: String?,
+    data class KeycloakConfig(
+        val url: String,
+        val clientId: String,
     )
 }

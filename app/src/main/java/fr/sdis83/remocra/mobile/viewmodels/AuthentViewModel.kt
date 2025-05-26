@@ -1,0 +1,109 @@
+package fr.sdis83.remocra.mobile.viewmodels
+
+import android.app.Application
+import android.content.Context
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.okta.authfoundation.client.OidcClientResult
+import com.okta.authfoundationbootstrap.CredentialBootstrap
+import com.okta.webauthenticationui.WebAuthenticationClient.Companion.createWebAuthenticationClient
+import fr.sdis83.remocra.mobile.authn.KeycloakManager
+import fr.sdis83.remocra.mobile.authn.SessionManager
+import fr.sdis83.remocra.mobile.utils.GlobalConstants
+import fr.sdis83.remocra.mobile.workers.ReferentielWorker
+import kotlinx.coroutines.launch
+
+class AuthentViewModel(application: Application) : AndroidViewModel(application) {
+
+    companion object {
+        private const val TAG = "AuthentViewModel"
+
+        enum class JobStatus {
+            WAITING,
+            LOADING,
+            ERROR,
+        }
+    }
+    val sessionManager = SessionManager(application)
+    val keycloakManager = KeycloakManager(application)
+
+    var referentielStatus = mutableStateOf(JobStatus.WAITING)
+
+    var info = mutableStateOf("")
+        private set
+
+    val goToMainActivity = MutableLiveData(false)
+
+    fun login(context: Context) {
+        viewModelScope.launch {
+            val result = CredentialBootstrap.oidcClient.createWebAuthenticationClient().login(
+                context = context,
+                redirectUrl = GlobalConstants.KEYCLOAK_LOGIN,
+            )
+            when (result) {
+                is OidcClientResult.Error -> {
+                    info.value = "Impossible de se connecter"
+                    sessionManager.invalidateAuthToken()
+                }
+
+                is OidcClientResult.Success -> {
+                    val credential = CredentialBootstrap.defaultCredential()
+                    credential.storeToken(token = result.result)
+
+                    val referentielWorker = OneTimeWorkRequestBuilder<ReferentielWorker>().build()
+                    sessionManager.saveAuthToken(credential)
+
+                    WorkManager.getInstance(getApplication()).let { workManager ->
+                        workManager.beginWith(referentielWorker).enqueue()
+                        workManager.getWorkInfoByIdLiveData(referentielWorker.id).observeForever {
+                            when (it.state) {
+                                WorkInfo.State.RUNNING -> {
+                                    info.value = "Récupération du référentiel"
+                                    referentielStatus.value = JobStatus.LOADING
+                                }
+
+                                WorkInfo.State.SUCCEEDED -> {
+                                    info.value = ""
+                                    referentielStatus.value = JobStatus.WAITING
+                                    goToMainActivity.postValue(true)
+                                }
+                                WorkInfo.State.FAILED -> {
+                                    info.value = "Erreur lors de la récupération du référentiel"
+                                    sessionManager.invalidateAuthToken()
+                                    referentielStatus.value = JobStatus.ERROR
+                                }
+                                else -> {
+                                    referentielStatus.value = JobStatus.WAITING
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun logoutOfBrowser(context: Context) {
+        viewModelScope.launch {
+            val result = CredentialBootstrap.oidcClient.createWebAuthenticationClient().logoutOfBrowser(
+                context = context,
+                redirectUrl = GlobalConstants.KEYCLOAK_LOGOUT,
+                CredentialBootstrap.defaultCredential().token?.idToken ?: "",
+            )
+            when (result) {
+                is OidcClientResult.Error -> {
+                    info.value = "Impossible de se connecter"
+                }
+                is OidcClientResult.Success -> {
+                    CredentialBootstrap.defaultCredential().delete()
+                    goToMainActivity.postValue(false)
+                }
+            }
+        }
+    }
+}

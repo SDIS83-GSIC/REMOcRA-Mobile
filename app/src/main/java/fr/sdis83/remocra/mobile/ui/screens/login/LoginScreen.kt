@@ -1,19 +1,13 @@
 package fr.sdis83.remocra.mobile.ui.screens.login
 
 import android.app.Application
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,30 +20,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
-import fr.sdis83.remocra.mobile.LoginActivity
+import fr.sdis83.remocra.mobile.MainActivity
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.ui.screens.administration.MdpAdministrateurDialog
 import fr.sdis83.remocra.mobile.utils.getVersionName
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
+import fr.sdis83.remocra.mobile.viewmodels.AuthentViewModel
 import fr.sdis83.remocra.mobile.viewmodels.ExportViewModel
-import fr.sdis83.remocra.mobile.viewmodels.LoginViewModel
 import fr.sdis83.remocra.mobile.viewmodels.ParametreViewModel
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: AdministrationViewModel, application: Application, isMdm: Boolean) {
-    var username: String by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var passwordVisible by remember { mutableStateOf(false) }
-
+fun LoginScreen(viewModel: AuthentViewModel, administrationViewModel: AdministrationViewModel, application: Application, isMdm: Boolean) {
     val context = LocalContext.current
     val exportViewModel = ExportViewModel(context.applicationContext as Application)
 
-    val parametreViewModel = ParametreViewModel((context as LoginActivity).application.applicationContext as Application)
+    val parametreViewModel = ParametreViewModel((context as MainActivity).application.applicationContext as Application)
     val mdpAdmin by parametreViewModel.mdpAdmin.observeAsState()
+
+    val url = context.resources.getString(R.string.url_api)
+
+    val preferences = context.getSharedPreferences(
+        context.getString(R.string.app_name),
+        Context.MODE_PRIVATE,
+    )
 
     var showCustomDialog by remember {
         mutableStateOf(false)
@@ -69,7 +63,10 @@ fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: Administrati
                         administrationViewModel.setAdministrationScreen(true)
                     }
                 },
-                enabled = !viewModel.isBusy,
+                enabled = (
+                    viewModel.referentielStatus.value == AuthentViewModel.Companion.JobStatus.WAITING ||
+                        viewModel.referentielStatus.value == AuthentViewModel.Companion.JobStatus.ERROR
+                    ),
             ) {
                 Text(stringResource(R.string.administrer))
             }
@@ -94,61 +91,22 @@ fun LoginScreen(viewModel: LoginViewModel, administrationViewModel: Administrati
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        OutlinedTextField(
-            value = username,
-            onValueChange = { newText: String ->
-                username = newText
-            },
-            label = {
-                Text(text = context.resources.getString(R.string.username))
-            },
-            placeholder = {
-                Text(text = stringResource(R.string.username))
-            },
-            singleLine = true,
-            enabled = !viewModel.isBusy,
-        )
-        OutlinedTextField(
-            value = password,
-            onValueChange = { newText: String ->
-                password = newText
-            },
-            label = {
-                Text(text = stringResource(R.string.password))
-            },
-            placeholder = {
-                Text(text = stringResource(R.string.password))
-            },
-            singleLine = true,
-            visualTransformation = if (passwordVisible && !viewModel.isBusy) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                val image = if (passwordVisible && !viewModel.isBusy) {
-                    Icons.Filled.VisibilityOff
-                } else {
-                    Icons.Filled.Visibility
-                }
-
-                IconButton(
-                    enabled = !viewModel.isBusy,
-                    onClick = {
-                        passwordVisible = !passwordVisible
-                    },
-                ) {
-                    Icon(imageVector = image, contentDescription = "")
-                }
-            },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            enabled = !viewModel.isBusy,
-        )
         Button(
             onClick = {
-                if (!username.isNullOrBlank() && !password.isNullOrBlank() && !viewModel.isBusy) {
-                    viewModel.login(username, password)
-                }
+                viewModel.login(context)
             },
-            enabled = !username.isNullOrBlank() && !password.isNullOrBlank() && !viewModel.isBusy,
+            enabled = (
+                viewModel.referentielStatus.value == AuthentViewModel.Companion.JobStatus.WAITING ||
+                    viewModel.referentielStatus.value == AuthentViewModel.Companion.JobStatus.ERROR
+                ) && !preferences.getString(url, "").isNullOrBlank(),
         ) {
-            Text("Connexion")
+            Text(
+                if (preferences.getString(url, "").isNullOrBlank()) {
+                    "Configurer l'URL via le bouton Administrer"
+                } else {
+                    "Se connecter"
+                },
+            )
         }
         Text(viewModel.info.value)
     }

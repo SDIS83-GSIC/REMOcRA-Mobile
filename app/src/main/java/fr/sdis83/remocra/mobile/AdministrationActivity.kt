@@ -29,7 +29,7 @@ class AdministrationActivity : ComponentActivity() {
 
         administrationViewModel.administrationScreen.observe(this) {
             if (it) {
-                startActivity(Intent(this@AdministrationActivity, LoginActivity::class.java))
+                startActivity(Intent(this@AdministrationActivity, MainActivity::class.java))
                 finish()
             }
         }

@@ -1,5 +1,6 @@
 package fr.sdis83.remocra.mobile.ui.layout
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -31,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.em
@@ -44,9 +46,10 @@ fun Layout(
     navController: NavController?,
     versionName: String,
     modeDeconnecte: Boolean,
-    logout: () -> Unit,
+    logout: (context: Context) -> Unit,
     content: @Composable (PaddingValues) -> Unit = {},
 ) {
+    val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val items = listOf(
         Screens.Tournees,
@@ -103,7 +106,9 @@ fun Layout(
                         Button(
                             modifier = Modifier
                                 .padding(all = 10.pxToDp),
-                            onClick = logout,
+                            onClick = {
+                                logout(context)
+                            },
                         ) {
                             Text(
                                 text = "Se déconnecter",

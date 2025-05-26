@@ -42,7 +42,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import fr.sdis83.remocra.mobile.AdministrationActivity
-import fr.sdis83.remocra.mobile.LoginActivity
+import fr.sdis83.remocra.mobile.MainActivity
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import fr.sdis83.remocra.mobile.utils.pxToDp
@@ -55,7 +55,7 @@ fun MdpAdministrateurDialog(administrationViewModel: AdministrationViewModel, on
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     val parametreViewModel = ParametreViewModel(
-        (context as LoginActivity).application.applicationContext as Application,
+        (context as MainActivity).application.applicationContext as Application,
     )
     val paramConfList by parametreViewModel.parametres.observeAsState()
 

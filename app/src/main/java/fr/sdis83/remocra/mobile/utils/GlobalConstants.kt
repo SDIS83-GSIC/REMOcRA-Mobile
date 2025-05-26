@@ -18,4 +18,7 @@ object GlobalConstants {
     const val VALEUR_PRECEDENTE = "VALEUR_PRECEDENTE"
 
     const val MAX_ZOOM_MAP = 20.0
+
+    const val KEYCLOAK_LOGIN = "fr.sdis83.remocra.mobile:/login"
+    const val KEYCLOAK_LOGOUT = "fr.sdis83.remocra.mobile:/logout"
 }

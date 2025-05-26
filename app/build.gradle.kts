@@ -55,7 +55,14 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    defaultConfig {
+        manifestPlaceholders.apply {
+            put("webAuthenticationRedirectScheme", "fr.sdis83.remocra.mobile")
+        }
+    }
 }
+
 
 dependencies {
 
@@ -97,4 +104,10 @@ dependencies {
     implementation("androidx.camera:camera-camera2:1.2.3")
     implementation("androidx.camera:camera-lifecycle:1.2.3")
     implementation("androidx.camera:camera-view:1.2.3")
+
+
+    implementation(platform("com.okta.kotlin:bom:1.2.1"))
+    implementation("com.okta.kotlin:auth-foundation-bootstrap")
+    implementation("com.okta.kotlin:web-authentication-ui" )
+
 }
