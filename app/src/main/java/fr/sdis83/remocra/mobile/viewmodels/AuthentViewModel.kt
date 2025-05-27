@@ -73,8 +73,13 @@ class AuthentViewModel(application: Application) : AndroidViewModel(application)
                                     goToMainActivity.postValue(true)
                                 }
                                 WorkInfo.State.FAILED -> {
-                                    info.value = "Erreur lors de la récupération du référentiel"
+                                    info.value = if (!it.outputData.getString("VERSION_INCOMPATIBLE").isNullOrEmpty()) {
+                                        "La version de la tablette n'est pas à jour, veuillez contacter votre SDIS."
+                                    } else {
+                                        "Erreur de connexion"
+                                    }
                                     sessionManager.invalidateAuthToken()
+                                    logoutOfBrowser(context)
                                     referentielStatus.value = JobStatus.ERROR
                                 }
                                 else -> {

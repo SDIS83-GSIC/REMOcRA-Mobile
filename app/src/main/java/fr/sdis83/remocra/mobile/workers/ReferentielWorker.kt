@@ -2,6 +2,7 @@ package fr.sdis83.remocra.mobile.workers
 
 import android.content.Context
 import android.util.Log
+import androidx.work.Data
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.Agent
 import fr.sdis83.remocra.mobile.database.FonctionContact
@@ -16,6 +17,7 @@ import fr.sdis83.remocra.mobile.database.TypeDroit
 import fr.sdis83.remocra.mobile.database.TypePei
 import fr.sdis83.remocra.mobile.database.TypeVisite
 import fr.sdis83.remocra.mobile.services.ReferentielService
+import fr.sdis83.remocra.mobile.utils.getVersionName
 import java.util.UUID
 
 class ReferentielWorker constructor(
@@ -32,7 +34,19 @@ class ReferentielWorker constructor(
         val referentielDao = RemocraDatabase.getInstance(applicationContext).referentielDao()
         val agentDao = RemocraDatabase.getInstance(applicationContext).agentDao()
 
-        val referentielResponse = retrofitBuilder.getReferentiel().execute()
+        val checkVersionResponse = retrofitBuilder.checkVersion(getVersionName(applicationContext)).execute()
+
+        if (!checkVersionResponse.isSuccessful) {
+            Log.e(TAG, "Error executing work: " + checkVersionResponse.errorBody().toString())
+
+            val outputData = Data.Builder()
+                .putString("VERSION_INCOMPATIBLE", "Version non compatible")
+                .build()
+
+            return Result.failure(outputData)
+        }
+
+        val referentielResponse = retrofitBuilder.getReferentiel(getVersionName(applicationContext)).execute()
 
         if (!referentielResponse.isSuccessful) {
             Log.e(TAG, "Error executing work: " + referentielResponse.errorBody().toString())

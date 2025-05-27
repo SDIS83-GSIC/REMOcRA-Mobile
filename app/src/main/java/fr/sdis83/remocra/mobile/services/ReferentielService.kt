@@ -16,6 +16,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 import java.util.UUID
 interface ReferentielService {
     companion object {
@@ -26,7 +27,14 @@ interface ReferentielService {
     }
 
     @GET("referentiel")
-    fun getReferentiel(): Call<ReferentielResponse>
+    fun getReferentiel(
+        @Query("versionName") versionName: String,
+    ): Call<ReferentielResponse>
+
+    @GET("check/version")
+    fun checkVersion(
+        @Query("versionName") versionName: String,
+    ): Call<Void>
 
     @GET("synchro/tournees-dispos")
     fun getTourneesDisponibles(): Call<List<TourneeInput>>
