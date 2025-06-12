@@ -28,5 +28,8 @@ abstract class ParametreDao {
     abstract fun getAffichageIndispo(constantCle: String = GlobalConstants.AFFICHAGE_INDISPO): LiveData<String?>
 
     @Query("SELECT parametreValeur from parametre where parametreCode = :constantCle")
+    abstract fun getBridagePhoto(constantCle: String = GlobalConstants.BRIDAGE_PHOTO): LiveData<String?>
+
+    @Query("SELECT parametreValeur from parametre where parametreCode = :constantCle")
     abstract fun getAffichageSymbolesNormalises(constantCle: String = GlobalConstants.AFFICHAGE_SYMBOLES_NORMALISES): LiveData<String?>
 }

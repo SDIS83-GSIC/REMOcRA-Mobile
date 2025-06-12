@@ -87,6 +87,7 @@ import fr.sdis83.remocra.mobile.utils.deleteFile
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.AgentViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
+import fr.sdis83.remocra.mobile.viewmodels.ParametreViewModel
 import fr.sdis83.remocra.mobile.viewmodels.PhotoPeiViewModel
 import fr.sdis83.remocra.mobile.viewmodels.VisiteViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -142,6 +143,9 @@ fun VisiteScreenInner(
     val nbSteps = 3
 
     val visite by visiteViewModel.visiteState.collectAsState()
+    val parametreViewModel = ParametreViewModel(LocalContext.current.applicationContext as Application)
+
+    val bridagePhoto by parametreViewModel.paramBridagePhoto.observeAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(modifier = Modifier.fillMaxSize()) {
@@ -192,6 +196,7 @@ fun VisiteScreenInner(
                     gestionAgents = gestionAgents,
                     listAgent1 = listAgent1,
                     listAgent2 = listAgent2,
+                    bridagePhoto = bridagePhoto?.toBoolean() ?: true,
                 )
             }
         }
@@ -211,6 +216,7 @@ fun VisiteForm(
     gestionAgents: String?,
     listAgent1: List<String>?,
     listAgent2: List<String>?,
+    bridagePhoto: Boolean,
 ) {
     if (visite == null) return
 
@@ -284,6 +290,7 @@ fun VisiteForm(
                         photoPeiViewModel.deletePhotoPei(it)
                     }
                 },
+                bridagePhoto = bridagePhoto,
             )
         }
     }
@@ -748,6 +755,7 @@ private fun StepThree(
     onPictureTaken: KFunction1<Bitmap, Unit>,
     photos: List<PhotoPei>?,
     deletePhoto: (PhotoPei) -> Unit,
+    bridagePhoto: Boolean,
 ) {
     val context = LocalContext.current
     val requestPermissionLauncher =
@@ -776,6 +784,7 @@ private fun StepThree(
             ),
         ) {
             CameraCapture(
+                bridagePhoto = bridagePhoto,
                 onPictureTaken = onPictureTaken,
             ) { showCustomDialog = false }
         }

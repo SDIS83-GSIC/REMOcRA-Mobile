@@ -7,6 +7,7 @@ object GlobalConstants {
     const val AFFICHAGE_INDISPO = "AFFICHAGE_INDISPO"
     const val MDP_ADMINISTRATEUR = "MDP_ADMINISTRATEUR"
     const val AFFICHAGE_SYMBOLES_NORMALISES = "AFFICHAGE_SYMBOLES_NORMALISES"
+    const val BRIDAGE_PHOTO = "BRIDAGE_PHOTO"
 
     /**
      * Pour la gestion des agents

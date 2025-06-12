@@ -15,6 +15,7 @@ class ParametreViewModel(application: Application) : AndroidViewModel(applicatio
 
     val paramAffichageIndispo: LiveData<String?> = parametreDao.getAffichageIndispo()
     val paramAffichageSymbolesNormalises: LiveData<String?> = parametreDao.getAffichageSymbolesNormalises()
+    val paramBridagePhoto: LiveData<String?> = parametreDao.getBridagePhoto()
 
     companion object {
         private const val TAG: String = "ParametreViewModel"

@@ -8,6 +8,7 @@ import android.graphics.ImageFormat
 import android.graphics.YuvImage
 import android.media.Image
 import android.util.Log
+import android.util.Size
 import android.view.ViewGroup
 import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
@@ -83,6 +84,7 @@ fun CameraPreview(
 @Composable
 fun CameraCapture(
     modifier: Modifier = Modifier,
+    bridagePhoto: Boolean,
     cameraSelector: CameraSelector = CameraSelector.DEFAULT_BACK_CAMERA,
     onPictureTaken: KFunction1<Bitmap, Unit>,
     onClose: () -> Unit = { },
@@ -96,6 +98,13 @@ fun CameraCapture(
             mutableStateOf(
                 ImageCapture.Builder()
                     .setCaptureMode(CAPTURE_MODE_MAXIMIZE_QUALITY)
+                    .let {
+                        if (bridagePhoto) {
+                            it.setTargetResolution(Size(1920, 1080))
+                        }
+
+                        it
+                    }
                     .build(),
             )
         }
