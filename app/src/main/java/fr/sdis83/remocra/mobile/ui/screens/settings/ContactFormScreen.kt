@@ -421,7 +421,7 @@ fun ContactFormScreenInner(
                                 )
                                 Text(
                                     modifier = Modifier.padding(start = 2.pxToDp),
-                                    text = role.roleLibelle.toString(),
+                                    text = role.roleContactLibelle.toString(),
                                 )
                             }
                         }

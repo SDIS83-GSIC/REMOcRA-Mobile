@@ -38,6 +38,7 @@ class GestionnaireViewModel(application: Application, gestionnaireId: UUID?) : A
             gestionnaireId = UUID.randomUUID(),
             gestionnaireLibelle = "",
             gestionnaireCode = "",
+            gestionnaireActif = true,
         ),
     )
 
@@ -53,6 +54,7 @@ class GestionnaireViewModel(application: Application, gestionnaireId: UUID?) : A
                 gestionnaireId = UUID.randomUUID(),
                 gestionnaireLibelle = "",
                 gestionnaireCode = "",
+                gestionnaireActif = true,
             )
         }
     }

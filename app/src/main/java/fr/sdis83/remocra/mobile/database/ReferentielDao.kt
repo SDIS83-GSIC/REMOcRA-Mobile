@@ -184,7 +184,7 @@ abstract class ReferentielDao {
     @Query("SELECT * FROM role")
     abstract fun getListRole(): List<Role>
 
-    @Query("DELETE FROM role where roleId in (:listRoleId)")
+    @Query("DELETE FROM role where roleContactId in (:listRoleId)")
     abstract fun deleteRole(listRoleId: List<UUID>)
 
     @Query("SELECT * FROM gestionnaire")
@@ -202,7 +202,7 @@ abstract class ReferentielDao {
     @Query("DELETE FROM contact where contactId in (:listContactId)")
     abstract fun deleteContact(listContactId: List<UUID>)
 
-    @Query("DELETE FROM contactRole where roleId = :roleId and contactId = :contactId")
+    @Query("DELETE FROM contactRole where roleContactId = :roleId and contactId = :contactId")
     abstract fun deleteContactRole(roleId: UUID, contactId: UUID)
 
     @Query("SELECT * FROM pei")
@@ -234,22 +234,22 @@ abstract class ReferentielDao {
     )
     abstract fun getAnomalieItemList(typeVisiteId: UUID?, natureId: UUID?): Flow<List<AnomalieItem>>
 
-    @Query("SELECT * FROM gestionnaire")
+    @Query("SELECT * FROM gestionnaire where gestionnaireActif is true")
     abstract fun getGestionnaireList(): LiveData<List<Gestionnaire>>
 
-    @Query("SELECT * FROM domaine")
+    @Query("SELECT * FROM domaine where domaineActif is true")
     abstract fun getDomaineList(): LiveData<List<Domaine>>
 
     data class AnomalieItem(
         @Embedded val anomalie: Anomalie,
         val valIndispoTerrestre: Int,
-        @Relation(parentColumn = "anomalieCategorieId", entityColumn = "anomalieCategorieId") val categorie: AnomalieCategorie,
+        @Relation(parentColumn = "anomalieAnomalieCategorieId", entityColumn = "anomalieCategorieId") val categorie: AnomalieCategorie,
     )
 
-    @Query("SELECT * FROM nature")
+    @Query("SELECT * FROM nature where natureActif is true")
     abstract fun getNatureList(): LiveData<List<Nature>>
 
-    @Query("SELECT * FROM natureDeci")
+    @Query("SELECT * FROM natureDeci where natureDeciActif is true")
     abstract fun getNatureDeciList(): LiveData<List<NatureDeci>>
 
     @Query("SELECT * FROM typeVisite")

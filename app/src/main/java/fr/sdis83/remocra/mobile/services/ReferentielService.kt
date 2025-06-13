@@ -6,10 +6,13 @@ import fr.sdis83.remocra.mobile.database.AnomalieCategorie
 import fr.sdis83.remocra.mobile.database.Contact
 import fr.sdis83.remocra.mobile.database.ContactRole
 import fr.sdis83.remocra.mobile.database.Domaine
+import fr.sdis83.remocra.mobile.database.FonctionContact
+import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.LPeiAnomalie
 import fr.sdis83.remocra.mobile.database.NatureDeci
 import fr.sdis83.remocra.mobile.database.Parametre
 import fr.sdis83.remocra.mobile.database.Pei
+import fr.sdis83.remocra.mobile.database.Role
 import fr.sdis83.remocra.mobile.network.RetrofitBuilder
 import retrofit2.Call
 import retrofit2.http.Field
@@ -54,10 +57,10 @@ interface ReferentielService {
     data class ReferentielResponse(
         val listPei: List<PeiInput>,
         val listPeiAnomalies: List<LPeiAnomalie>,
-        val listGestionnaire: List<IdCodeLibelleInput>,
-        val listFonctionContact: List<IdCodeLibelleInput>,
+        val listGestionnaire: List<Gestionnaire>,
+        val listFonctionContact: List<FonctionContact>,
         val listContact: List<Contact>,
-        val listRole: List<IdCodeLibelleInput>,
+        val listRole: List<Role>,
         val listContactRole: List<ContactRole>,
         val listTypePei: List<String>,
         val listNature: List<NatureInput>,
@@ -75,6 +78,7 @@ interface ReferentielService {
 
     data class NatureInput(
         val natureId: UUID,
+        val natureActif: Boolean,
         val natureCode: String,
         val natureLibelle: String,
         val natureTypePei: String,

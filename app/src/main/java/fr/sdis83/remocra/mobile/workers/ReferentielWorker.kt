@@ -5,14 +5,11 @@ import android.util.Log
 import androidx.work.Data
 import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.Agent
-import fr.sdis83.remocra.mobile.database.FonctionContact
-import fr.sdis83.remocra.mobile.database.Gestionnaire
 import fr.sdis83.remocra.mobile.database.LPoidsAnomalieTypeVisite
 import fr.sdis83.remocra.mobile.database.Nature
 import fr.sdis83.remocra.mobile.database.Pei
 import fr.sdis83.remocra.mobile.database.PoidsAnomalie
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
-import fr.sdis83.remocra.mobile.database.Role
 import fr.sdis83.remocra.mobile.database.TypeDroit
 import fr.sdis83.remocra.mobile.database.TypePei
 import fr.sdis83.remocra.mobile.database.TypeVisite
@@ -85,6 +82,7 @@ class ReferentielWorker constructor(
                         natureCode = it.natureCode,
                         natureLibelle = it.natureLibelle,
                         typePeiId = typePei.find { t -> t.typePeiCode == it.natureTypePei }!!.typePeiId,
+                        natureActif = it.natureActif,
                     )
                 },
             )
@@ -205,35 +203,23 @@ class ReferentielWorker constructor(
 
             // On insère les données qui ne sont pas déjà dans la tablette
             referentielDao.insertListRole(
-                listRole.map {
-                    Role(
-                        roleId = it.id,
-                        roleLibelle = it.libelle,
-                        roleCode = it.code,
-                    )
-                },
+                listRole,
             )
 
             val roleToRemove = dataInMobileRole
-                .filterNot { data -> listRole.map { it.id }.contains(data.roleId) }
+                .filterNot { data -> listRole.map { it.roleContactId }.contains(data.roleContactId) }
 
             // ///////////////////////////////////////////////////////////////////////////////////////////GESTIONNAIRE
             val dataInMobileGestionnaire = referentielDao.getListGestionnaire()
 
             // On insère les données qui ne sont pas déjà dans la tablette
             referentielDao.insertListGestionnaire(
-                listGestionnaire.map {
-                    Gestionnaire(
-                        gestionnaireId = it.id,
-                        gestionnaireLibelle = it.libelle,
-                        gestionnaireCode = it.code,
-                    )
-                },
+                listGestionnaire,
             )
 
             val gestionnaireToRemove = dataInMobileGestionnaire
                 .filterNot { data ->
-                    listGestionnaire.map { it.id }.contains(data.gestionnaireId)
+                    listGestionnaire.map { it.gestionnaireId }.contains(data.gestionnaireId)
                 }
 
             // /////////////////////////////////////////////////////////////////////////////////////////// FONCTION CONTACT
@@ -241,18 +227,12 @@ class ReferentielWorker constructor(
 
             // On insère les données qui ne sont pas déjà dans la tablette
             referentielDao.insertListFonctionContact(
-                listFonctionContact.map {
-                    FonctionContact(
-                        fonctionContactId = it.id,
-                        fonctionContactCode = it.code,
-                        fonctionContactLibelle = it.libelle,
-                    )
-                },
+                listFonctionContact,
             )
 
             val fonctionContactToRemove = dataInMobileFonctionContact
                 .filterNot { data ->
-                    listFonctionContact.map { it.id }.contains(data.fonctionContactId)
+                    listFonctionContact.map { it.fonctionContactId }.contains(data.fonctionContactId)
                 }
 
             // ///////////////////////////////////////////////////////////////////////////////////////////CONTACT
@@ -332,7 +312,7 @@ class ReferentielWorker constructor(
                 deletePei(peiToRemove.map { it.peiId })
                 deleteContact(contactToRemove.map { it.contactId })
                 deleteGestionnaire(gestionnaireToRemove.map { it.gestionnaireId })
-                deleteRole(roleToRemove.map { it.roleId })
+                deleteRole(roleToRemove.map { it.roleContactId })
                 deleteNature(natureToRemove.map { it.natureId })
                 deleteNatureDeci(natureDeciToRemove.map { it.natureDeciId })
                 deleteDomaine(domaineToRemove.map { it.domaineId })

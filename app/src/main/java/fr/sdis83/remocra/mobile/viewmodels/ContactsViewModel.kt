@@ -41,6 +41,7 @@ class ContactsViewModel(application: Application, contactId: UUID?, gestionnaire
         ContactsDao.ContactWithRoles(
             Contact(
                 contactId = UUID.randomUUID(),
+                contactActif = true,
                 gestionnaireId = gestionnaireId,
                 contactCivilite = null,
                 contactNom = null,
@@ -68,6 +69,7 @@ class ContactsViewModel(application: Application, contactId: UUID?, gestionnaire
             _contactState.value = ContactsDao.ContactWithRoles(
                 Contact(
                     contactId = UUID.randomUUID(),
+                    contactActif = true,
                     gestionnaireId = gestionnaireId,
                     contactCivilite = null,
                     contactNom = null,

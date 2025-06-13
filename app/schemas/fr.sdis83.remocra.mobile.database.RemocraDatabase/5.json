@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "475410c3bdf20c3cc1b7a685a4ba05d9",
+    "identityHash": "ef6bd69b9211eaf4881da1cd987b2a02",
     "entities": [
       {
         "tableName": "pei",
@@ -213,12 +213,18 @@
       },
       {
         "tableName": "gestionnaire",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gestionnaireId` BLOB NOT NULL, `gestionnaireLibelle` TEXT NOT NULL, `gestionnaireCode` TEXT NOT NULL, `edited` INTEGER NOT NULL, PRIMARY KEY(`gestionnaireId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gestionnaireId` BLOB NOT NULL, `gestionnaireActif` INTEGER NOT NULL, `gestionnaireLibelle` TEXT NOT NULL, `gestionnaireCode` TEXT NOT NULL, `edited` INTEGER NOT NULL, PRIMARY KEY(`gestionnaireId`))",
         "fields": [
           {
             "fieldPath": "gestionnaireId",
             "columnName": "gestionnaireId",
             "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gestionnaireActif",
+            "columnName": "gestionnaireActif",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -261,23 +267,29 @@
       },
       {
         "tableName": "role",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`roleId` BLOB NOT NULL, `roleLibelle` TEXT, `roleCode` TEXT NOT NULL, PRIMARY KEY(`roleId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`roleContactId` BLOB NOT NULL, `roleContactActif` INTEGER NOT NULL, `roleContactLibelle` TEXT, `roleContactCode` TEXT NOT NULL, PRIMARY KEY(`roleContactId`))",
         "fields": [
           {
-            "fieldPath": "roleId",
-            "columnName": "roleId",
+            "fieldPath": "roleContactId",
+            "columnName": "roleContactId",
             "affinity": "BLOB",
             "notNull": true
           },
           {
-            "fieldPath": "roleLibelle",
-            "columnName": "roleLibelle",
+            "fieldPath": "roleContactActif",
+            "columnName": "roleContactActif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roleContactLibelle",
+            "columnName": "roleContactLibelle",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "roleCode",
-            "columnName": "roleCode",
+            "fieldPath": "roleContactCode",
+            "columnName": "roleContactCode",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -285,25 +297,25 @@
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "roleId"
+            "roleContactId"
           ]
         },
         "indices": [
           {
-            "name": "index_role_roleId",
+            "name": "index_role_roleContactId",
             "unique": false,
             "columnNames": [
-              "roleId"
+              "roleContactId"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_role_roleId` ON `${TABLE_NAME}` (`roleId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_role_roleContactId` ON `${TABLE_NAME}` (`roleContactId`)"
           }
         ],
         "foreignKeys": []
       },
       {
         "tableName": "contactRole",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contactId` BLOB NOT NULL, `roleId` BLOB NOT NULL, PRIMARY KEY(`contactId`, `roleId`), FOREIGN KEY(`contactId`) REFERENCES `contact`(`contactId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`roleId`) REFERENCES `role`(`roleId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contactId` BLOB NOT NULL, `roleContactId` BLOB NOT NULL, PRIMARY KEY(`contactId`, `roleContactId`), FOREIGN KEY(`contactId`) REFERENCES `contact`(`contactId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`roleContactId`) REFERENCES `role`(`roleContactId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "contactId",
@@ -312,8 +324,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "roleId",
-            "columnName": "roleId",
+            "fieldPath": "roleContactId",
+            "columnName": "roleContactId",
             "affinity": "BLOB",
             "notNull": true
           }
@@ -322,7 +334,7 @@
           "autoGenerate": false,
           "columnNames": [
             "contactId",
-            "roleId"
+            "roleContactId"
           ]
         },
         "indices": [
@@ -336,13 +348,13 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_contactRole_contactId` ON `${TABLE_NAME}` (`contactId`)"
           },
           {
-            "name": "index_contactRole_roleId",
+            "name": "index_contactRole_roleContactId",
             "unique": false,
             "columnNames": [
-              "roleId"
+              "roleContactId"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_contactRole_roleId` ON `${TABLE_NAME}` (`roleId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contactRole_roleContactId` ON `${TABLE_NAME}` (`roleContactId`)"
           }
         ],
         "foreignKeys": [
@@ -362,22 +374,28 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "roleId"
+              "roleContactId"
             ],
             "referencedColumns": [
-              "roleId"
+              "roleContactId"
             ]
           }
         ]
       },
       {
         "tableName": "contact",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contactId` BLOB NOT NULL, `gestionnaireId` BLOB NOT NULL, `contactCivilite` TEXT, `contactNom` TEXT, `contactPrenom` TEXT, `contactNumeroVoie` TEXT, `contactSuffixeVoie` TEXT, `contactLieuDitText` TEXT, `contactVoieText` TEXT, `contactCodePostal` TEXT, `contactCommuneText` TEXT, `contactPays` TEXT, `contactTelephone` TEXT, `contactEmail` TEXT, `contactFonctionContactId` BLOB, `edited` INTEGER NOT NULL, PRIMARY KEY(`contactId`), FOREIGN KEY(`gestionnaireId`) REFERENCES `gestionnaire`(`gestionnaireId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`contactFonctionContactId`) REFERENCES `fonctionContact`(`fonctionContactId`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contactId` BLOB NOT NULL, `contactActif` INTEGER NOT NULL, `gestionnaireId` BLOB NOT NULL, `contactCivilite` TEXT, `contactNom` TEXT, `contactPrenom` TEXT, `contactNumeroVoie` TEXT, `contactSuffixeVoie` TEXT, `contactLieuDitText` TEXT, `contactVoieText` TEXT, `contactCodePostal` TEXT, `contactCommuneText` TEXT, `contactPays` TEXT, `contactTelephone` TEXT, `contactEmail` TEXT, `contactFonctionContactId` BLOB, `edited` INTEGER NOT NULL, PRIMARY KEY(`contactId`), FOREIGN KEY(`gestionnaireId`) REFERENCES `gestionnaire`(`gestionnaireId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`contactFonctionContactId`) REFERENCES `fonctionContact`(`fonctionContactId`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "contactId",
             "columnName": "contactId",
             "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contactActif",
+            "columnName": "contactActif",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -855,7 +873,7 @@
       },
       {
         "tableName": "anomalie",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`anomalieId` BLOB NOT NULL, `anomalieCategorieId` BLOB, `anomalieCode` TEXT NOT NULL, `anomalieLibelle` TEXT NOT NULL, PRIMARY KEY(`anomalieId`), FOREIGN KEY(`anomalieCategorieId`) REFERENCES `anomalieCategorie`(`anomalieCategorieId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`anomalieId` BLOB NOT NULL, `anomalieAnomalieCategorieId` BLOB NOT NULL, `anomalieCode` TEXT NOT NULL, `anomalieLibelle` TEXT NOT NULL, PRIMARY KEY(`anomalieId`), FOREIGN KEY(`anomalieAnomalieCategorieId`) REFERENCES `anomalieCategorie`(`anomalieCategorieId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "anomalieId",
@@ -864,10 +882,10 @@
             "notNull": true
           },
           {
-            "fieldPath": "anomalieCategorieId",
-            "columnName": "anomalieCategorieId",
+            "fieldPath": "anomalieAnomalieCategorieId",
+            "columnName": "anomalieAnomalieCategorieId",
             "affinity": "BLOB",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "anomalieCode",
@@ -899,13 +917,13 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_anomalie_anomalieId` ON `${TABLE_NAME}` (`anomalieId`)"
           },
           {
-            "name": "index_anomalie_anomalieCategorieId",
+            "name": "index_anomalie_anomalieAnomalieCategorieId",
             "unique": false,
             "columnNames": [
-              "anomalieCategorieId"
+              "anomalieAnomalieCategorieId"
             ],
             "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_anomalie_anomalieCategorieId` ON `${TABLE_NAME}` (`anomalieCategorieId`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_anomalie_anomalieAnomalieCategorieId` ON `${TABLE_NAME}` (`anomalieAnomalieCategorieId`)"
           }
         ],
         "foreignKeys": [
@@ -914,7 +932,7 @@
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
             "columns": [
-              "anomalieCategorieId"
+              "anomalieAnomalieCategorieId"
             ],
             "referencedColumns": [
               "anomalieCategorieId"
@@ -1136,7 +1154,7 @@
       },
       {
         "tableName": "nature",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`natureId` BLOB NOT NULL, `natureCode` TEXT NOT NULL, `natureLibelle` TEXT NOT NULL, `typePeiId` BLOB NOT NULL, PRIMARY KEY(`natureId`), FOREIGN KEY(`typePeiId`) REFERENCES `typePei`(`typePeiId`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`natureId` BLOB NOT NULL, `natureCode` TEXT NOT NULL, `natureActif` INTEGER NOT NULL, `natureLibelle` TEXT NOT NULL, `typePeiId` BLOB NOT NULL, PRIMARY KEY(`natureId`), FOREIGN KEY(`typePeiId`) REFERENCES `typePei`(`typePeiId`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "natureId",
@@ -1148,6 +1166,12 @@
             "fieldPath": "natureCode",
             "columnName": "natureCode",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "natureActif",
+            "columnName": "natureActif",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -1205,12 +1229,18 @@
       },
       {
         "tableName": "natureDeci",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`natureDeciId` BLOB NOT NULL, `natureDeciCode` TEXT NOT NULL, `natureDeciLibelle` TEXT NOT NULL, PRIMARY KEY(`natureDeciId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`natureDeciId` BLOB NOT NULL, `natureDeciActif` INTEGER NOT NULL, `natureDeciCode` TEXT NOT NULL, `natureDeciLibelle` TEXT NOT NULL, PRIMARY KEY(`natureDeciId`))",
         "fields": [
           {
             "fieldPath": "natureDeciId",
             "columnName": "natureDeciId",
             "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "natureDeciActif",
+            "columnName": "natureDeciActif",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -1670,12 +1700,18 @@
       },
       {
         "tableName": "fonctionContact",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fonctionContactId` BLOB NOT NULL, `fonctionContactCode` TEXT NOT NULL, `fonctionContactLibelle` TEXT NOT NULL, PRIMARY KEY(`fonctionContactId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fonctionContactId` BLOB NOT NULL, `fonctionContactActif` INTEGER NOT NULL, `fonctionContactCode` TEXT NOT NULL, `fonctionContactLibelle` TEXT NOT NULL, PRIMARY KEY(`fonctionContactId`))",
         "fields": [
           {
             "fieldPath": "fonctionContactId",
             "columnName": "fonctionContactId",
             "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fonctionContactActif",
+            "columnName": "fonctionContactActif",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -1712,12 +1748,18 @@
       },
       {
         "tableName": "domaine",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`domaineId` BLOB NOT NULL, `domaineCode` TEXT NOT NULL, `domaineLibelle` TEXT NOT NULL, PRIMARY KEY(`domaineId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`domaineId` BLOB NOT NULL, `domaineActif` INTEGER NOT NULL, `domaineCode` TEXT NOT NULL, `domaineLibelle` TEXT NOT NULL, PRIMARY KEY(`domaineId`))",
         "fields": [
           {
             "fieldPath": "domaineId",
             "columnName": "domaineId",
             "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domaineActif",
+            "columnName": "domaineActif",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -1756,7 +1798,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '475410c3bdf20c3cc1b7a685a4ba05d9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ef6bd69b9211eaf4881da1cd987b2a02')"
     ]
   }
 }

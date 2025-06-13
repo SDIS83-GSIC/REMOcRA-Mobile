@@ -36,7 +36,7 @@ abstract class ContactsDao {
     @Upsert
     abstract suspend fun upsertContact(contact: Contact)
 
-    @Query("SELECT * FROM role")
+    @Query("SELECT * FROM role where roleContactActif is true")
     abstract fun getRolesList(): LiveData<List<Role>>
 
     @Query("SELECT * FROM contactRole WHERE contactId = :contactId")
@@ -45,7 +45,7 @@ abstract class ContactsDao {
     @Query("DELETE FROM contactRole WHERE contactId = :contactId")
     abstract suspend fun truncateContactRolesByContactUUID(contactId: UUID)
 
-    @Query("SELECT *  FROM fonctionContact")
+    @Query("SELECT *  FROM fonctionContact where fonctionContactActif is true")
     abstract fun getFonctionContact(): LiveData<List<FonctionContact>>
 
     @Insert
@@ -61,7 +61,7 @@ abstract class ContactsDao {
         val listRole = contactWithRoles.roles.toList()
         truncateContactRolesByContactUUID(contactId)
         listRole.forEach { role ->
-            insertContactRole(ContactRole(contactId, role.roleId))
+            insertContactRole(ContactRole(contactId, role.roleContactId))
         }
     }
 
@@ -70,11 +70,11 @@ abstract class ContactsDao {
         @Relation(
             parentColumn = "contactId",
             entity = Role::class,
-            entityColumn = "roleId",
+            entityColumn = "roleContactId",
             associateBy = Junction(
                 value = ContactRole::class,
                 parentColumn = "contactId",
-                entityColumn = "roleId",
+                entityColumn = "roleContactId",
             ),
         )
         val roles: MutableList<Role> = mutableListOf(),

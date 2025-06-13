@@ -10,7 +10,7 @@ import java.util.UUID
 @Dao
 abstract class GestionnairesDao {
 
-    @Query("SELECT * FROM gestionnaire g WHERE g.gestionnaireCode LIKE '%' || :search || '%' OR g.gestionnaireLibelle LIKE '%' ||:search || '%'")
+    @Query("SELECT * FROM gestionnaire g WHERE (g.gestionnaireCode LIKE '%' || :search || '%' OR g.gestionnaireLibelle LIKE '%' ||:search || '%') and gestionnaireActif")
     abstract fun getGestionnairesList(search: String): Flow<List<Gestionnaire>>
 
     @Query("SELECT * FROM gestionnaire WHERE gestionnaireId = :gestionnaireId")

@@ -34,6 +34,7 @@ data class TypeVisite(
 )
 data class Domaine(
     @PrimaryKey val domaineId: UUID,
+    val domaineActif: Boolean,
     val domaineCode: String,
     val domaineLibelle: String,
 )
@@ -305,20 +306,20 @@ data class AnomalieCategorie(
 @Entity(
     tableName = "anomalie",
     indices = [
-        Index("anomalieId"), Index("anomalieCategorieId"),
+        Index("anomalieId"), Index("anomalieAnomalieCategorieId"),
     ],
     foreignKeys = [
         ForeignKey(
             entity = AnomalieCategorie::class,
             parentColumns = ["anomalieCategorieId"],
-            childColumns = ["anomalieCategorieId"],
+            childColumns = ["anomalieAnomalieCategorieId"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
 data class Anomalie(
     @PrimaryKey val anomalieId: UUID,
-    val anomalieCategorieId: UUID?,
+    val anomalieAnomalieCategorieId: UUID,
     val anomalieCode: String,
     val anomalieLibelle: String,
 )
@@ -395,6 +396,7 @@ data class LPoidsAnomalieTypeVisite(
 data class Nature(
     @PrimaryKey val natureId: UUID,
     val natureCode: String,
+    val natureActif: Boolean,
     val natureLibelle: String,
     val typePeiId: UUID,
 )
@@ -405,6 +407,7 @@ data class Nature(
 )
 data class NatureDeci(
     @PrimaryKey val natureDeciId: UUID,
+    val natureDeciActif: Boolean,
     val natureDeciCode: String,
     val natureDeciLibelle: String,
 )
@@ -415,6 +418,7 @@ data class NatureDeci(
 )
 data class Gestionnaire(
     @PrimaryKey val gestionnaireId: UUID,
+    val gestionnaireActif: Boolean,
     val gestionnaireLibelle: String,
     val gestionnaireCode: String,
     val edited: Boolean = false,
@@ -426,6 +430,7 @@ data class Gestionnaire(
 )
 data class FonctionContact(
     @PrimaryKey val fonctionContactId: UUID,
+    val fonctionContactActif: Boolean,
     val fonctionContactCode: String,
     val fonctionContactLibelle: String,
 )
@@ -450,6 +455,7 @@ data class FonctionContact(
 )
 data class Contact(
     @PrimaryKey val contactId: UUID,
+    val contactActif: Boolean,
     val gestionnaireId: UUID,
     val contactCivilite: Civilite?,
     val contactNom: String?,
@@ -474,8 +480,8 @@ data class Contact(
 
 @Entity(
     tableName = "contactRole",
-    indices = [Index("contactId"), Index("roleId")],
-    primaryKeys = ["contactId", "roleId"],
+    indices = [Index("contactId"), Index("roleContactId")],
+    primaryKeys = ["contactId", "roleContactId"],
     foreignKeys = [
         ForeignKey(
             entity = Contact::class,
@@ -485,25 +491,26 @@ data class Contact(
         ),
         ForeignKey(
             entity = Role::class,
-            parentColumns = ["roleId"],
-            childColumns = ["roleId"],
+            parentColumns = ["roleContactId"],
+            childColumns = ["roleContactId"],
             onDelete = ForeignKey.CASCADE,
         ),
     ],
 )
 data class ContactRole(
     val contactId: UUID,
-    val roleId: UUID,
+    val roleContactId: UUID,
 )
 
 @Entity(
     tableName = "role",
-    indices = [Index("roleId")],
+    indices = [Index("roleContactId")],
 )
 data class Role(
-    @PrimaryKey val roleId: UUID,
-    val roleLibelle: String?,
-    val roleCode: String,
+    @PrimaryKey val roleContactId: UUID,
+    val roleContactActif: Boolean,
+    val roleContactLibelle: String?,
+    val roleContactCode: String,
 )
 
 @Entity(
