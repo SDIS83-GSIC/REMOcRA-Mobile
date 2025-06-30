@@ -13,8 +13,8 @@ android {
         applicationId = "fr.sdis83.remocra.mobile"
         minSdk = 30
         targetSdk = 33
-        versionCode = 7
-        versionName = "2.2"
+        versionCode = 8
+        versionName = "3.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
