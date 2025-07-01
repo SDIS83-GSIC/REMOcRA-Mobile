@@ -43,7 +43,7 @@ class ReferentielWorker constructor(
             return Result.failure(outputData)
         }
 
-        val referentielResponse = retrofitBuilder.getReferentiel(getVersionName(applicationContext)).execute()
+        val referentielResponse = retrofitBuilder.getReferentiel().execute()
 
         if (!referentielResponse.isSuccessful) {
             Log.e(TAG, "Error executing work: " + referentielResponse.errorBody().toString())

@@ -30,9 +30,7 @@ interface ReferentielService {
     }
 
     @GET("referentiel")
-    fun getReferentiel(
-        @Query("versionName") versionName: String,
-    ): Call<ReferentielResponse>
+    fun getReferentiel(): Call<ReferentielResponse>
 
     @GET("check/version")
     fun checkVersion(

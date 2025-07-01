@@ -108,7 +108,7 @@ class SimpleFastPointOverlayCustom(
                 // Si le paramètre est vrai, on permet d'afficher les indispo
                 if (affichageIndispo) {
                     // Si le PEI est indisponible, on met une croix rouge
-                    if (pt1.dispoTerrestre == Pei.Disponibilite.INDISPO) {
+                    if (pt1.dispoTerrestre == Pei.Disponibilite.INDISPONIBLE) {
                         drawSymboleIndispo(canvas, mPositionPixels)
                     }
                 }

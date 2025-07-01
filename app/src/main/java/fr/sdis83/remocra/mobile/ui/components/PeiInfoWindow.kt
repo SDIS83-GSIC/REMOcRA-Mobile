@@ -43,7 +43,7 @@ class PeiInfoWindow(mapView: MapView, val navController: NavController) : InfoWi
 
             getTextView(mPeiDisponibilite).apply {
                 text = pei.dispoTerrestre?.name
-                setTextColor(if (pei.dispoTerrestre == Pei.Disponibilite.DISPO) Color.rgb(63, 191, 63) else Color.rgb(191, 63, 63))
+                setTextColor(if (pei.dispoTerrestre == Pei.Disponibilite.DISPONIBLE) Color.rgb(63, 191, 63) else Color.rgb(191, 63, 63))
             }
 
             val linkGpsTextView = getTextView(mOpenGps)

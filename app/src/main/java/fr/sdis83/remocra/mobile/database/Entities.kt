@@ -95,14 +95,14 @@ data class Pei(
     var isNew: Boolean = false,
 ) {
     enum class Disponibilite {
-        DISPO,
-        INDISPO,
+        DISPONIBLE,
+        INDISPONIBLE,
         NON_CONFORME,
     }
 
     enum class DisponibiliteHbe {
-        DISPO,
-        INDISPO,
+        DISPONIBLE,
+        INDISPONIBLE,
     }
 }
 
