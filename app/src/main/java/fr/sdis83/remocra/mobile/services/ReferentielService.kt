@@ -75,6 +75,7 @@ interface ReferentielService {
         val listDomaine: List<Domaine>,
         val peiCaracteristiques: Map<UUID, String>,
         val utilisateurConnecte: String,
+        val mapDisponibiliteByLibelle: Map<Pei.Disponibilite, String>,
     )
 
     data class NatureInput(

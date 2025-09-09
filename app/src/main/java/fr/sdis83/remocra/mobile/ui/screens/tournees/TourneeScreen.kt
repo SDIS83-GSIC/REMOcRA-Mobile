@@ -36,6 +36,7 @@ import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.Visite
 import fr.sdis83.remocra.mobile.navigation.Screens
+import fr.sdis83.remocra.mobile.utils.GlobalReferentiel
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import fr.sdis83.remocra.mobile.viewmodels.TourneeViewModel
@@ -187,7 +188,7 @@ fun TourneeScreen(navController: NavController, tourneeId: UUID, mapViewModel: M
                                             }
                                             Row(modifier = Modifier.fillMaxWidth()) {
                                                 Text(
-                                                    text = peiItem.pei.dispoTerrestre.toString(),
+                                                    text = peiItem.pei.dispoTerrestre?.let { GlobalReferentiel.mapDisponibiliteByLibelle[it] } ?: "",
                                                 )
                                             }
                                         }

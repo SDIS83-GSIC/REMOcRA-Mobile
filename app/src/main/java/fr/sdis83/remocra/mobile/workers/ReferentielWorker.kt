@@ -14,6 +14,7 @@ import fr.sdis83.remocra.mobile.database.TypeDroit
 import fr.sdis83.remocra.mobile.database.TypePei
 import fr.sdis83.remocra.mobile.database.TypeVisite
 import fr.sdis83.remocra.mobile.services.ReferentielService
+import fr.sdis83.remocra.mobile.utils.GlobalReferentiel
 import fr.sdis83.remocra.mobile.utils.getVersionName
 import java.util.UUID
 
@@ -52,6 +53,8 @@ class ReferentielWorker constructor(
 
         Log.i(TAG, "Téléchargement du référentiel")
         referentielResponse.body()!!.apply {
+            // Sauvegarde globale de la map des libellés de disponibilité
+            GlobalReferentiel.mapDisponibiliteByLibelle = mapDisponibiliteByLibelle
             // ///////////////////////////////////////////////////////////////////////////////////////////TYPE PEI
             val dataInMobileTypePei = referentielDao.getListTypePei()
 

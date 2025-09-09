@@ -12,6 +12,7 @@ import fr.sdis83.remocra.mobile.R
 import fr.sdis83.remocra.mobile.database.Pei
 import fr.sdis83.remocra.mobile.database.Visite
 import fr.sdis83.remocra.mobile.navigation.Screens
+import fr.sdis83.remocra.mobile.utils.GlobalReferentiel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.OverlayWithIW
@@ -42,7 +43,7 @@ class PeiInfoWindow(mapView: MapView, val navController: NavController) : InfoWi
             getTextView(mPeiNumero).text = "Point d'eau N°${pei.peiNumeroComplet}"
 
             getTextView(mPeiDisponibilite).apply {
-                text = pei.dispoTerrestre?.name
+                text = pei.dispoTerrestre?.let { GlobalReferentiel.mapDisponibiliteByLibelle[it] } ?: pei.dispoTerrestre?.name
                 setTextColor(if (pei.dispoTerrestre == Pei.Disponibilite.DISPONIBLE) Color.rgb(63, 191, 63) else Color.rgb(191, 63, 63))
             }
 
