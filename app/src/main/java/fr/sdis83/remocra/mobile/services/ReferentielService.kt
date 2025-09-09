@@ -37,6 +37,9 @@ interface ReferentielService {
         @Query("versionName") versionName: String,
     ): Call<Void>
 
+    @GET("check/test-connexion")
+    fun checkConnexion(): Call<Void>
+
     @GET("synchro/tournees-dispos")
     fun getTourneesDisponibles(): Call<List<TourneeInput>>
 
