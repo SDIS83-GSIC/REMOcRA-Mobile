@@ -3,6 +3,7 @@ package fr.sdis83.remocra.mobile.services
 import android.content.Context
 import fr.sdis83.remocra.mobile.network.RetrofitBuilder
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Field
@@ -154,12 +155,9 @@ interface SynchronisationService {
     @POST("synchro/synchro-photo")
     @Multipart
     fun postPhotoPei(
-        @Part("photoId")
-        photoId: UUID,
-        @Part("peiId")
-        peiId: UUID,
-        @Part("photoDate")
-        photoDate: String,
+        @Part("photoId") photoId: RequestBody,
+        @Part("peiId") peiId: RequestBody,
+        @Part("photoDate") photoDate: RequestBody,
         @Part photo: MultipartBody.Part,
     ): Call<ResponseBody>
 }

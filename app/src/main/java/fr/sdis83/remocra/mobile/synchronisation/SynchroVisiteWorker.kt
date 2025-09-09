@@ -7,6 +7,8 @@ import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.SynchronisationService
 import fr.sdis83.remocra.mobile.utils.createImageFormData
 import fr.sdis83.remocra.mobile.workers.WorkerRemocra
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -52,9 +54,11 @@ class SynchroVisiteWorker constructor(
             if (photos.isNotEmpty()) {
                 photos.forEach {
                     val resPhotoPei = retrofitBuilder.postPhotoPei(
-                        photoId = it.photoId,
-                        peiId = it.peiId,
-                        photoDate = it.datePhoto.formatDate(),
+                        photoId = it.photoId.toString()
+                            .toRequestBody("text/plain".toMediaTypeOrNull()),
+                        peiId = it.peiId.toString().toRequestBody("text/plain".toMediaTypeOrNull()),
+                        photoDate = it.datePhoto.formatDate()
+                            .toRequestBody("text/plain".toMediaTypeOrNull()),
                         photo = createImageFormData(
                             "photo",
                             it.path,
