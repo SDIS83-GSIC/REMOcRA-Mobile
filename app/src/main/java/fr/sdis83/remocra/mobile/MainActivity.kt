@@ -11,6 +11,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Environment
 import android.provider.Settings
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -34,6 +35,9 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.compose.rememberNavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import fr.sdis83.remocra.mobile.navigation.NavGraph
 import fr.sdis83.remocra.mobile.services.AuthService
 import fr.sdis83.remocra.mobile.ui.components.MapView
@@ -48,6 +52,7 @@ import fr.sdis83.remocra.mobile.viewmodels.AuthentViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import fr.sdis83.remocra.mobile.viewmodels.ParametreViewModel
 import fr.sdis83.remocra.mobile.viewmodels.SplashViewModel
+import fr.sdis83.remocra.mobile.workers.AdministrationWorker
 
 data class MapViewState(
     val showMapView: Boolean = true,
@@ -204,7 +209,49 @@ class MainActivity : ComponentActivity() {
                             getVersionName(applicationContext),
                             modeDeconnecte = !dateProchaineDeconnexion.isNullOrBlank(),
                             logout = { context ->
-                                logout(context)
+                                // Si on est pas en mode déconnecté
+                                if (dateProchaineDeconnexion.isNullOrBlank()) {
+                                    logout(context)
+                                    startActivity(
+                                        Intent(
+                                            this@MainActivity,
+                                            MainActivity::class.java,
+                                        ),
+                                    )
+                                } else {
+                                    val administrationWorker = OneTimeWorkRequestBuilder<AdministrationWorker>().build()
+
+                                    WorkManager.getInstance(getApplication()).let { workManager ->
+                                        workManager.enqueue(administrationWorker)
+                                        workManager.getWorkInfoByIdLiveData(administrationWorker.id).observeForever {
+                                            when (it.state) {
+                                                WorkInfo.State.RUNNING -> {
+                                                    Toast.makeText(applicationContext, "Déconnexion en cours", Toast.LENGTH_SHORT).show()
+                                                }
+
+                                                WorkInfo.State.SUCCEEDED -> {
+                                                    logout(context)
+                                                    startActivity(
+                                                        Intent(
+                                                            this@MainActivity,
+                                                            MainActivity::class.java,
+                                                        ),
+                                                    )
+                                                }
+
+                                                WorkInfo.State.FAILED -> {
+                                                    Toast.makeText(
+                                                        applicationContext,
+                                                        "Echec de la connexion au serveur",
+                                                        Toast.LENGTH_SHORT,
+                                                    ).show()
+                                                }
+
+                                                else -> {}
+                                            }
+                                        }
+                                    }
+                                }
                             },
                         ) {
                             Row(modifier = Modifier.fillMaxSize()) {
