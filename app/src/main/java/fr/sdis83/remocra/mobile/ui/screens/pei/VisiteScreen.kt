@@ -426,7 +426,7 @@ private fun StepOne(
                 valueToString = TypeVisite::typeVisiteLibelle,
                 label = "Type de visite",
                 onSelectionChanged = {
-                    if (it.typeVisiteCode == "CTRL") {
+                    if (it.typeVisiteCode == GlobalConstants.CTP) {
                         onValueChange(
                             visite.copy(
                                 visite = visite.visite.copy(
@@ -501,7 +501,7 @@ private fun StepOne(
                 readOnly = false,
             )
         }
-        if (typeVisite.find { it.typeVisiteId == visite.visite.typeVisiteId }?.typeVisiteCode == "CTRL") {
+        if (typeVisite.find { it.typeVisiteId == visite.visite.typeVisiteId }?.typeVisiteCode == GlobalConstants.CTP) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(text = "Contrôle débit et pression")
             }

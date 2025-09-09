@@ -20,6 +20,8 @@ object GlobalConstants {
 
     const val MAX_ZOOM_MAP = 20.0
 
+    const val CTP = "CTP"
+
     const val KEYCLOAK_LOGIN = "fr.sdis83.remocra.mobile:/login"
     const val KEYCLOAK_LOGOUT = "fr.sdis83.remocra.mobile:/logout"
 }
