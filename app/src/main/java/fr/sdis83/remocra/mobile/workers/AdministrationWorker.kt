@@ -33,7 +33,12 @@ class AdministrationWorker constructor(
 
         val response = connexionTestResponse.body()?.keycloakConfig
         if (response != null) {
-            keycloakManager.initKeycloakConf(response, applicationContext)
+            if (keycloakManager.getKeycloakUrl() == null) {
+                keycloakManager.initKeycloakConf(
+                    connexionTestResponse.body()!!.keycloakConfig,
+                    applicationContext,
+                )
+            }
         }
 
         return Result.success()
