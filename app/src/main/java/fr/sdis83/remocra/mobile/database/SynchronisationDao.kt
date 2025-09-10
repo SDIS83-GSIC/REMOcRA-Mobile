@@ -30,12 +30,18 @@ abstract class SynchronisationDao {
 
     @Query(
         """
-            SELECT lva.* FROM lVisiteAnomalie lva
+            SELECT lva.*, visite.tourneeId FROM lVisiteAnomalie lva
                 JOIN visite ON visite.visiteId = lva.visiteId
                 WHERE visite.statut = :statutFini
         """,
     )
-    abstract fun getAllVisiteAnomalie(statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE): List<LVisiteAnomalie>
+    abstract fun getAllVisiteAnomalie(statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE): List<VisiteAnomalieWithTournee>
+
+    data class VisiteAnomalieWithTournee(
+        val visiteId: UUID,
+        val anomalieId: UUID,
+        val tourneeId: UUID,
+    )
 
     @Query("SELECT * FROM lPeiAnomalie")
     abstract fun getAllAnomalie(): List<LPeiAnomalie>

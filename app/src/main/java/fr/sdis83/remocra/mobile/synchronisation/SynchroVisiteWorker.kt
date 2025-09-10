@@ -22,15 +22,17 @@ class SynchroVisiteWorker constructor(
         val synchronisationDao = RemocraDatabase.getInstance(applicationContext).synchronisationDao()
         val retrofitBuilder = SynchronisationService.getRetroFitInstance(applicationContext)
 
-        val visites = synchronisationDao.getAllVisite()
+        val tournees = synchronisationDao.getAllTournee().filter { it.progression == 1f }.map { it.tournee }
+
+        val visites = synchronisationDao.getAllVisite().filter { tournees.map { it.tourneeId }.contains(it.tourneeId) }
         val photosPei = synchronisationDao.getPhotoPei()
-        val tournees = synchronisationDao.getAllLPeiTournee()
+        val tourneesPei = synchronisationDao.getAllLPeiTournee()
         val typesVisites = synchronisationDao.getAllTypeVisite()
 
         visites.forEach { visite ->
             val res = retrofitBuilder.postVisites(
                 visiteId = visite.visiteId,
-                tourneeId = tournees.first { it.peiId == visite.peiId }.tourneeId,
+                tourneeId = tourneesPei.first { it.peiId == visite.peiId }.tourneeId,
                 peiId = visite.peiId,
                 visiteDate = visite.dateVisite.formatDate(),
                 visiteTypeVisite = typesVisites.first { it.typeVisiteId == visite.typeVisiteId }.typeVisiteCode,

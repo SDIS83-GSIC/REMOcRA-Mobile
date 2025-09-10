@@ -17,7 +17,8 @@ class SynchroVisiteAnomalieWorker constructor(
         val synchronisationDao = RemocraDatabase.getInstance(applicationContext).synchronisationDao()
         val retrofitBuilder = SynchronisationService.getRetroFitInstance(applicationContext)
 
-        val visitesAnomalie = synchronisationDao.getAllVisiteAnomalie()
+        val tournees = synchronisationDao.getAllTournee().filter { it.progression == 1f }.map { it.tournee }
+        val visitesAnomalie = synchronisationDao.getAllVisiteAnomalie().filter { tournees.map { it.tourneeId }.contains(it.tourneeId) }
 
         visitesAnomalie.forEach { visiteAnomalie ->
             val res = retrofitBuilder.postVisiteAnomalie(
