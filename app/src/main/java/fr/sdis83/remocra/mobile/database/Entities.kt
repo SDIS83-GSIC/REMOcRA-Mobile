@@ -301,6 +301,7 @@ data class AnomalieCategorie(
     val anomalieCategorieCode: String,
     val anomalieCategorieLibelle: String,
     val anomalieCategorieActif: Boolean,
+    val anomalieCategorieOrdre: Int,
 )
 
 @Entity(
@@ -322,6 +323,7 @@ data class Anomalie(
     val anomalieAnomalieCategorieId: UUID,
     val anomalieCode: String,
     val anomalieLibelle: String,
+    val anomalieOrdre: Int,
 )
 
 @Entity(

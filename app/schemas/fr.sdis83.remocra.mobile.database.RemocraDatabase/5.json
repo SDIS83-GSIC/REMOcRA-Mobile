@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "ef6bd69b9211eaf4881da1cd987b2a02",
+    "identityHash": "b63c082f5ab73780c185819342a2e573",
     "entities": [
       {
         "tableName": "pei",
@@ -873,7 +873,7 @@
       },
       {
         "tableName": "anomalie",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`anomalieId` BLOB NOT NULL, `anomalieAnomalieCategorieId` BLOB NOT NULL, `anomalieCode` TEXT NOT NULL, `anomalieLibelle` TEXT NOT NULL, PRIMARY KEY(`anomalieId`), FOREIGN KEY(`anomalieAnomalieCategorieId`) REFERENCES `anomalieCategorie`(`anomalieCategorieId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`anomalieId` BLOB NOT NULL, `anomalieAnomalieCategorieId` BLOB NOT NULL, `anomalieCode` TEXT NOT NULL, `anomalieLibelle` TEXT NOT NULL, `anomalieOrdre` INTEGER NOT NULL, PRIMARY KEY(`anomalieId`), FOREIGN KEY(`anomalieAnomalieCategorieId`) REFERENCES `anomalieCategorie`(`anomalieCategorieId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "anomalieId",
@@ -897,6 +897,12 @@
             "fieldPath": "anomalieLibelle",
             "columnName": "anomalieLibelle",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieOrdre",
+            "columnName": "anomalieOrdre",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -1106,7 +1112,7 @@
       },
       {
         "tableName": "anomalieCategorie",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`anomalieCategorieId` BLOB NOT NULL, `anomalieCategorieCode` TEXT NOT NULL, `anomalieCategorieLibelle` TEXT NOT NULL, `anomalieCategorieActif` INTEGER NOT NULL, PRIMARY KEY(`anomalieCategorieId`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`anomalieCategorieId` BLOB NOT NULL, `anomalieCategorieCode` TEXT NOT NULL, `anomalieCategorieLibelle` TEXT NOT NULL, `anomalieCategorieActif` INTEGER NOT NULL, `anomalieCategorieOrdre` INTEGER NOT NULL, PRIMARY KEY(`anomalieCategorieId`))",
         "fields": [
           {
             "fieldPath": "anomalieCategorieId",
@@ -1129,6 +1135,12 @@
           {
             "fieldPath": "anomalieCategorieActif",
             "columnName": "anomalieCategorieActif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieCategorieOrdre",
+            "columnName": "anomalieCategorieOrdre",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -1798,7 +1810,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ef6bd69b9211eaf4881da1cd987b2a02')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b63c082f5ab73780c185819342a2e573')"
     ]
   }
 }

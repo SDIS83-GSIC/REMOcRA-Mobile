@@ -626,9 +626,10 @@ private fun StepTwo(
     anomalieList: List<ReferentielDao.AnomalieItem>,
     peiState: StateFlow<Pei?>,
 ) {
+    // On trie les catégories selon anomalieCategorieOrdre et les anomalies selon anomalieOrdre
     val options =
         anomalieList.groupBy { it.categorie }.mapValues { entry ->
-            entry.value.map { item ->
+            entry.value.sortedBy { it.anomalie.anomalieOrdre }.map { item ->
                 val checked =
                     remember { mutableStateOf(visite.anomalies.contains(item.anomalie)) }
 
@@ -697,7 +698,8 @@ private fun StepTwo(
         ) {
             if (!options.isNullOrEmpty()) {
                 Column {
-                    options.keys.sortedBy { k -> k.anomalieCategorieCode }.forEach { critere ->
+                    // Tri des catégories par anomalieCategorieOrdre
+                    options.keys.sortedBy { k -> k.anomalieCategorieOrdre }.forEach { critere ->
                         val opened = remember { mutableStateOf(false) }
                         Row(
                             modifier = Modifier
@@ -721,7 +723,8 @@ private fun StepTwo(
                             Text(text = "(${options[critere]!!.count { it.checked }}/${options[critere]!!.size})")
                         }
                         if (opened.value) {
-                            options[critere]!!.sortedBy { o -> o.text }.forEach { option ->
+                            // Les anomalies sont déjà triées par anomalieOrdre dans la mapValue ci-dessus
+                            options[critere]!!.forEach { option ->
                                 LabelledCheckbox(
                                     checked = option.checked,
                                     onCheckedChange = option.onCheckedChange,

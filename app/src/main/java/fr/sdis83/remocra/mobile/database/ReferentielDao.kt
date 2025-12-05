@@ -224,12 +224,14 @@ abstract class ReferentielDao {
     @Query(
         """
         SELECT tha.*, than.valIndispoTerrestre FROM anomalie tha
-        JOIN poidsAnomalie than ON than.poidsAnomalieAnomalieId = tha.anomalieId
+        LEFT JOIN poidsAnomalie than ON than.poidsAnomalieAnomalieId = tha.anomalieId
+        JOIN anomalieCategorie cat ON cat.anomalieCategorieId = tha.anomalieAnomalieCategorieId
         WHERE than.poidsAnomalieId IN
           (SELECT thans.poidsAnomalieId FROM lPoidsAnomalieTypeVisite thans
           WHERE thans.typeVisiteId = :typeVisiteId
           )
         AND than.poidsAnomalieNatureId = :natureId
+        ORDER BY cat.anomalieCategorieOrdre, tha.anomalieOrdre
         """,
     )
     abstract fun getAnomalieItemList(typeVisiteId: UUID?, natureId: UUID?): Flow<List<AnomalieItem>>
