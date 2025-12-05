@@ -20,6 +20,8 @@ class KeycloakManager(context: Context) {
     companion object {
         const val KEYCLOAK_URL = "keycloak_url"
         const val KEYCLOAK_CLIENT_ID = "keycloak_client_id"
+        private var isCredentialBootstrapInitialized = false
+        private var isCacheInitialized = false
     }
 
     fun getKeycloakUrl(): String? {
@@ -44,7 +46,10 @@ class KeycloakManager(context: Context) {
         }
 
         // Initialise la connexion à Keycloak
-        AuthFoundationDefaults.cache = SharedPreferencesCache.create(context)
+        if (!isCacheInitialized) {
+            AuthFoundationDefaults.cache = SharedPreferencesCache.create(context)
+            isCacheInitialized = true
+        }
         val oidcConfiguration = OidcConfiguration(
             clientId = getKeycloakClientId()!!,
             defaultScope = "openid email profile offline_access",
@@ -54,6 +59,9 @@ class KeycloakManager(context: Context) {
             getKeycloakUrl()!!.toHttpUrl(),
         )
 
-        CredentialBootstrap.initialize(client.createCredentialDataSource(context))
+        if (!isCredentialBootstrapInitialized) {
+            CredentialBootstrap.initialize(client.createCredentialDataSource(context))
+            isCredentialBootstrapInitialized = true
+        }
     }
 }
