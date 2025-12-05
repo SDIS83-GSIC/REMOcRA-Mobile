@@ -20,6 +20,15 @@ abstract class WorkerRemocra(
 
     abstract fun doExecute(): Result
 
+    private fun isModeDeconnecte(sessionManager: SessionManager): Boolean {
+        val dateDeconnexion = sessionManager.getDateDeconnexion()
+        return dateDeconnexion != null && dateAfterNow(dateDeconnexion)
+    }
+
+    private fun logModeDeconnecte() {
+        Log.w("WorkerRemocra", "Mode déconnecté, on ne fait pas l'appel au serveur ET on ne redirige pas vers le login")
+    }
+
     /**
      * Gère la redirection vers MainActivity.
      */
@@ -42,15 +51,18 @@ abstract class WorkerRemocra(
         val sessionManager = SessionManager(applicationContext)
 
         if (sessionManager.getAuthToken().isNullOrEmpty()) {
+            if (isModeDeconnecte(sessionManager)) {
+                logModeDeconnecte()
+                return Result.success()
+            }
+            redirectMainActivity()
             return Result.failure()
         }
 
         var result: Result? = null
         runBlocking {
-            if (sessionManager.getDateDeconnexion() != null &&
-                dateAfterNow(sessionManager.getDateDeconnexion()!!)
-            ) {
-                Log.w("WorkerRemocra", "Mode déconnecté, on ne fait pas l'appel au serveur ET on ne redirige pas vers le login")
+            if (isModeDeconnecte(sessionManager)) {
+                logModeDeconnecte()
                 result = Result.success()
                 return@runBlocking
             }
