@@ -51,6 +51,9 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
     var affichageSymbolesNormalises = mutableStateOf(false)
         private set
 
+    var peiEnDeplacement = mutableStateOf<PeiGeoPoint?>(null)
+        private set
+
     fun setAffichageIndispo(affichageIndispo_new: Boolean) {
         affichageIndispo.value = affichageIndispo_new
     }
@@ -117,6 +120,26 @@ class MapViewModel(applicationContext: Context) : ViewModel() {
                     peiTourneeSelected.postValue(pei)
                 }
             }
+        }
+    }
+
+    fun commencerDeplacementPei(pei: PeiGeoPoint) {
+        peiEnDeplacement.value = pei
+    }
+
+    fun annulerDeplacementPei() {
+        peiEnDeplacement.value = null
+    }
+
+    fun updatePeiPosition(peiId: UUID, lat: Double, lon: Double, x: Double, y: Double) {
+        CoroutineScope(Dispatchers.IO).launch {
+            peiDao.updateDeplacementPei(
+                lat = lat,
+                lon = lon,
+                x = x,
+                y = y,
+                peiId = peiId,
+            )
         }
     }
 

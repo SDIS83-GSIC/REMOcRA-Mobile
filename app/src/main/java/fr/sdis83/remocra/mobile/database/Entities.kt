@@ -93,6 +93,7 @@ data class Pei(
     val gestionnaireId: UUID?,
     var peiCaracteristiques: String?,
     var isNew: Boolean = false,
+    var isDeplace: Boolean = false,
 ) {
     enum class Disponibilite {
         DISPONIBLE,

@@ -2,6 +2,7 @@ package fr.sdis83.remocra.mobile.database
 
 import androidx.room.Dao
 import androidx.room.Query
+import fr.sdis83.remocra.mobile.synchronisation.SynchroDeplacementPeiWorker
 import java.util.UUID
 
 @Dao
@@ -132,4 +133,13 @@ abstract class SynchronisationDao {
         """,
     )
     abstract fun deleteTourneeSynchronisee(tourneeId: UUID)
+
+    @Query(
+        """
+            SELECT p.lat, p.lon, p.peiId, tourneeId from pei p 
+                JOIN lPeiTournee lpt on lpt.peiId = p.peiId
+                where p.isDeplace = 1
+        """,
+    )
+    abstract fun getPeiDeplacesByTournee(): List<SynchroDeplacementPeiWorker.PeiDeplace>
 }

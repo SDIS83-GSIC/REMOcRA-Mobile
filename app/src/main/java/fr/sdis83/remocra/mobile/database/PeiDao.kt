@@ -96,4 +96,13 @@ abstract class PeiDao {
 
     @Query("SELECT peiNumeroComplet FROM pei WHERE peiId = :peiId")
     abstract fun getNumeroPei(peiId: UUID): String
+
+    @Query("UPDATE pei SET lat = :lat, lon = :lon, x = :x, y = :y, isDeplace = 1 WHERE peiId = :peiId")
+    abstract fun updateDeplacementPei(
+        lon: Double,
+        lat: Double,
+        x: Double,
+        y: Double,
+        peiId: UUID,
+    )
 }

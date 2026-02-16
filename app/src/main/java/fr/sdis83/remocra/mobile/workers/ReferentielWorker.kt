@@ -95,6 +95,7 @@ class ReferentielWorker constructor(
             }
 
             // /////////////////////////////////////////////////////////////////////////////////////////// NATURE DECI
+            // /////////////////////////////////////////////////////////////////////////////////////////// NATURE DECI
             val dataInMobileNatureDeci = referentielDao.getListNatureDeci()
 
             // On insère les données qui ne sont pas déjà dans la tablette
@@ -254,18 +255,21 @@ class ReferentielWorker constructor(
             referentielDao.insertListContactRole(listContactRole)
 
             // ///////////////////////////////////////////////////////////////////////////////////////////PEI
+            val listPeiDeplace = referentielDao.getListPeiDeplace()
             referentielDao.insertListPei(
                 listPei.map {
+                    // Si on retélécharge le référentiel et qu'on a pas encore synchronisé, on ne veut pas perdre le déplacement
+                    val peiInMobile = listPeiDeplace.find { p -> p.peiId == it.peiId }
                     Pei(
                         peiId = it.peiId,
                         natureId = it.natureId,
                         natureDeciId = it.natureDeciId,
                         dispoHbe = it.dispoHbe,
                         dispoTerrestre = it.dispoTerrestre,
-                        x = it.x,
-                        y = it.y,
-                        lon = it.lon,
-                        lat = it.lat,
+                        x = if (peiInMobile?.isDeplace == true) peiInMobile.x else it.x,
+                        y = if (peiInMobile?.isDeplace == true) peiInMobile.y else it.y,
+                        lon = if (peiInMobile?.isDeplace == true) peiInMobile.lon else it.lon,
+                        lat = if (peiInMobile?.isDeplace == true) peiInMobile.lat else it.lat,
                         peiNumeroComplet = it.peiNumeroComplet,
                         typePeiId = typePei.find { t -> t.typePeiCode == it.peiTypePei }!!.typePeiId,
                         adresseComplete = it.peiComplementAdresse,
@@ -273,6 +277,7 @@ class ReferentielWorker constructor(
                         gestionnaireId = it.gestionnaireId,
                         peiCaracteristiques = peiCaracteristiques[it.peiId],
                         domaineId = it.domaineId,
+                        isDeplace = peiInMobile?.isDeplace ?: false,
                     )
                 },
             )

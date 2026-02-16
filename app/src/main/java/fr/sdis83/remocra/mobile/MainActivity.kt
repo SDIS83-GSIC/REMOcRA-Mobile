@@ -49,6 +49,7 @@ import fr.sdis83.remocra.mobile.utils.getVersionName
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.AdministrationViewModel
 import fr.sdis83.remocra.mobile.viewmodels.AuthentViewModel
+import fr.sdis83.remocra.mobile.viewmodels.DroitViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
 import fr.sdis83.remocra.mobile.viewmodels.ParametreViewModel
 import fr.sdis83.remocra.mobile.viewmodels.SplashViewModel
@@ -182,7 +183,8 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     private fun buildScreen(goToMain: Boolean, dateProchaineDeconnexion: String?, mdm: Boolean) {
         if (goToMain) {
-            val mapViewModel = MapViewModel(applicationContext)
+            val mapViewModel = MapViewModel(application)
+            val droitViewModel = DroitViewModel(application)
             val parametreViewModel = ParametreViewModel(applicationContext as Application)
 
             // On affiche la barre de navigation du périphérique
@@ -267,7 +269,7 @@ class MainActivity : ComponentActivity() {
                                                 ),
                                             ),
                                     ) {
-                                        MapView(mapViewModel, mapViewState, navController)
+                                        MapView(mapViewModel, droitViewModel, mapViewState, navController)
                                     }
                                 }
                                 Column(

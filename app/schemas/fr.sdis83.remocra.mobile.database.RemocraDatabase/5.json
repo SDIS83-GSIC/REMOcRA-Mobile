@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 5,
-    "identityHash": "b63c082f5ab73780c185819342a2e573",
+    "identityHash": "999b67e1ce17953744ca92521d205b48",
     "entities": [
       {
         "tableName": "pei",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`peiId` BLOB NOT NULL, `natureId` BLOB NOT NULL, `natureDeciId` BLOB NOT NULL, `domaineId` BLOB NOT NULL, `dispoHbe` TEXT, `dispoTerrestre` TEXT, `x` REAL NOT NULL, `y` REAL NOT NULL, `lon` REAL NOT NULL, `lat` REAL NOT NULL, `peiNumeroComplet` TEXT, `typePeiId` BLOB NOT NULL, `adresseComplete` TEXT, `observation` TEXT, `gestionnaireId` BLOB, `peiCaracteristiques` TEXT, `isNew` INTEGER NOT NULL, PRIMARY KEY(`peiId`), FOREIGN KEY(`natureId`) REFERENCES `nature`(`natureId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`natureDeciId`) REFERENCES `natureDeci`(`natureDeciId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`gestionnaireId`) REFERENCES `gestionnaire`(`gestionnaireId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`domaineId`) REFERENCES `domaine`(`domaineId`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`peiId` BLOB NOT NULL, `natureId` BLOB NOT NULL, `natureDeciId` BLOB NOT NULL, `domaineId` BLOB NOT NULL, `dispoHbe` TEXT, `dispoTerrestre` TEXT, `x` REAL NOT NULL, `y` REAL NOT NULL, `lon` REAL NOT NULL, `lat` REAL NOT NULL, `peiNumeroComplet` TEXT, `typePeiId` BLOB NOT NULL, `adresseComplete` TEXT, `observation` TEXT, `gestionnaireId` BLOB, `peiCaracteristiques` TEXT, `isNew` INTEGER NOT NULL, `isDeplace` INTEGER NOT NULL, PRIMARY KEY(`peiId`), FOREIGN KEY(`natureId`) REFERENCES `nature`(`natureId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`natureDeciId`) REFERENCES `natureDeci`(`natureDeciId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`gestionnaireId`) REFERENCES `gestionnaire`(`gestionnaireId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`domaineId`) REFERENCES `domaine`(`domaineId`) ON UPDATE NO ACTION ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "peiId",
@@ -107,6 +107,12 @@
           {
             "fieldPath": "isNew",
             "columnName": "isNew",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDeplace",
+            "columnName": "isDeplace",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -1810,7 +1816,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b63c082f5ab73780c185819342a2e573')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '999b67e1ce17953744ca92521d205b48')"
     ]
   }
 }

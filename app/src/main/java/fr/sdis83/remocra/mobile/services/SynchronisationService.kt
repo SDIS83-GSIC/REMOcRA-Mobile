@@ -8,10 +8,12 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Query
 import java.util.UUID
 
 interface SynchronisationService {
@@ -159,5 +161,26 @@ interface SynchronisationService {
         @Part("peiId") peiId: RequestBody,
         @Part("photoDate") photoDate: RequestBody,
         @Part photo: MultipartBody.Part,
+    ): Call<ResponseBody>
+
+    @GET("synchro/check-zone-competence")
+    fun checkZoneCompetence(
+        @Query("lat")
+        lat: Double,
+        @Query("lon")
+        lon: Double,
+    ): Call<ResponseBody>
+
+    @FormUrlEncoded
+    @POST("synchro/synchro-pei-deplacement/")
+    fun postDeplacementPei(
+        @Field("peiId")
+        peiId: UUID,
+        @Field("tourneeId")
+        tourneeId: UUID,
+        @Field("lat")
+        lat: Double,
+        @Field("lon")
+        lon: Double,
     ): Call<ResponseBody>
 }

@@ -13,11 +13,15 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.GpsFixed
 import androidx.compose.material.icons.filled.GpsNotFixed
 import androidx.compose.material.icons.filled.GpsOff
@@ -27,12 +31,17 @@ import androidx.compose.material.icons.filled.ZoomOut
 import androidx.compose.material.icons.filled.ZoomOutMap
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -43,6 +52,10 @@ import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.navigation.NavController
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
@@ -52,10 +65,15 @@ import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.tasks.Task
 import fr.sdis83.remocra.mobile.MapViewState
 import fr.sdis83.remocra.mobile.R
+import fr.sdis83.remocra.mobile.authn.SessionManager
 import fr.sdis83.remocra.mobile.database.Tournee
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
+import fr.sdis83.remocra.mobile.utils.dateAfterNow
 import fr.sdis83.remocra.mobile.utils.pxToDp
+import fr.sdis83.remocra.mobile.viewmodels.DroitViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
+import fr.sdis83.remocra.mobile.workers.PeiDeplacementWorker
+import kotlinx.coroutines.launch
 import org.osmdroid.api.IGeoPoint
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
@@ -77,14 +95,17 @@ import org.osmdroid.views.overlay.simplefastpoint.SimplePointTheme
 @Composable
 fun MapView(
     mapViewModel: MapViewModel,
+    droitViewModel: DroitViewModel,
     mapViewState: MutableState<MapViewState>,
     navController: NavController,
     modifier: Modifier = Modifier,
     onLoad: ((map: MapView) -> Unit)? = null,
 ) {
     val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     val symboleInconnu = context.resources.getDrawable(R.drawable.baseline_help_outline_24, context.theme)
+    val listTypeDroit by droitViewModel.typesDroit.observeAsState()
 
     val settingResultRequest = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartIntentSenderForResult(),
@@ -118,11 +139,11 @@ fun MapView(
             setMultiTouchControls(true)
         }
 
-    val iwOverlay = remember {
+    val iwOverlay = remember(listTypeDroit) {
         return@remember Marker(mapState).apply {
             icon = context.getDrawable(R.drawable.baseline_arrow_drop_down_24)
             infoWindow = PeiInfoWindow(
-                mapState, navController,
+                mapState, navController, mapViewModel, listTypeDroit?.firstOrNull { it.code == GlobalConstants.UPDATE_PLACEMENT_PEI_DROIT } != null,
             )
         }
     }
@@ -170,6 +191,10 @@ fun MapView(
     mapState.overlays.add(
         MapEventsOverlay(object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint): Boolean {
+                if (mapViewModel.peiEnDeplacement.value != null) {
+                    // Ne rien faire, le marker reste fixe au centre
+                    return true
+                }
                 if (iwOverlay.relatedObject != null) {
                     InfoWindow.closeAllInfoWindowsOn(mapState)
                     iwOverlay.setVisible(false)
@@ -177,11 +202,12 @@ fun MapView(
                 return false
             }
 
-            override fun longPressHelper(p: GeoPoint): Boolean {
-                return false
-            }
+            override fun longPressHelper(p: GeoPoint): Boolean = false
         }),
     )
+
+    val snackbarHostState = remember { androidx.compose.material3.SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(Unit) {
         mapViewModel.register(mapState)
@@ -374,6 +400,119 @@ fun MapView(
                 modifier = Modifier.align(Alignment.Center),
             )
         }
+        // Affichage du marker de déplacement et des boutons si un PEI est en déplacement
+        if (mapViewModel.peiEnDeplacement.value != null) {
+            // Marker au centre de la carte
+            LaunchedEffect(mapState.mapCenter) {
+                val existing = mapState.overlays.filterIsInstance<Marker>().find { it.title == "PEI_DEPLACEMENT" }
+                if (existing != null) mapState.overlays.remove(existing)
+                val marker = Marker(mapState).apply {
+                    position = mapState.mapCenter as? GeoPoint ?: GeoPoint(0.0, 0.0)
+                    setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    icon = context.getDrawable(R.drawable.outline_edit_location_alt)
+                    title = "PEI_DEPLACEMENT"
+                }
+                mapState.overlays.add(marker)
+                mapState.invalidate()
+            }
+            Row(
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 32.pxToDp),
+            ) {
+                FloatingActionButton(
+                    onClick = { mapViewModel.annulerDeplacementPei() },
+                    containerColor = androidx.compose.material3.MaterialTheme.colorScheme.error,
+                    contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onError,
+                    modifier = Modifier.padding(end = 16.pxToDp),
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 16.pxToDp),
+                    ) {
+                        Icon(Icons.Filled.Close, contentDescription = "Annuler")
+                        Spacer(Modifier.width(8.pxToDp))
+                        Text("Annuler")
+                    }
+                }
+                FloatingActionButton(
+                    onClick = {
+                        val pei = mapViewModel.peiEnDeplacement.value!!
+                        val center = mapState.mapCenter as? GeoPoint ?: GeoPoint(0.0, 0.0)
+                        val inputData = workDataOf(
+                            PeiDeplacementWorker.KEY_LAT to center.latitude,
+                            PeiDeplacementWorker.KEY_LON to center.longitude,
+                        )
+                        val request = OneTimeWorkRequestBuilder<PeiDeplacementWorker>()
+                            .setInputData(inputData)
+                            .build()
+                        val workManager = WorkManager.getInstance(context)
+                        val observer = object : androidx.lifecycle.Observer<WorkInfo> {
+                            override fun onChanged(info: WorkInfo) {
+                                when (info.state) {
+                                    WorkInfo.State.SUCCEEDED -> {
+                                        mapViewModel.updatePeiPosition(
+                                            peiId = pei.peiId,
+                                            lat = center.latitude,
+                                            lon = center.longitude,
+                                            x = center.longitude,
+                                            y = center.latitude,
+                                        )
+                                        mapViewModel.annulerDeplacementPei()
+                                        mapState.controller?.animateTo(GeoPoint(center.latitude, center.longitude))
+
+                                        val sessionManager = SessionManager(context.applicationContext)
+                                        val dateDeconnexion = sessionManager.getDateDeconnexion()
+                                        if (dateDeconnexion != null && dateAfterNow(dateDeconnexion)) {
+                                            coroutineScope.launch {
+                                                snackbarHostState.showSnackbar("Serveur inaccessible, si le PEI est dans votre zone de compétence, il sera mis à jour lors de la synchronisation de la tournée.")
+                                            }
+                                        } else {
+                                            coroutineScope.launch {
+                                                snackbarHostState.showSnackbar("PEI déplacé dans votre zone de compétence.")
+                                            }
+                                        }
+                                    }
+                                    WorkInfo.State.FAILED -> {
+                                        mapViewModel.annulerDeplacementPei()
+                                        coroutineScope.launch {
+                                            snackbarHostState.showSnackbar("Vous ne pouvez pas déplacer un PEI en dehors de votre zone de compétence.")
+                                        }
+                                    }
+                                    else -> {
+                                        // Ne rien faire pour les autres états
+                                    }
+                                }
+                                workManager.getWorkInfoByIdLiveData(request.id).removeObserver(this)
+                            }
+                        }
+                        workManager.getWorkInfoByIdLiveData(request.id).observe(lifecycleOwner, observer)
+                        workManager.enqueue(request)
+                    },
+                    containerColor = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+                    contentColor = androidx.compose.material3.MaterialTheme.colorScheme.onPrimary,
+                    modifier = Modifier.padding(end = 16.pxToDp),
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(horizontal = 16.pxToDp),
+                    ) {
+                        Icon(Icons.Filled.Check, contentDescription = "Valider")
+                        Spacer(Modifier.width(8.pxToDp))
+                        Text("Déplacer le PEI")
+                    }
+                }
+            }
+        } else {
+            // Nettoyage du marker temporaire si besoin
+            LaunchedEffect(Unit) {
+                val existing = mapState.overlays.filterIsInstance<Marker>().find { it.title == "PEI_DEPLACEMENT" }
+                if (existing != null) {
+                    mapState.overlays.remove(existing)
+                    mapState.invalidate()
+                }
+            }
+        }
         Column(
             Modifier
                 .padding(16.pxToDp)
@@ -462,6 +601,7 @@ fun MapView(
                 )
             }
         }
+        SnackbarHost(hostState = snackbarHostState)
     }
 }
 

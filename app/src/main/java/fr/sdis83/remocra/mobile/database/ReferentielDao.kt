@@ -208,6 +208,9 @@ abstract class ReferentielDao {
     @Query("SELECT * FROM pei")
     abstract fun getListPei(): List<Pei>
 
+    @Query("SELECT * FROM pei where isDeplace = 1")
+    abstract fun getListPeiDeplace(): List<Pei>
+
     @Query("SELECT * FROM pei where peiId in (:listPeiId) and isNew = 0")
     abstract fun getListPeiToRemove(listPeiId: List<UUID>): List<Pei>
 

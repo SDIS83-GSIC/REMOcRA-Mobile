@@ -73,4 +73,12 @@
             android:textFontWeight="700"
             android:textSize="15px" />
 
+        <Button
+            android:id="@+id/move_pei"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Déplacer"
+            android:visibility="gone"
+            android:layout_marginTop="8dp" />
+
 </LinearLayout>

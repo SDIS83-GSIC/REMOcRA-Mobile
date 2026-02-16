@@ -18,7 +18,12 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.OverlayWithIW
 import org.osmdroid.views.overlay.infowindow.InfoWindow
 
-class PeiInfoWindow(mapView: MapView, val navController: NavController) : InfoWindow(R.layout.map_bubble, mapView) {
+class PeiInfoWindow(
+    mapView: MapView,
+    val navController: NavController,
+    private val mapViewModel: MapViewModel,
+    private val droitDeplacerPei: Boolean,
+) : InfoWindow(R.layout.map_bubble, mapView) {
 
     val mPeiNumero = R.id.pei_numero
     val mOpenGps = R.id.open_gps
@@ -26,6 +31,7 @@ class PeiInfoWindow(mapView: MapView, val navController: NavController) : InfoWi
     var mPeiDisponibilite = R.id.pei_disponibilite
     var mPeiAdresse = R.id.pei_adresse
     var mPeiCaracteristiques = R.id.pei_caracteristiques
+    var mMovePei = R.id.move_pei
 
     init {
         mView.setOnTouchListener { _, motionEvent: MotionEvent ->
@@ -85,7 +91,20 @@ class PeiInfoWindow(mapView: MapView, val navController: NavController) : InfoWi
             } else {
                 goToVisite.visibility = View.GONE
             }
+
+            val movePeiButton = mView.findViewById<Button>(mMovePei)
+            if (pei.tourneeId != null && droitDeplacerPei) {
+                movePeiButton.visibility = View.VISIBLE
+                movePeiButton.setOnClickListener {
+                    mapViewModel.commencerDeplacementPei(pei)
+                    close() // Ferme l'infobulle après activation du mode déplacement
+                }
+            } else {
+                movePeiButton.visibility = View.GONE
+            }
         } catch (e: Exception) {
+            // En cas d'erreur, on ferme simplement l'infobulle pour éviter de laisser une infobulle vide ou partiellement remplie
+            close()
         }
     }
 

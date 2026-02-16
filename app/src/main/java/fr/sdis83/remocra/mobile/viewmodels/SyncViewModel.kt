@@ -11,6 +11,7 @@ import androidx.work.WorkManager
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.synchronisation.SynchroContactRoleWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroContactWorker
+import fr.sdis83.remocra.mobile.synchronisation.SynchroDeplacementPeiWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroGestionnaireWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroNewPeiWorker
 import fr.sdis83.remocra.mobile.synchronisation.SynchroTourneeFinWorker
@@ -60,6 +61,9 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
         val synchroTourneeWorker = OneTimeWorkRequestBuilder<SynchroTourneeWorker>()
             .build()
 
+        val synchroDeplacement = OneTimeWorkRequestBuilder<SynchroDeplacementPeiWorker>()
+            .build()
+
         val synchroVisiteWorker = OneTimeWorkRequestBuilder<SynchroVisiteWorker>()
             .build()
 
@@ -81,6 +85,7 @@ class SyncViewModel(application: Application) : AndroidViewModel(application) {
                 .then(synchroContactRole)
                 .then(synchroNewPei)
                 .then(synchroTourneeWorker)
+                .then(synchroDeplacement)
                 .then(synchroVisiteWorker)
                 .then(synchroVisiteAnomalieWorker)
                 .then(synchroTourneeFinWorker)
