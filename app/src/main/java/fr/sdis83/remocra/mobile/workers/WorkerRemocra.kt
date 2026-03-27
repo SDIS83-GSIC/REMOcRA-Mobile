@@ -3,13 +3,12 @@ package fr.sdis83.remocra.mobile.workers
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import androidx.core.content.ContextCompat
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.okta.authfoundationbootstrap.CredentialBootstrap
-import fr.sdis83.remocra.mobile.MainActivity
 import fr.sdis83.remocra.mobile.authn.SessionManager
 import fr.sdis83.remocra.mobile.services.ReferentielService
+import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import fr.sdis83.remocra.mobile.utils.dateAfterNow
 import kotlinx.coroutines.runBlocking
 
@@ -32,18 +31,9 @@ abstract class WorkerRemocra(
     /**
      * Gère la redirection vers MainActivity.
      */
-    fun redirectMainActivity() {
-        val intent = Intent(
-            applicationContext,
-            MainActivity::class.java,
-        )
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        ContextCompat.startActivity(
-            applicationContext,
-            intent,
-            null,
-        )
+    private fun sendLogoutBroadcast() {
+        val intent = Intent(GlobalConstants.ACTION_LOGOUT)
+        applicationContext.sendBroadcast(intent)
     }
 
     override fun doWork(): Result {
@@ -55,7 +45,7 @@ abstract class WorkerRemocra(
                 logModeDeconnecte()
                 return Result.success()
             }
-            redirectMainActivity()
+            sendLogoutBroadcast()
             return Result.failure()
         }
 
@@ -73,7 +63,7 @@ abstract class WorkerRemocra(
                 CredentialBootstrap.defaultCredential().delete()
                 sessionManager.invalidateAuthToken()
                 result = Result.failure()
-                redirectMainActivity()
+                sendLogoutBroadcast()
             }
         }
 

@@ -25,4 +25,6 @@ object GlobalConstants {
 
     const val KEYCLOAK_LOGIN = "fr.sdis83.remocra.mobile:/login"
     const val KEYCLOAK_LOGOUT = "fr.sdis83.remocra.mobile:/logout"
+
+    const val ACTION_LOGOUT = "fr.sdis83.remocra.mobile.ACTION_LOGOUT"
 }

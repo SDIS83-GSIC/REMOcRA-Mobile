@@ -44,6 +44,7 @@ import fr.sdis83.remocra.mobile.ui.components.MapView
 import fr.sdis83.remocra.mobile.ui.layout.Layout
 import fr.sdis83.remocra.mobile.ui.screens.login.LoginScreen
 import fr.sdis83.remocra.mobile.ui.theme.REMOcRAMobileTheme
+import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import fr.sdis83.remocra.mobile.utils.dateAfterNow
 import fr.sdis83.remocra.mobile.utils.getVersionName
 import fr.sdis83.remocra.mobile.utils.pxToDp
@@ -334,5 +335,26 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private var logoutReceiver: BroadcastReceiver? = null
+
+    override fun onStart() {
+        super.onStart()
+        val filter = IntentFilter(GlobalConstants.ACTION_LOGOUT)
+        logoutReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                // Si on reçoit un broadcast de logout, on redirige vers le login
+                // utilisé seulement dans WorkerRemocra quand le serveur nous répond une 401 ou une 403 et qu'on est pas en mode déconnecté
+                authentViewModel.goToMainActivity.postValue(false)
+            }
+        }
+        registerReceiver(logoutReceiver, filter)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        logoutReceiver?.let { unregisterReceiver(it) }
+        logoutReceiver = null
     }
 }
