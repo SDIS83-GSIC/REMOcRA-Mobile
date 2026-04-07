@@ -654,7 +654,7 @@ private fun StepTwo(
                     text = item.anomalie.anomalieLibelle,
                     label = {
                         Text(
-                            text = item.anomalie.anomalieLibelle,
+                            text = if (item.anomalie.anomalieActif) item.anomalie.anomalieLibelle else "${item.anomalie.anomalieLibelle} (inactive)",
                             fontWeight = if (item.valIndispoTerrestre >= 5) FontWeight.Bold else null,
                         )
                     },

@@ -1,0 +1,1828 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 6,
+    "identityHash": "e08582f401e264726ae33b0f3f91bbcc",
+    "entities": [
+      {
+        "tableName": "pei",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`peiId` BLOB NOT NULL, `natureId` BLOB NOT NULL, `natureDeciId` BLOB NOT NULL, `domaineId` BLOB NOT NULL, `dispoHbe` TEXT, `dispoTerrestre` TEXT, `x` REAL NOT NULL, `y` REAL NOT NULL, `lon` REAL NOT NULL, `lat` REAL NOT NULL, `peiNumeroComplet` TEXT, `typePeiId` BLOB NOT NULL, `adresseComplete` TEXT, `observation` TEXT, `gestionnaireId` BLOB, `peiCaracteristiques` TEXT, `isNew` INTEGER NOT NULL, `isDeplace` INTEGER NOT NULL, PRIMARY KEY(`peiId`), FOREIGN KEY(`natureId`) REFERENCES `nature`(`natureId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`natureDeciId`) REFERENCES `natureDeci`(`natureDeciId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`gestionnaireId`) REFERENCES `gestionnaire`(`gestionnaireId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`domaineId`) REFERENCES `domaine`(`domaineId`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "peiId",
+            "columnName": "peiId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "natureId",
+            "columnName": "natureId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "natureDeciId",
+            "columnName": "natureDeciId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domaineId",
+            "columnName": "domaineId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dispoHbe",
+            "columnName": "dispoHbe",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "dispoTerrestre",
+            "columnName": "dispoTerrestre",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "x",
+            "columnName": "x",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "y",
+            "columnName": "y",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lon",
+            "columnName": "lon",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lat",
+            "columnName": "lat",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "peiNumeroComplet",
+            "columnName": "peiNumeroComplet",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "typePeiId",
+            "columnName": "typePeiId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "adresseComplete",
+            "columnName": "adresseComplete",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "observation",
+            "columnName": "observation",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "gestionnaireId",
+            "columnName": "gestionnaireId",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "peiCaracteristiques",
+            "columnName": "peiCaracteristiques",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isNew",
+            "columnName": "isNew",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isDeplace",
+            "columnName": "isDeplace",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "peiId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_pei_peiId",
+            "unique": false,
+            "columnNames": [
+              "peiId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_pei_peiId` ON `${TABLE_NAME}` (`peiId`)"
+          },
+          {
+            "name": "index_pei_natureId",
+            "unique": false,
+            "columnNames": [
+              "natureId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_pei_natureId` ON `${TABLE_NAME}` (`natureId`)"
+          },
+          {
+            "name": "index_pei_natureDeciId",
+            "unique": false,
+            "columnNames": [
+              "natureDeciId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_pei_natureDeciId` ON `${TABLE_NAME}` (`natureDeciId`)"
+          },
+          {
+            "name": "index_pei_gestionnaireId",
+            "unique": false,
+            "columnNames": [
+              "gestionnaireId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_pei_gestionnaireId` ON `${TABLE_NAME}` (`gestionnaireId`)"
+          },
+          {
+            "name": "index_pei_domaineId",
+            "unique": false,
+            "columnNames": [
+              "domaineId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_pei_domaineId` ON `${TABLE_NAME}` (`domaineId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "nature",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "natureId"
+            ],
+            "referencedColumns": [
+              "natureId"
+            ]
+          },
+          {
+            "table": "natureDeci",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "natureDeciId"
+            ],
+            "referencedColumns": [
+              "natureDeciId"
+            ]
+          },
+          {
+            "table": "gestionnaire",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "gestionnaireId"
+            ],
+            "referencedColumns": [
+              "gestionnaireId"
+            ]
+          },
+          {
+            "table": "domaine",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "domaineId"
+            ],
+            "referencedColumns": [
+              "domaineId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "gestionnaire",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gestionnaireId` BLOB NOT NULL, `gestionnaireActif` INTEGER NOT NULL, `gestionnaireLibelle` TEXT NOT NULL, `gestionnaireCode` TEXT NOT NULL, `edited` INTEGER NOT NULL, PRIMARY KEY(`gestionnaireId`))",
+        "fields": [
+          {
+            "fieldPath": "gestionnaireId",
+            "columnName": "gestionnaireId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gestionnaireActif",
+            "columnName": "gestionnaireActif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gestionnaireLibelle",
+            "columnName": "gestionnaireLibelle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gestionnaireCode",
+            "columnName": "gestionnaireCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "edited",
+            "columnName": "edited",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "gestionnaireId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_gestionnaire_gestionnaireId",
+            "unique": false,
+            "columnNames": [
+              "gestionnaireId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_gestionnaire_gestionnaireId` ON `${TABLE_NAME}` (`gestionnaireId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "role",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`roleContactId` BLOB NOT NULL, `roleContactActif` INTEGER NOT NULL, `roleContactLibelle` TEXT, `roleContactCode` TEXT NOT NULL, PRIMARY KEY(`roleContactId`))",
+        "fields": [
+          {
+            "fieldPath": "roleContactId",
+            "columnName": "roleContactId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roleContactActif",
+            "columnName": "roleContactActif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roleContactLibelle",
+            "columnName": "roleContactLibelle",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "roleContactCode",
+            "columnName": "roleContactCode",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "roleContactId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_role_roleContactId",
+            "unique": false,
+            "columnNames": [
+              "roleContactId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_role_roleContactId` ON `${TABLE_NAME}` (`roleContactId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "contactRole",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contactId` BLOB NOT NULL, `roleContactId` BLOB NOT NULL, PRIMARY KEY(`contactId`, `roleContactId`), FOREIGN KEY(`contactId`) REFERENCES `contact`(`contactId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`roleContactId`) REFERENCES `role`(`roleContactId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "contactId",
+            "columnName": "contactId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "roleContactId",
+            "columnName": "roleContactId",
+            "affinity": "BLOB",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "contactId",
+            "roleContactId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_contactRole_contactId",
+            "unique": false,
+            "columnNames": [
+              "contactId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contactRole_contactId` ON `${TABLE_NAME}` (`contactId`)"
+          },
+          {
+            "name": "index_contactRole_roleContactId",
+            "unique": false,
+            "columnNames": [
+              "roleContactId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contactRole_roleContactId` ON `${TABLE_NAME}` (`roleContactId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "contact",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "contactId"
+            ],
+            "referencedColumns": [
+              "contactId"
+            ]
+          },
+          {
+            "table": "role",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "roleContactId"
+            ],
+            "referencedColumns": [
+              "roleContactId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "contact",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`contactId` BLOB NOT NULL, `contactActif` INTEGER NOT NULL, `gestionnaireId` BLOB NOT NULL, `contactCivilite` TEXT, `contactNom` TEXT, `contactPrenom` TEXT, `contactNumeroVoie` TEXT, `contactSuffixeVoie` TEXT, `contactLieuDitText` TEXT, `contactVoieText` TEXT, `contactCodePostal` TEXT, `contactCommuneText` TEXT, `contactPays` TEXT, `contactTelephone` TEXT, `contactEmail` TEXT, `contactFonctionContactId` BLOB, `edited` INTEGER NOT NULL, PRIMARY KEY(`contactId`), FOREIGN KEY(`gestionnaireId`) REFERENCES `gestionnaire`(`gestionnaireId`) ON UPDATE NO ACTION ON DELETE SET NULL , FOREIGN KEY(`contactFonctionContactId`) REFERENCES `fonctionContact`(`fonctionContactId`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "contactId",
+            "columnName": "contactId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contactActif",
+            "columnName": "contactActif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "gestionnaireId",
+            "columnName": "gestionnaireId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contactCivilite",
+            "columnName": "contactCivilite",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactNom",
+            "columnName": "contactNom",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactPrenom",
+            "columnName": "contactPrenom",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactNumeroVoie",
+            "columnName": "contactNumeroVoie",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactSuffixeVoie",
+            "columnName": "contactSuffixeVoie",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactLieuDitText",
+            "columnName": "contactLieuDitText",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactVoieText",
+            "columnName": "contactVoieText",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactCodePostal",
+            "columnName": "contactCodePostal",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactCommuneText",
+            "columnName": "contactCommuneText",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactPays",
+            "columnName": "contactPays",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactTelephone",
+            "columnName": "contactTelephone",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactEmail",
+            "columnName": "contactEmail",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "contactFonctionContactId",
+            "columnName": "contactFonctionContactId",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "edited",
+            "columnName": "edited",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "contactId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_contact_contactId",
+            "unique": false,
+            "columnNames": [
+              "contactId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contact_contactId` ON `${TABLE_NAME}` (`contactId`)"
+          },
+          {
+            "name": "index_contact_gestionnaireId",
+            "unique": false,
+            "columnNames": [
+              "gestionnaireId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contact_gestionnaireId` ON `${TABLE_NAME}` (`gestionnaireId`)"
+          },
+          {
+            "name": "index_contact_contactFonctionContactId",
+            "unique": false,
+            "columnNames": [
+              "contactFonctionContactId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_contact_contactFonctionContactId` ON `${TABLE_NAME}` (`contactFonctionContactId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "gestionnaire",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "gestionnaireId"
+            ],
+            "referencedColumns": [
+              "gestionnaireId"
+            ]
+          },
+          {
+            "table": "fonctionContact",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "contactFonctionContactId"
+            ],
+            "referencedColumns": [
+              "fonctionContactId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "tournee",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tourneeId` BLOB NOT NULL, `peiCount` INTEGER NOT NULL, `nom` TEXT NOT NULL, PRIMARY KEY(`tourneeId`))",
+        "fields": [
+          {
+            "fieldPath": "tourneeId",
+            "columnName": "tourneeId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "peiCount",
+            "columnName": "peiCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "tourneeId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_tournee_tourneeId",
+            "unique": false,
+            "columnNames": [
+              "tourneeId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_tournee_tourneeId` ON `${TABLE_NAME}` (`tourneeId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "lPeiTournee",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`peiId` BLOB NOT NULL, `tourneeId` BLOB NOT NULL, `ordre` INTEGER NOT NULL, PRIMARY KEY(`peiId`, `tourneeId`), FOREIGN KEY(`peiId`) REFERENCES `pei`(`peiId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`tourneeId`) REFERENCES `tournee`(`tourneeId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "peiId",
+            "columnName": "peiId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tourneeId",
+            "columnName": "tourneeId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "ordre",
+            "columnName": "ordre",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "peiId",
+            "tourneeId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_lPeiTournee_peiId",
+            "unique": false,
+            "columnNames": [
+              "peiId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_lPeiTournee_peiId` ON `${TABLE_NAME}` (`peiId`)"
+          },
+          {
+            "name": "index_lPeiTournee_tourneeId",
+            "unique": false,
+            "columnNames": [
+              "tourneeId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_lPeiTournee_tourneeId` ON `${TABLE_NAME}` (`tourneeId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "pei",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "peiId"
+            ],
+            "referencedColumns": [
+              "peiId"
+            ]
+          },
+          {
+            "table": "tournee",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tourneeId"
+            ],
+            "referencedColumns": [
+              "tourneeId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "visite",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`visiteId` BLOB NOT NULL, `peiId` BLOB NOT NULL, `tourneeId` BLOB NOT NULL, `dateVisite` INTEGER NOT NULL, `statut` TEXT NOT NULL, `typeVisiteId` BLOB, `agent1` TEXT, `agent2` TEXT, `ctrlDebitPression` INTEGER NOT NULL, `Débit à 1 bar (㎥/h)` INTEGER, `Pression dynamique à 60 ㎥ (bar)` REAL, `Pression statique (bar)` REAL, `hasAnomalieChanges` INTEGER NOT NULL, `observations` TEXT, PRIMARY KEY(`visiteId`), FOREIGN KEY(`peiId`) REFERENCES `pei`(`peiId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`tourneeId`) REFERENCES `tournee`(`tourneeId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`typeVisiteId`) REFERENCES `typeVisite`(`typeVisiteId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "visiteId",
+            "columnName": "visiteId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "peiId",
+            "columnName": "peiId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tourneeId",
+            "columnName": "tourneeId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "dateVisite",
+            "columnName": "dateVisite",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "statut",
+            "columnName": "statut",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typeVisiteId",
+            "columnName": "typeVisiteId",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agent1",
+            "columnName": "agent1",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "agent2",
+            "columnName": "agent2",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ctrlDebitPression",
+            "columnName": "ctrlDebitPression",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "debit",
+            "columnName": "Débit à 1 bar (㎥/h)",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pressionDyn",
+            "columnName": "Pression dynamique à 60 ㎥ (bar)",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pression",
+            "columnName": "Pression statique (bar)",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hasAnomalieChanges",
+            "columnName": "hasAnomalieChanges",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "observations",
+            "columnName": "observations",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "visiteId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_visite_visiteId",
+            "unique": true,
+            "columnNames": [
+              "visiteId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_visite_visiteId` ON `${TABLE_NAME}` (`visiteId`)"
+          },
+          {
+            "name": "index_visite_peiId",
+            "unique": false,
+            "columnNames": [
+              "peiId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_visite_peiId` ON `${TABLE_NAME}` (`peiId`)"
+          },
+          {
+            "name": "index_visite_tourneeId",
+            "unique": false,
+            "columnNames": [
+              "tourneeId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_visite_tourneeId` ON `${TABLE_NAME}` (`tourneeId`)"
+          },
+          {
+            "name": "index_visite_typeVisiteId",
+            "unique": false,
+            "columnNames": [
+              "typeVisiteId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_visite_typeVisiteId` ON `${TABLE_NAME}` (`typeVisiteId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "pei",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "peiId"
+            ],
+            "referencedColumns": [
+              "peiId"
+            ]
+          },
+          {
+            "table": "tournee",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "tourneeId"
+            ],
+            "referencedColumns": [
+              "tourneeId"
+            ]
+          },
+          {
+            "table": "typeVisite",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "typeVisiteId"
+            ],
+            "referencedColumns": [
+              "typeVisiteId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "typePei",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`typePeiId` BLOB NOT NULL, `typePeiCode` TEXT NOT NULL, PRIMARY KEY(`typePeiId`))",
+        "fields": [
+          {
+            "fieldPath": "typePeiId",
+            "columnName": "typePeiId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typePeiCode",
+            "columnName": "typePeiCode",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "typePeiId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_typePei_typePeiId",
+            "unique": false,
+            "columnNames": [
+              "typePeiId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typePei_typePeiId` ON `${TABLE_NAME}` (`typePeiId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "anomalie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`anomalieId` BLOB NOT NULL, `anomalieActif` INTEGER NOT NULL, `anomalieAnomalieCategorieId` BLOB NOT NULL, `anomalieCode` TEXT NOT NULL, `anomalieLibelle` TEXT NOT NULL, `anomalieOrdre` INTEGER NOT NULL, PRIMARY KEY(`anomalieId`), FOREIGN KEY(`anomalieAnomalieCategorieId`) REFERENCES `anomalieCategorie`(`anomalieCategorieId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "anomalieId",
+            "columnName": "anomalieId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieActif",
+            "columnName": "anomalieActif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieAnomalieCategorieId",
+            "columnName": "anomalieAnomalieCategorieId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieCode",
+            "columnName": "anomalieCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieLibelle",
+            "columnName": "anomalieLibelle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieOrdre",
+            "columnName": "anomalieOrdre",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "anomalieId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_anomalie_anomalieId",
+            "unique": false,
+            "columnNames": [
+              "anomalieId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_anomalie_anomalieId` ON `${TABLE_NAME}` (`anomalieId`)"
+          },
+          {
+            "name": "index_anomalie_anomalieAnomalieCategorieId",
+            "unique": false,
+            "columnNames": [
+              "anomalieAnomalieCategorieId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_anomalie_anomalieAnomalieCategorieId` ON `${TABLE_NAME}` (`anomalieAnomalieCategorieId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "anomalieCategorie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "anomalieAnomalieCategorieId"
+            ],
+            "referencedColumns": [
+              "anomalieCategorieId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "poidsAnomalie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`poidsAnomalieId` BLOB NOT NULL, `poidsAnomalieAnomalieId` BLOB NOT NULL, `poidsAnomalieNatureId` BLOB NOT NULL, `valIndispoTerrestre` INTEGER, `valIndispoHbe` INTEGER, PRIMARY KEY(`poidsAnomalieId`), FOREIGN KEY(`poidsAnomalieAnomalieId`) REFERENCES `anomalie`(`anomalieId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`poidsAnomalieNatureId`) REFERENCES `nature`(`natureId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "poidsAnomalieId",
+            "columnName": "poidsAnomalieId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "poidsAnomalieAnomalieId",
+            "columnName": "poidsAnomalieAnomalieId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "poidsAnomalieNatureId",
+            "columnName": "poidsAnomalieNatureId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "valIndispoTerrestre",
+            "columnName": "valIndispoTerrestre",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "valIndispoHbe",
+            "columnName": "valIndispoHbe",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "poidsAnomalieId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_poidsAnomalie_poidsAnomalieId",
+            "unique": false,
+            "columnNames": [
+              "poidsAnomalieId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_poidsAnomalie_poidsAnomalieId` ON `${TABLE_NAME}` (`poidsAnomalieId`)"
+          },
+          {
+            "name": "index_poidsAnomalie_poidsAnomalieAnomalieId",
+            "unique": false,
+            "columnNames": [
+              "poidsAnomalieAnomalieId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_poidsAnomalie_poidsAnomalieAnomalieId` ON `${TABLE_NAME}` (`poidsAnomalieAnomalieId`)"
+          },
+          {
+            "name": "index_poidsAnomalie_poidsAnomalieNatureId",
+            "unique": false,
+            "columnNames": [
+              "poidsAnomalieNatureId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_poidsAnomalie_poidsAnomalieNatureId` ON `${TABLE_NAME}` (`poidsAnomalieNatureId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "anomalie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "poidsAnomalieAnomalieId"
+            ],
+            "referencedColumns": [
+              "anomalieId"
+            ]
+          },
+          {
+            "table": "nature",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "poidsAnomalieNatureId"
+            ],
+            "referencedColumns": [
+              "natureId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "lPoidsAnomalieTypeVisite",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`poidsAnomalieId` BLOB NOT NULL, `typeVisiteId` BLOB NOT NULL, PRIMARY KEY(`poidsAnomalieId`, `typeVisiteId`), FOREIGN KEY(`poidsAnomalieId`) REFERENCES `poidsAnomalie`(`poidsAnomalieId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`typeVisiteId`) REFERENCES `typeVisite`(`typeVisiteId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "poidsAnomalieId",
+            "columnName": "poidsAnomalieId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typeVisiteId",
+            "columnName": "typeVisiteId",
+            "affinity": "BLOB",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "poidsAnomalieId",
+            "typeVisiteId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_lPoidsAnomalieTypeVisite_poidsAnomalieId",
+            "unique": false,
+            "columnNames": [
+              "poidsAnomalieId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_lPoidsAnomalieTypeVisite_poidsAnomalieId` ON `${TABLE_NAME}` (`poidsAnomalieId`)"
+          },
+          {
+            "name": "index_lPoidsAnomalieTypeVisite_typeVisiteId",
+            "unique": false,
+            "columnNames": [
+              "typeVisiteId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_lPoidsAnomalieTypeVisite_typeVisiteId` ON `${TABLE_NAME}` (`typeVisiteId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "poidsAnomalie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "poidsAnomalieId"
+            ],
+            "referencedColumns": [
+              "poidsAnomalieId"
+            ]
+          },
+          {
+            "table": "typeVisite",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "typeVisiteId"
+            ],
+            "referencedColumns": [
+              "typeVisiteId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "anomalieCategorie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`anomalieCategorieId` BLOB NOT NULL, `anomalieCategorieCode` TEXT NOT NULL, `anomalieCategorieLibelle` TEXT NOT NULL, `anomalieCategorieActif` INTEGER NOT NULL, `anomalieCategorieOrdre` INTEGER NOT NULL, PRIMARY KEY(`anomalieCategorieId`))",
+        "fields": [
+          {
+            "fieldPath": "anomalieCategorieId",
+            "columnName": "anomalieCategorieId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieCategorieCode",
+            "columnName": "anomalieCategorieCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieCategorieLibelle",
+            "columnName": "anomalieCategorieLibelle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieCategorieActif",
+            "columnName": "anomalieCategorieActif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieCategorieOrdre",
+            "columnName": "anomalieCategorieOrdre",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "anomalieCategorieId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_anomalieCategorie_anomalieCategorieId",
+            "unique": false,
+            "columnNames": [
+              "anomalieCategorieId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_anomalieCategorie_anomalieCategorieId` ON `${TABLE_NAME}` (`anomalieCategorieId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "nature",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`natureId` BLOB NOT NULL, `natureCode` TEXT NOT NULL, `natureActif` INTEGER NOT NULL, `natureLibelle` TEXT NOT NULL, `typePeiId` BLOB NOT NULL, PRIMARY KEY(`natureId`), FOREIGN KEY(`typePeiId`) REFERENCES `typePei`(`typePeiId`) ON UPDATE NO ACTION ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "natureId",
+            "columnName": "natureId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "natureCode",
+            "columnName": "natureCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "natureActif",
+            "columnName": "natureActif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "natureLibelle",
+            "columnName": "natureLibelle",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typePeiId",
+            "columnName": "typePeiId",
+            "affinity": "BLOB",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "natureId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_nature_natureId",
+            "unique": false,
+            "columnNames": [
+              "natureId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_nature_natureId` ON `${TABLE_NAME}` (`natureId`)"
+          },
+          {
+            "name": "index_nature_typePeiId",
+            "unique": false,
+            "columnNames": [
+              "typePeiId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_nature_typePeiId` ON `${TABLE_NAME}` (`typePeiId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "typePei",
+            "onDelete": "SET NULL",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "typePeiId"
+            ],
+            "referencedColumns": [
+              "typePeiId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "natureDeci",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`natureDeciId` BLOB NOT NULL, `natureDeciActif` INTEGER NOT NULL, `natureDeciCode` TEXT NOT NULL, `natureDeciLibelle` TEXT NOT NULL, PRIMARY KEY(`natureDeciId`))",
+        "fields": [
+          {
+            "fieldPath": "natureDeciId",
+            "columnName": "natureDeciId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "natureDeciActif",
+            "columnName": "natureDeciActif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "natureDeciCode",
+            "columnName": "natureDeciCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "natureDeciLibelle",
+            "columnName": "natureDeciLibelle",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "natureDeciId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_natureDeci_natureDeciId",
+            "unique": false,
+            "columnNames": [
+              "natureDeciId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_natureDeci_natureDeciId` ON `${TABLE_NAME}` (`natureDeciId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "typeVisite",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`typeVisiteId` BLOB NOT NULL, `typeVisiteCode` TEXT NOT NULL, `typeVisiteLibelle` TEXT NOT NULL, PRIMARY KEY(`typeVisiteId`))",
+        "fields": [
+          {
+            "fieldPath": "typeVisiteId",
+            "columnName": "typeVisiteId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typeVisiteCode",
+            "columnName": "typeVisiteCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "typeVisiteLibelle",
+            "columnName": "typeVisiteLibelle",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "typeVisiteId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_typeVisite_typeVisiteId",
+            "unique": false,
+            "columnNames": [
+              "typeVisiteId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typeVisite_typeVisiteId` ON `${TABLE_NAME}` (`typeVisiteId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "photoPei",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`photoId` BLOB NOT NULL, `peiId` BLOB NOT NULL, `datePhoto` INTEGER NOT NULL, `path` TEXT NOT NULL, PRIMARY KEY(`photoId`), FOREIGN KEY(`peiId`) REFERENCES `pei`(`peiId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "photoId",
+            "columnName": "photoId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "peiId",
+            "columnName": "peiId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "datePhoto",
+            "columnName": "datePhoto",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "path",
+            "columnName": "path",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "photoId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_photoPei_photoId",
+            "unique": false,
+            "columnNames": [
+              "photoId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_photoPei_photoId` ON `${TABLE_NAME}` (`photoId`)"
+          },
+          {
+            "name": "index_photoPei_peiId",
+            "unique": false,
+            "columnNames": [
+              "peiId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_photoPei_peiId` ON `${TABLE_NAME}` (`peiId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "pei",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "peiId"
+            ],
+            "referencedColumns": [
+              "peiId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "lVisiteAnomalie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`visiteId` BLOB NOT NULL, `anomalieId` BLOB NOT NULL, PRIMARY KEY(`visiteId`, `anomalieId`), FOREIGN KEY(`visiteId`) REFERENCES `visite`(`visiteId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`anomalieId`) REFERENCES `anomalie`(`anomalieId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "visiteId",
+            "columnName": "visiteId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieId",
+            "columnName": "anomalieId",
+            "affinity": "BLOB",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "visiteId",
+            "anomalieId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_lVisiteAnomalie_visiteId",
+            "unique": false,
+            "columnNames": [
+              "visiteId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_lVisiteAnomalie_visiteId` ON `${TABLE_NAME}` (`visiteId`)"
+          },
+          {
+            "name": "index_lVisiteAnomalie_anomalieId",
+            "unique": false,
+            "columnNames": [
+              "anomalieId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_lVisiteAnomalie_anomalieId` ON `${TABLE_NAME}` (`anomalieId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "visite",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "visiteId"
+            ],
+            "referencedColumns": [
+              "visiteId"
+            ]
+          },
+          {
+            "table": "anomalie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "anomalieId"
+            ],
+            "referencedColumns": [
+              "anomalieId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "lPeiAnomalie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`peiId` BLOB NOT NULL, `anomalieId` BLOB NOT NULL, PRIMARY KEY(`peiId`, `anomalieId`), FOREIGN KEY(`peiId`) REFERENCES `pei`(`peiId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`anomalieId`) REFERENCES `anomalie`(`anomalieId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "peiId",
+            "columnName": "peiId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "anomalieId",
+            "columnName": "anomalieId",
+            "affinity": "BLOB",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "peiId",
+            "anomalieId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_lPeiAnomalie_peiId",
+            "unique": false,
+            "columnNames": [
+              "peiId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_lPeiAnomalie_peiId` ON `${TABLE_NAME}` (`peiId`)"
+          },
+          {
+            "name": "index_lPeiAnomalie_anomalieId",
+            "unique": false,
+            "columnNames": [
+              "anomalieId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_lPeiAnomalie_anomalieId` ON `${TABLE_NAME}` (`anomalieId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "pei",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "peiId"
+            ],
+            "referencedColumns": [
+              "peiId"
+            ]
+          },
+          {
+            "table": "anomalie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "anomalieId"
+            ],
+            "referencedColumns": [
+              "anomalieId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "tourneeDispo",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tourneeDispoId` BLOB NOT NULL, `nom` TEXT, `choisie` INTEGER NOT NULL, PRIMARY KEY(`tourneeDispoId`))",
+        "fields": [
+          {
+            "fieldPath": "tourneeDispoId",
+            "columnName": "tourneeDispoId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nom",
+            "columnName": "nom",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "choisie",
+            "columnName": "choisie",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "tourneeDispoId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_tourneeDispo_tourneeDispoId",
+            "unique": false,
+            "columnNames": [
+              "tourneeDispoId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_tourneeDispo_tourneeDispoId` ON `${TABLE_NAME}` (`tourneeDispoId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "parametre",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`parametreId` BLOB NOT NULL, `parametreCode` TEXT NOT NULL, `parametreValeur` TEXT, PRIMARY KEY(`parametreId`))",
+        "fields": [
+          {
+            "fieldPath": "parametreId",
+            "columnName": "parametreId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parametreCode",
+            "columnName": "parametreCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parametreValeur",
+            "columnName": "parametreValeur",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "parametreId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_parametre_parametreId",
+            "unique": false,
+            "columnNames": [
+              "parametreId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_parametre_parametreId` ON `${TABLE_NAME}` (`parametreId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "typeDroit",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`typeDroitId` BLOB NOT NULL, `code` TEXT NOT NULL, PRIMARY KEY(`typeDroitId`))",
+        "fields": [
+          {
+            "fieldPath": "typeDroitId",
+            "columnName": "typeDroitId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "typeDroitId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_typeDroit_typeDroitId",
+            "unique": false,
+            "columnNames": [
+              "typeDroitId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_typeDroit_typeDroitId` ON `${TABLE_NAME}` (`typeDroitId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "agent",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`idAgent` BLOB NOT NULL, `nomAgent` TEXT NOT NULL, `numeroAgent` INTEGER NOT NULL, `isLastValue` INTEGER NOT NULL, `isUserConnecte` INTEGER NOT NULL, PRIMARY KEY(`idAgent`))",
+        "fields": [
+          {
+            "fieldPath": "idAgent",
+            "columnName": "idAgent",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nomAgent",
+            "columnName": "nomAgent",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numeroAgent",
+            "columnName": "numeroAgent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isLastValue",
+            "columnName": "isLastValue",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isUserConnecte",
+            "columnName": "isUserConnecte",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "idAgent"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_agent_idAgent",
+            "unique": false,
+            "columnNames": [
+              "idAgent"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_agent_idAgent` ON `${TABLE_NAME}` (`idAgent`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "fonctionContact",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`fonctionContactId` BLOB NOT NULL, `fonctionContactActif` INTEGER NOT NULL, `fonctionContactCode` TEXT NOT NULL, `fonctionContactLibelle` TEXT NOT NULL, PRIMARY KEY(`fonctionContactId`))",
+        "fields": [
+          {
+            "fieldPath": "fonctionContactId",
+            "columnName": "fonctionContactId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fonctionContactActif",
+            "columnName": "fonctionContactActif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fonctionContactCode",
+            "columnName": "fonctionContactCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fonctionContactLibelle",
+            "columnName": "fonctionContactLibelle",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "fonctionContactId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_fonctionContact_fonctionContactId",
+            "unique": false,
+            "columnNames": [
+              "fonctionContactId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_fonctionContact_fonctionContactId` ON `${TABLE_NAME}` (`fonctionContactId`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "domaine",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`domaineId` BLOB NOT NULL, `domaineActif` INTEGER NOT NULL, `domaineCode` TEXT NOT NULL, `domaineLibelle` TEXT NOT NULL, PRIMARY KEY(`domaineId`))",
+        "fields": [
+          {
+            "fieldPath": "domaineId",
+            "columnName": "domaineId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domaineActif",
+            "columnName": "domaineActif",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domaineCode",
+            "columnName": "domaineCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domaineLibelle",
+            "columnName": "domaineLibelle",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "domaineId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_domaine_domaineId",
+            "unique": false,
+            "columnNames": [
+              "domaineId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_domaine_domaineId` ON `${TABLE_NAME}` (`domaineId`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e08582f401e264726ae33b0f3f91bbcc')"
+    ]
+  }
+}

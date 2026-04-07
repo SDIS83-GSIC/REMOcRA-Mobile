@@ -226,18 +226,22 @@ abstract class ReferentielDao {
     @Transaction
     @Query(
         """
-        SELECT tha.*, than.valIndispoTerrestre FROM anomalie tha
+        SELECT DISTINCT tha.*, than.valIndispoTerrestre,
+          (SELECT GROUP_CONCAT(t.typeVisiteCode)
+             FROM lPoidsAnomalieTypeVisite l
+             JOIN typeVisite t ON l.typeVisiteId = t.typeVisiteId
+             WHERE l.poidsAnomalieId = than.poidsAnomalieId
+          ) AS assignableTypeVisiteCodes,
+          ha.anomalieId IS NOT NULL AS isAssigned
+        FROM anomalie tha
+        LEFT JOIN lPeiAnomalie ha ON ha.anomalieId = tha.anomalieId and ha.peiId = :peiId
         LEFT JOIN poidsAnomalie than ON than.poidsAnomalieAnomalieId = tha.anomalieId
         JOIN anomalieCategorie cat ON cat.anomalieCategorieId = tha.anomalieAnomalieCategorieId
-        WHERE than.poidsAnomalieId IN
-          (SELECT thans.poidsAnomalieId FROM lPoidsAnomalieTypeVisite thans
-          WHERE thans.typeVisiteId = :typeVisiteId
-          )
-        AND than.poidsAnomalieNatureId = :natureId
+        WHERE than.poidsAnomalieNatureId = :natureId
         ORDER BY cat.anomalieCategorieOrdre, tha.anomalieOrdre
         """,
     )
-    abstract fun getAnomalieItemList(typeVisiteId: UUID?, natureId: UUID?): Flow<List<AnomalieItem>>
+    abstract fun getAnomalieItemList(natureId: UUID?, peiId: UUID?): Flow<List<AnomalieItem>>
 
     @Query("SELECT * FROM gestionnaire where gestionnaireActif is true")
     abstract fun getGestionnaireList(): LiveData<List<Gestionnaire>>
@@ -249,6 +253,8 @@ abstract class ReferentielDao {
         @Embedded val anomalie: Anomalie,
         val valIndispoTerrestre: Int,
         @Relation(parentColumn = "anomalieAnomalieCategorieId", entityColumn = "anomalieCategorieId") val categorie: AnomalieCategorie,
+        val assignableTypeVisiteCodes: String?,
+        val isAssigned: Boolean,
     )
 
     @Query("SELECT * FROM nature where natureActif is true")

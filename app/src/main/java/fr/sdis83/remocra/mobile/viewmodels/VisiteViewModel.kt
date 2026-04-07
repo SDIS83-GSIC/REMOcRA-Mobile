@@ -63,10 +63,23 @@ class VisiteViewModel(application: Application, tourneeId: UUID, peiId: UUID, ge
             if (visiteState.value == null || peiState.value == null) {
                 flowOf(listOf())
             } else {
-                referentielDao.getAnomalieItemList(
-                    visiteState.value.visite.typeVisiteId,
-                    peiState.value!!.natureId,
-                )
+                val typeVisiteId = visiteState.value.visite.typeVisiteId
+                val natureId = peiState.value?.natureId
+                val peiId = peiState.value!!.peiId
+                if (typeVisiteId == null || natureId == null) {
+                    flowOf(listOf())
+                } else {
+                    val typeVisiteCode = typeVisiteList.value?.find { it.typeVisiteId == typeVisiteId }?.typeVisiteCode
+                    referentielDao.getAnomalieItemList(natureId, peiId)
+                        .flatMapLatest { list ->
+                            val filtered = list.filter { item ->
+                                val assignableCodes = item.assignableTypeVisiteCodes?.split(",")?.map { it.trim() } ?: emptyList()
+                                val assignable = typeVisiteCode != null && assignableCodes.contains(typeVisiteCode)
+                                (assignable && item.anomalie.anomalieActif) || item.isAssigned
+                            }
+                            flowOf(filtered)
+                        }
+                }
             }
         }
 
