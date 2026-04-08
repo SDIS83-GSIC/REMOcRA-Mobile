@@ -73,7 +73,7 @@ class PeiCreateViewModel(application: Application) : AndroidViewModel(applicatio
                     this.x != null &&
                     this.y != null &&
                     this.lon != null &&
-                    this.lat != null
+                    this.lat != null && this.domaine != null
 
         fun toPei(numero: String, typePeiId: UUID): Pei? =
             if (!this.isValid) {

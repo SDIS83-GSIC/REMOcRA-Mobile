@@ -224,7 +224,7 @@ private fun PeiCreateForm(
                 items = natureList ?: listOf(),
                 value = natureList?.find { i -> i.natureId == peiForm.nature?.natureId },
                 valueToString = Nature::natureLibelle,
-                label = stringResource(id = R.string.type),
+                label = stringResource(id = R.string.nature),
                 onSelectionChanged = {
                     peiCreateViewModel.updateForm(
                         peiForm.copy(
@@ -238,11 +238,27 @@ private fun PeiCreateForm(
                 items = natureDeciList ?: listOf(),
                 value = natureDeciList?.find { i -> i.natureDeciId == peiForm.natureDeci?.natureDeciId },
                 valueToString = NatureDeci::natureDeciLibelle,
-                label = stringResource(id = R.string.statut),
+                label = stringResource(id = R.string.nature_deci),
                 onSelectionChanged = {
                     peiCreateViewModel.updateForm(
                         peiForm.copy(
                             natureDeci = it,
+                        ),
+                    )
+                },
+            )
+        }
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Spinner(
+                modifier = Modifier.weight(1f),
+                items = domaineList?.sortedBy { it.domaineLibelle } ?: listOf(),
+                value = domaineList?.find { i -> i.domaineId == peiForm.domaine?.domaineId },
+                valueToString = Domaine::domaineLibelle,
+                label = stringResource(id = R.string.domaine),
+                onSelectionChanged = {
+                    peiCreateViewModel.updateForm(
+                        peiForm.copy(
+                            domaine = it,
                         ),
                     )
                 },
@@ -258,21 +274,6 @@ private fun PeiCreateForm(
                     peiCreateViewModel.updateForm(
                         peiForm.copy(
                             gestionnaire = it,
-                        ),
-                    )
-                },
-            )
-        }
-        Row(modifier = Modifier.fillMaxWidth()) {
-            SearchSpinner(
-                items = domaineList?.sortedBy { it.domaineLibelle } ?: listOf(),
-                value = domaineList?.find { i -> i.domaineId == peiForm.domaine?.domaineId },
-                valueToString = Domaine::domaineLibelle,
-                label = stringResource(id = R.string.domaine),
-                onSelectionChanged = {
-                    peiCreateViewModel.updateForm(
-                        peiForm.copy(
-                            domaine = it,
                         ),
                     )
                 },

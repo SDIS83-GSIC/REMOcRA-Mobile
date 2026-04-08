@@ -87,9 +87,9 @@
     <string name="PeiCrees">Points d\'eau créés</string>
     <string name="observations">Observations</string>
     <string name="gestionnaire">Gestionnaire</string>
-    <string name="domaine">Domaine</string>
-    <string name="statut">Statut</string>
-    <string name="type">Type</string>
+    <string name="domaine">Domaine (obligatoire)</string>
+    <string name="nature_deci">Nature DECI (obligatoire)</string>
+    <string name="nature">Nature (obligatoire)</string>
     <string name="x">X</string>
     <string name="y">Y</string>
 
