@@ -34,8 +34,6 @@ class SynchroDeplacementPeiWorker constructor(
                 ).execute()
 
                 if (!codeOk.contains(res.code())) {
-                    Unit
-                } else {
                     throw IllegalArgumentException(res.message())
                 }
             }
