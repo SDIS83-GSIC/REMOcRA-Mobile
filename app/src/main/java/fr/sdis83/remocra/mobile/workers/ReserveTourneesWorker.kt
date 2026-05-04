@@ -49,7 +49,7 @@ class ReserveTourneesWorker constructor(
                     LPeiTournee(
                         peiId = it.peiId,
                         tourneeId = it.tourneeId,
-                        ordre = it.lTourneePeiOrdre,
+                        ordre = it.ordre,
                     ),
                 )
             }
