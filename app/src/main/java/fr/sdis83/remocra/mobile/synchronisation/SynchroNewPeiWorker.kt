@@ -27,6 +27,7 @@ class SynchroNewPeiWorker constructor(
                 lon = pei.lon,
                 peiTypePei = typePei.find { t -> t.typePeiId == pei.typePeiId }!!.typePeiCode,
                 gestionnaireId = pei.gestionnaireId,
+                domaineId = pei.domaineId,
                 natureId = pei.natureId,
                 natureDeciId = pei.natureDeciId,
                 peiObservation = pei.observation,

@@ -97,6 +97,8 @@ interface SynchronisationService {
         natureId: UUID,
         @Field("peiObservation")
         peiObservation: String?,
+        @Field("domaineId")
+        domaineId: UUID,
     ): Call<ResponseBody>
 
     @FormUrlEncoded
