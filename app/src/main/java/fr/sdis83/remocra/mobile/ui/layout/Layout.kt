@@ -45,7 +45,6 @@ import kotlinx.coroutines.launch
 fun Layout(
     navController: NavController?,
     versionName: String,
-    modeDeconnecte: Boolean,
     logout: (context: Context) -> Unit,
     content: @Composable (PaddingValues) -> Unit = {},
 ) {
@@ -96,27 +95,25 @@ fun Layout(
                         }
                     }
                 }
-                if (!modeDeconnecte) {
-                    Column(
-                        Modifier
-                            .fillMaxHeight(0.5f)
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
+                Column(
+                    Modifier
+                        .fillMaxHeight(0.5f)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Button(
+                        modifier = Modifier
+                            .padding(all = 10.pxToDp),
+                        onClick = {
+                            logout(context)
+                        },
                     ) {
-                        Button(
-                            modifier = Modifier
-                                .padding(all = 10.pxToDp),
-                            onClick = {
-                                logout(context)
-                            },
-                        ) {
-                            Text(
-                                text = "Se déconnecter",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 2.em,
-                                textAlign = TextAlign.Center,
-                            )
-                        }
+                        Text(
+                            text = "Se déconnecter",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 2.em,
+                            textAlign = TextAlign.Center,
+                        )
                     }
                 }
 

@@ -29,7 +29,9 @@ class AdministrationWorker constructor(
             return Result.failure()
         }
 
-        sessionManager.saveDateDeconnexion(connexionTestResponse.body()?.dateProchaineConnexion)
+        if (connexionTestResponse.body()?.dureeSession != null) {
+            sessionManager.saveLogoutHours(connexionTestResponse.body()?.dureeSession!!)
+        }
 
         val response = connexionTestResponse.body()?.keycloakConfig
         if (response != null) {

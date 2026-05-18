@@ -122,6 +122,10 @@ class MainActivity : ComponentActivity() {
                 .getString(R.string.preference_mdm),
             false,
         )
+
+        // Recalculer la date de prochaine déconnexion basée sur le nombre d'heures stocké
+        //   authentViewModel.sessionManager.recalculateDateDeconnexion()
+
         val dateProchaineDeconnexion = preferences.getString(
             applicationContext.resources
                 .getString(R.string.preference_date_prochaine_deconnexion),
@@ -179,6 +183,8 @@ class MainActivity : ComponentActivity() {
     private fun logout(context: Context) {
         authentViewModel.logoutOfBrowser(context)
         authentViewModel.sessionManager.invalidateAuthToken()
+        // Envoyer un broadcast pour notifier la déconnexion
+        sendBroadcast(Intent(GlobalConstants.ACTION_LOGOUT))
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -210,17 +216,10 @@ class MainActivity : ComponentActivity() {
                         Layout(
                             navController,
                             getVersionName(applicationContext),
-                            modeDeconnecte = !dateProchaineDeconnexion.isNullOrBlank(),
                             logout = { context ->
                                 // Si on est pas en mode déconnecté
                                 if (dateProchaineDeconnexion.isNullOrBlank()) {
                                     logout(context)
-                                    startActivity(
-                                        Intent(
-                                            this@MainActivity,
-                                            MainActivity::class.java,
-                                        ),
-                                    )
                                 } else {
                                     val administrationWorker = OneTimeWorkRequestBuilder<AdministrationWorker>().build()
 
@@ -234,12 +233,6 @@ class MainActivity : ComponentActivity() {
 
                                                 WorkInfo.State.SUCCEEDED -> {
                                                     logout(context)
-                                                    startActivity(
-                                                        Intent(
-                                                            this@MainActivity,
-                                                            MainActivity::class.java,
-                                                        ),
-                                                    )
                                                 }
 
                                                 WorkInfo.State.FAILED -> {
@@ -318,8 +311,10 @@ class MainActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.background,
                     ) {
                         Scaffold {
-                            if (dateProchaineDeconnexion != null &&
-                                dateAfterNow(dateProchaineDeconnexion)
+                            // Vérifier que la session est valide ET que dateProchaineDeconnexion n'est pas expirée
+                            if (!dateProchaineDeconnexion.isNullOrBlank() &&
+                                dateAfterNow(dateProchaineDeconnexion) &&
+                                authentViewModel.sessionManager.getAuthToken() != null
                             ) {
                                 authentViewModel.goToMainActivity.postValue(true)
                             } else {
@@ -344,8 +339,7 @@ class MainActivity : ComponentActivity() {
         val filter = IntentFilter(GlobalConstants.ACTION_LOGOUT)
         logoutReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
-                // Si on reçoit un broadcast de logout, on redirige vers le login
-                // utilisé seulement dans WorkerRemocra quand le serveur nous répond une 401 ou une 403 et qu'on est pas en mode déconnecté
+                authentViewModel.sessionManager.invalidateAuthToken()
                 authentViewModel.goToMainActivity.postValue(false)
             }
         }

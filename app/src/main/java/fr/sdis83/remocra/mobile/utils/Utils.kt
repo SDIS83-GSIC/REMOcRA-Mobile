@@ -62,12 +62,17 @@ fun deleteFile(listeFile: List<String>) {
 
 val Int.pxToDp: Dp @Composable get() = with(LocalDensity.current) { this@pxToDp.toDp() }
 
-fun dateAfterNow(date: String) =
-    ZonedDateTime.parse(
-        date,
-        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-            .withZone(ZoneId.systemDefault()),
-    ).isAfter(ZonedDateTime.now())
+fun dateAfterNow(dateStr: String?): Boolean {
+    if (dateStr == null) return false
+    return try {
+        val formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")
+        val localDateTime = java.time.LocalDateTime.parse(dateStr, formatter)
+        val instant = localDateTime.atZone(java.time.ZoneId.systemDefault()).toInstant()
+        java.time.Instant.now().isBefore(instant)
+    } catch (e: Exception) {
+        false
+    }
+}
 
 fun <T> jsonToFile(objet: T, nameFile: String): String {
     val path = Environment.getExternalStorageDirectory().toString() + "/$nameFile.json"

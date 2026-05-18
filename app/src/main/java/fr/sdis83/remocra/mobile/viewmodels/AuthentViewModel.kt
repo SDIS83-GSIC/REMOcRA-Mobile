@@ -57,6 +57,8 @@ class AuthentViewModel(application: Application) : AndroidViewModel(application)
 
                     val referentielWorker = OneTimeWorkRequestBuilder<ReferentielWorker>().build()
                     sessionManager.saveAuthToken(credential)
+                    // Calculer et sauvegarder la date de prochaine déconnexion
+                    sessionManager.calculateAndSaveDateDeconnexion()
 
                     WorkManager.getInstance(getApplication()).let { workManager ->
                         workManager.beginWith(referentielWorker).enqueue()
@@ -106,6 +108,7 @@ class AuthentViewModel(application: Application) : AndroidViewModel(application)
                 }
                 is OidcClientResult.Success -> {
                     CredentialBootstrap.defaultCredential().delete()
+                    sessionManager.invalidateAuthToken()
                     goToMainActivity.postValue(false)
                 }
             }

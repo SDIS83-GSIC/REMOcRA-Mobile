@@ -21,7 +21,7 @@ interface AuthService {
     fun checkUrl(): Call<MobileData>
 
     data class MobileData(
-        val dateProchaineConnexion: String?,
+        val dureeSession: Int?,
         val keycloakConfig: KeycloakConfig,
     )
 

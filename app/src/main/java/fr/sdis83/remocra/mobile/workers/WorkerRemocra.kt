@@ -40,33 +40,34 @@ abstract class WorkerRemocra(
         val retrofitBuilder = ReferentielService.getRetroFitInstance(applicationContext)
         val sessionManager = SessionManager(applicationContext)
 
-        if (sessionManager.getAuthToken().isNullOrEmpty()) {
-            if (isModeDeconnecte(sessionManager)) {
-                logModeDeconnecte()
-                return Result.success()
-            }
-            sendLogoutBroadcast()
-            return Result.failure()
-        }
-
         var result: Result? = null
         runBlocking {
-            if (isModeDeconnecte(sessionManager)) {
-                logModeDeconnecte()
-                result = Result.success()
-                return@runBlocking
-            }
+            // Si je suis en mode déconnecté, mais que le serveur est joignable, alors je vérifie que le token est valide et
+            // donc je redirige vers la page d'accueil au besoin
+            try {
+                val connexion = retrofitBuilder.checkConnexion().execute().code()
 
-            // Vérifie si le token Okta est encore valide
-            val validAccessToken = CredentialBootstrap.defaultCredential().getValidAccessToken()
-            if (validAccessToken == null || retrofitBuilder.checkConnexion().execute().code().let { it == 401 || it == 403 }) {
-                CredentialBootstrap.defaultCredential().delete()
-                sessionManager.invalidateAuthToken()
-                result = Result.failure()
-                sendLogoutBroadcast()
+                if (connexion.let { it == 401 || it == 403 || it == 200 }) {
+                    val validAccessToken =
+                        CredentialBootstrap.defaultCredential().getValidAccessToken()
+                    if (validAccessToken == null || connexion.let { it == 401 || it == 403 }) {
+                        CredentialBootstrap.defaultCredential().delete()
+                        result = Result.failure()
+                        sendLogoutBroadcast()
+                    }
+                }
+            } catch (e: Throwable) {
+                // si mode déconnecté, alors on renvoie un success
+                if (isModeDeconnecte(sessionManager)) {
+                    logModeDeconnecte()
+                    result = Result.success()
+                    return@runBlocking
+                } else {
+                    Log.e("WorkerRemocra", "Error executing work: " + e.message, e)
+                    result = Result.failure()
+                }
             }
         }
-
         if (result != null) {
             return result!!
         }
