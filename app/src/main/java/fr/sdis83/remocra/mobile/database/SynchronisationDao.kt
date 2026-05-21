@@ -59,6 +59,16 @@ abstract class SynchronisationDao {
 
     @Query(
         """
+        SELECT t.*, doneCount FROM tournee t
+        LEFT JOIN (select tourneeId,  COUNT(visite.visiteId) AS doneCount
+            from visite group by tourneeId) as c on t.tourneeId = c.tourneeId
+        GROUP BY t.tourneeId
+        """,
+    )
+    abstract fun getAllTourneeReservees(): List<TourneesDao.TourneeAvancement>
+
+    @Query(
+        """
         SELECT * FROM photoPei
         """,
     )

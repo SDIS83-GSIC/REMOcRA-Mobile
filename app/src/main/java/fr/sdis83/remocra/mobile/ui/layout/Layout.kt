@@ -53,6 +53,7 @@ fun Layout(
     val items = listOf(
         Screens.Tournees,
         Screens.Sync,
+        Screens.SyncTournee,
         Screens.Settings,
         Screens.Export,
     )

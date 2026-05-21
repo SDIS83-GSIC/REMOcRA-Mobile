@@ -21,6 +21,7 @@ import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireFormScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireListScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.SettingScreen
 import fr.sdis83.remocra.mobile.ui.screens.sync.SyncScreen
+import fr.sdis83.remocra.mobile.ui.screens.sync.SyncTourneeScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneeScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneesScreen
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
@@ -73,6 +74,12 @@ fun NavGraph(
                 mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
             }
             SyncScreen(SyncViewModel(Application()), navController)
+        }
+        composable(route = Screens.SyncTournee.route) {
+            LaunchedEffect(Unit) {
+                mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
+            }
+            SyncTourneeScreen(navController)
         }
 
         composable(route = Screens.Tournees.route) {
