@@ -54,6 +54,7 @@ fun Layout(
         Screens.Tournees,
         Screens.Sync,
         Screens.SyncTournee,
+        Screens.SyncNewPei,
         Screens.Settings,
         Screens.Export,
     )

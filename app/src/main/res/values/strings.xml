@@ -16,6 +16,7 @@
     <string name="tournees_finies">%1d / %1d tournées non terminées</string>
     <string name="choix_tournees">Choix des tournées</string>
     <string name="synchro_tournees">Synchroniser les tournées</string>
+    <string name="synchro_new_pei">Synchroniser les PEI créés</string>
     <string name="historique_synchro">Historique des synchronisations</string>
     <string name="annuler_reservation">Annuler la réservation de la tournée ?</string>
     <string name="warning_annuler_reservation">Toutes les données relatives à la tournée seront perdues. Voulez-vous continuer ?</string>

@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,10 +22,11 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,44 +43,36 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import fr.sdis83.remocra.mobile.R
-import fr.sdis83.remocra.mobile.database.TourneesDao
+import fr.sdis83.remocra.mobile.database.SynchronisationDao
 import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
 import fr.sdis83.remocra.mobile.ui.components.SyncStatBadge
 import fr.sdis83.remocra.mobile.utils.pxToDp
-import fr.sdis83.remocra.mobile.viewmodels.SyncTourneeViewModel
+import fr.sdis83.remocra.mobile.viewmodels.SyncNewPeiViewModel
 
 /**
- * Le but de cette écran est de lister toutes les tournées qui sont en cours avec les informations suivantes :
- * * le nom de la tournée
- * * Le nombre de PEI visités / le nombre total de PEI
- * * Si la tournée est terminée, on propose un bouton "Synchroniser" qui permet de synchroniser la tournée avec le serveur
+ * Le but de cet écran est de lister toutes les nouveaux PEI qui ont été créés sur l'application mobile
+ * On remonte les quelques informations essentielles (type, nature, domaine, coordonnées) pour permettre à l'utilisateur de les identifier
  */
 
 @Composable
-fun SyncTourneeScreen(navController: NavController) {
-    val viewModel: SyncTourneeViewModel = viewModel()
+fun SyncNewPeiScreen(navController: NavController) {
+    val viewModel: SyncNewPeiViewModel = viewModel()
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val tourneesReservees by viewModel._tourneesSynchro.collectAsState()
+    val listeNewPeiASynchro by viewModel._newPeiASynchro.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
     val errorMessageSynchro by viewModel.errorMessageSynchro.collectAsState()
 
     LaunchedEffect(key1 = Unit) {
-        viewModel.chargerTourneesASynchroniser()
+        viewModel.chargerNewPeiASynchro()
     }
 
-    val totalTournees = tourneesReservees.size
-    val tourneesTerminees = tourneesReservees.count { it.progression >= 1.0f }
-    val tourneesSynchronisables = tourneesReservees.filter { it.progression >= 1.0f }
-    val peiVisites = tourneesReservees.sumOf { it.doneCount }
-    val peiTotal = tourneesReservees.sumOf { it.tournee.peiCount }
-
-    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+    DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.chargerTourneesASynchroniser()
+                viewModel.chargerNewPeiASynchro()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -96,7 +88,7 @@ fun SyncTourneeScreen(navController: NavController) {
             .background(MaterialTheme.colorScheme.surface),
     ) {
         HeaderAppBar(
-            title = stringResource(R.string.synchro_tournees),
+            title = stringResource(R.string.synchro_new_pei),
             returnAction = {
                 navController.popBackStack(
                     Screens.Tournees.route,
@@ -134,14 +126,14 @@ fun SyncTourneeScreen(navController: NavController) {
                         color = MaterialTheme.colorScheme.onErrorContainer,
                     )
                 }
-            } else if (tourneesReservees.isEmpty()) {
-                // Aucune tournée
+            } else if (listeNewPeiASynchro.isEmpty()) {
+                // Aucun nouveau PEI
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = "Aucune tournée réservée",
+                        text = "Aucun nouveau PEI",
                         fontSize = 2.em,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -156,23 +148,21 @@ fun SyncTourneeScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        SyncTourneeStatsBadges(
-                            totalTournees = totalTournees,
-                            tourneesTerminees = tourneesTerminees,
-                            peiVisites = peiVisites,
-                            peiTotal = peiTotal,
-                            modifier = Modifier.weight(1f),
+                        SyncStatBadge(
+                            label = "PEI créés",
+                            value = "${listeNewPeiASynchro.size}",
+                            modifier = Modifier,
+                            containerColor = Color(63, 191, 63).copy(alpha = 0.5f),
+                            contentColor = Color.Black,
                         )
 
                         Spacer(modifier = Modifier.width(12.pxToDp))
 
                         FilledTonalButton(
                             onClick = {
-                                viewModel.synchroniserToutesTourneesReservees(
-                                    tourneesSynchronisables.map { it.tournee.tourneeId },
-                                )
+                                // TODO
                             },
-                            enabled = tourneesSynchronisables.isNotEmpty(),
+                            enabled = listeNewPeiASynchro.isNotEmpty(),
                             colors = ButtonDefaults.filledTonalButtonColors(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -183,7 +173,7 @@ fun SyncTourneeScreen(navController: NavController) {
                                 contentDescription = null,
                             )
                             Spacer(modifier = Modifier.width(8.pxToDp))
-                            Text("Synchroniser toutes les tournées")
+                            Text("Synchroniser tous les nouveaux PEI")
                         }
                     }
 
@@ -202,15 +192,17 @@ fun SyncTourneeScreen(navController: NavController) {
                         }
                     }
 
-                    // Liste des tournées
+                    // Liste des PEI à synchroniser
                     LazyColumn(
-                        modifier = Modifier.fillMaxSize().padding(horizontal = 150.pxToDp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 150.pxToDp),
                     ) {
-                        items(tourneesReservees.sortedByDescending { it.progression }) { tourneeAvancement ->
-                            TourneeReserveeItem(
-                                tourneeAvancement = tourneeAvancement,
+                        items(listeNewPeiASynchro) { pei ->
+                            NewPeiItem(
+                                newPei = pei,
                                 onSynchroniserClick = {
-                                    viewModel.synchroniserTourneeReservee(tourneeAvancement.tournee.tourneeId)
+                                    // TODO action de synchronisation du PEI
                                 },
                             )
                             Spacer(modifier = Modifier.height(12.pxToDp))
@@ -223,129 +215,131 @@ fun SyncTourneeScreen(navController: NavController) {
 }
 
 @Composable
-private fun SyncTourneeStatsBadges(
-    totalTournees: Int,
-    tourneesTerminees: Int,
-    peiVisites: Int,
-    peiTotal: Int,
+private fun NewPeiItem(
+    newPei: SynchronisationDao.NewPeiWithDetails,
     modifier: Modifier = Modifier,
+    onSynchroniserClick: () -> Unit = {},
 ) {
-    Row(
-        modifier = modifier.padding(horizontal = 8.pxToDp),
-        horizontalArrangement = Arrangement.spacedBy(8.pxToDp),
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(8.pxToDp)),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        tonalElevation = 2.pxToDp,
     ) {
-        SyncStatBadge(
-            label = "PEI visités",
-            value = "$peiVisites / $peiTotal",
-            modifier = Modifier,
-            containerColor = Color(63, 191, 63).copy(alpha = 0.5f),
-            contentColor = Color.Black,
-        )
-        SyncStatBadge(
-            label = "Tournées terminées",
-            value = "$tourneesTerminees / $totalTournees",
-            modifier = Modifier,
-            containerColor = Color(191, 63, 191).copy(alpha = 0.5f),
-            contentColor = Color.Black,
-        )
+        Column(
+            modifier = Modifier.padding(12.pxToDp),
+        ) {
+            // Ligne avec les informations et bouton synchronisation aligné verticalement
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.pxToDp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // Type de PEI
+                InfoBadge(
+                    label = "Type",
+                    value = newPei.typePeiCode ?: "N/A",
+                    modifier = Modifier.weight(1f),
+                )
+
+                // Nature du PEI
+                InfoBadge(
+                    label = "Nature",
+                    value = newPei.natureLibelle ?: "N/A",
+                    modifier = Modifier.weight(1f),
+                )
+
+                // Nature de CI
+                InfoBadge(
+                    label = "Nature DECI",
+                    value = newPei.natureDeciLibelle ?: "N/A",
+                    modifier = Modifier.weight(1f),
+                )
+
+                // Domaine
+                InfoBadge(
+                    label = "Domaine",
+                    value = newPei.domaineLibelle ?: "N/A",
+                    modifier = Modifier.weight(1f),
+                )
+
+                // Coordonnée X
+                InfoBadge(
+                    label = "X",
+                    value = newPei.pei.x.toString(),
+                    modifier = Modifier.weight(1f),
+                )
+
+                // Coordonnée Y
+                InfoBadge(
+                    label = "Y",
+                    value = newPei.pei.y.toString(),
+                    modifier = Modifier.weight(1f),
+                )
+
+                // Bouton de synchronisation aligné verticalement
+                FilledIconButton(
+                    onClick = onSynchroniserClick,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Sync,
+                        contentDescription = "Synchroniser",
+                    )
+                }
+            }
+
+            // Adresse si disponible
+            if (!newPei.pei.adresseComplete.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(8.pxToDp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Adresse:",
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = 0.9.em,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                    Spacer(modifier = Modifier.width(8.pxToDp))
+                    Text(
+                        text = newPei.pei.adresseComplete,
+                        fontSize = 0.9.em,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    )
+                }
+            }
+        }
     }
 }
 
-/**
- * Composant pour afficher une tournée avec :
- * - Nom de la tournée
- * - Barre de progression (PEI visités / PEI total)
- */
 @Composable
-fun TourneeReserveeItem(
-    tourneeAvancement: TourneesDao.TourneeAvancement,
-    onSynchroniserClick: () -> Unit,
+private fun InfoBadge(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
 ) {
-    val tournee = tourneeAvancement.tournee
-    val doneCount = tourneeAvancement.doneCount
-    val totalCount = tournee.peiCount
-    val progression = tourneeAvancement.progression
-    val estTerminee = progression >= 1.0f
-    val cardBackgroundColor =
-        if (estTerminee) {
-            MaterialTheme.colorScheme.secondaryContainer
-        } else {
-            MaterialTheme.colorScheme.surfaceVariant
-        }
-    val titleColor =
-        if (estTerminee) {
-            MaterialTheme.colorScheme.onSecondaryContainer
-        } else {
-            MaterialTheme.colorScheme.onSurfaceVariant
-        }
-
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 160.pxToDp)
-            .clip(RoundedCornerShape(8.pxToDp))
-            .background(cardBackgroundColor)
-            .padding(12.pxToDp),
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        // Nom de la tournée seul
         Text(
-            text = tournee.nom,
-            fontSize = 3.em,
-            fontWeight = FontWeight.Bold,
-            color = titleColor,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.pxToDp),
+            text = label,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 1.2.em,
+            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f),
         )
-
-        // Barre de progression + compteur + statut + bouton synchro
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.pxToDp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                LinearProgressIndicator(
-                    progress = progression,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.pxToDp)
-                        .clip(RoundedCornerShape(4.pxToDp)),
-                    color = if (estTerminee) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary,
-                    trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                )
-            }
-            Spacer(modifier = Modifier.width(12.pxToDp))
-            Text(
-                text = "$doneCount / $totalCount",
-                fontSize = 1.5.em,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface,
-            )
-            Spacer(modifier = Modifier.width(12.pxToDp))
-            Text(
-                text = if (estTerminee) "Terminée" else "En cours...",
-                fontSize = 1.8.em,
-                fontWeight = FontWeight.Bold,
-                color = if (estTerminee) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary,
-            )
-            FilledIconButton(
-                onClick = onSynchroniserClick,
-                enabled = estTerminee,
-                colors = IconButtonDefaults.filledIconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
-                    disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f),
-                ),
-                modifier = Modifier.padding(start = 8.pxToDp),
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Sync,
-                    contentDescription = "Synchroniser",
-                )
-            }
-        }
+        Text(
+            text = value,
+            fontWeight = FontWeight.Bold,
+            fontSize = 1.5.em,
+            color = MaterialTheme.colorScheme.onPrimaryContainer,
+        )
     }
 }

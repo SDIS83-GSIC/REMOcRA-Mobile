@@ -1,6 +1,7 @@
 package fr.sdis83.remocra.mobile.database
 
 import androidx.room.Dao
+import androidx.room.Embedded
 import androidx.room.Query
 import java.util.UUID
 
@@ -18,6 +19,27 @@ abstract class SynchronisationDao {
 
     @Query("SELECT * FROM pei where isNew = 1")
     abstract fun getAllNewPei(): List<Pei>
+
+    @Query(
+        """
+        SELECT p.*, tp.typePeiCode, n.natureLibelle, nd.natureDeciLibelle, d.domaineLibelle 
+        FROM pei p
+        LEFT JOIN typePei tp ON tp.typePeiId = p.typePeiId
+        LEFT JOIN nature n ON n.natureId = p.natureId
+        LEFT JOIN natureDeci nd ON nd.natureDeciId = p.natureDeciId
+        LEFT JOIN domaine d ON d.domaineId = p.domaineId
+        WHERE p.isNew = 1
+        """,
+    )
+    abstract fun getAllNewPeiWithDetails(): List<NewPeiWithDetails>
+
+    data class NewPeiWithDetails(
+        @Embedded val pei: Pei,
+        val typePeiCode: String?,
+        val natureLibelle: String?,
+        val natureDeciLibelle: String?,
+        val domaineLibelle: String?,
+    )
 
     @Query("SELECT * FROM typePei")
     abstract fun getAllTypePei(): List<TypePei>
