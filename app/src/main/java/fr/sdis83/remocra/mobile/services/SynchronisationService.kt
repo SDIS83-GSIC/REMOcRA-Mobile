@@ -156,6 +156,12 @@ interface SynchronisationService {
         tourneeId: UUID,
     ): Call<ResponseBody>
 
+    @POST("synchro/incoming-new-pei-to-remocra/{peiId}")
+    fun incomingNewPeiToRemocra(
+        @Path("peiId")
+        peiId: UUID,
+    ): Call<ResponseBody>
+
     @POST("synchro/synchro-photo")
     @Multipart
     fun postPhotoPei(

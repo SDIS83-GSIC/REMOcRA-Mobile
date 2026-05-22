@@ -20,6 +20,9 @@ abstract class SynchronisationDao {
     @Query("SELECT * FROM pei where isNew = 1")
     abstract fun getAllNewPei(): List<Pei>
 
+    @Query("SELECT * FROM pei where isNew = 1 and peiId = :peiId")
+    abstract fun getNewPeiById(peiId: UUID): Pei?
+
     @Query(
         """
         SELECT p.*, tp.typePeiCode, n.natureLibelle, nd.natureDeciLibelle, d.domaineLibelle 
@@ -139,8 +142,8 @@ abstract class SynchronisationDao {
     )
     abstract fun deleteContactsRoleSynchronises()
 
-    @Query("DELETE FROM pei where isNew = 1")
-    abstract fun deleteNewPeiSynchronises()
+    @Query("DELETE FROM pei where isNew = 1 and peiId = :peiId")
+    abstract fun deleteNewPeiSynchronises(peiId: UUID)
 
     @Query(
         """

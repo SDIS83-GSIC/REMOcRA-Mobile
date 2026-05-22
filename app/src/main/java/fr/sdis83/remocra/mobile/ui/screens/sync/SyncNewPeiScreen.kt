@@ -202,7 +202,7 @@ fun SyncNewPeiScreen(navController: NavController) {
                             NewPeiItem(
                                 newPei = pei,
                                 onSynchroniserClick = {
-                                    // TODO action de synchronisation du PEI
+                                    viewModel.synchroniserNewPei(pei.pei.peiId)
                                 },
                             )
                             Spacer(modifier = Modifier.height(12.pxToDp))
