@@ -23,8 +23,8 @@ abstract class SynchronisationDao {
     @Query("SELECT * FROM typePei")
     abstract fun getAllTypePei(): List<TypePei>
 
-    @Query("SELECT * FROM visite where statut = :statutFini")
-    abstract fun getAllVisite(statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE): List<Visite>
+    @Query("SELECT * FROM visite where statut = :statutFini and (:tourneeId IS NULL OR tourneeId = :tourneeId)")
+    abstract fun getAllVisite(statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE, tourneeId: UUID? = null): List<Visite>
 
     @Query("SELECT * FROM pei")
     abstract fun getAllPei(): List<Pei>
@@ -34,9 +34,10 @@ abstract class SynchronisationDao {
             SELECT lva.*, visite.tourneeId FROM lVisiteAnomalie lva
                 JOIN visite ON visite.visiteId = lva.visiteId
                 WHERE visite.statut = :statutFini
+                and (:tourneeId IS NULL OR visite.tourneeId = :tourneeId)
         """,
     )
-    abstract fun getAllVisiteAnomalie(statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE): List<VisiteAnomalieWithTournee>
+    abstract fun getAllVisiteAnomalie(statutFini: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE, tourneeId: UUID? = null): List<VisiteAnomalieWithTournee>
 
     data class VisiteAnomalieWithTournee(
         val visiteId: UUID,
@@ -52,10 +53,11 @@ abstract class SynchronisationDao {
         SELECT t.*, doneCount FROM tournee t
         LEFT JOIN  (select tourneeId,  COUNT(visite.visiteId)AS doneCount
             from visite where statut = :terminee group by tourneeId) as c on t.tourneeId = c.tourneeId
+            where (:tourneeId IS NULL OR t.tourneeId = :tourneeId)
         GROUP BY t.tourneeId
         """,
     )
-    abstract fun getAllTournee(terminee: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE): List<TourneesDao.TourneeAvancement>
+    abstract fun getAllTournee(terminee: Visite.VisiteStatut = Visite.VisiteStatut.TERMINE, tourneeId: UUID? = null): List<TourneesDao.TourneeAvancement>
 
     @Query(
         """
@@ -76,10 +78,26 @@ abstract class SynchronisationDao {
 
     @Query(
         """
+        SELECT * FROM photoPei
+        where peiId in (:peiIds)
+        """,
+    )
+    abstract fun getPhotoPei(peiIds: List<UUID>): List<PhotoPei>
+
+    @Query(
+        """
         SELECT * FROM lPeiTournee
         """,
     )
     abstract fun getAllLPeiTournee(): List<LPeiTournee>
+
+    @Query(
+        """
+        SELECT * FROM lPeiTournee
+        where tourneeId = :tourneeId
+        """,
+    )
+    abstract fun getAllLPeiTournee(tourneeId: UUID): List<LPeiTournee>
 
     @Query(
         """
@@ -152,4 +170,20 @@ abstract class SynchronisationDao {
         """,
     )
     abstract fun getPeiDeplacesByTournee(): List<SynchroDeplacementPeiWorker.PeiDeplace>
+
+    @Query(
+        """
+            SELECT p.lat, p.lon, p.peiId, tourneeId from pei p 
+                JOIN lPeiTournee lpt on lpt.peiId = p.peiId
+                where p.isDeplace = 1 and lpt.tourneeId = :tourneeId
+        """,
+    )
+    abstract fun getPeiDeplaces(tourneeId: UUID): List<SynchroDeplacementPeiWorker.PeiDeplace>
+
+    @Query(
+        """
+            SELECT * FROM tournee where tourneeId = :tourneeId
+        """,
+    )
+    abstract fun getTourneeById(tourneeId: UUID): Tournee?
 }
