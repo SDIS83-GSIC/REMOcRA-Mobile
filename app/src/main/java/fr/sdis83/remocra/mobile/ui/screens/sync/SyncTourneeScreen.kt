@@ -17,8 +17,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sync
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
@@ -146,16 +148,44 @@ fun SyncTourneeScreen(navController: NavController) {
                 }
             } else {
                 Column(modifier = Modifier.fillMaxSize()) {
-                    SyncTourneeStatsBadges(
-                        totalTournees = totalTournees,
-                        tourneesTerminees = tourneesTerminees,
-                        peiVisites = peiVisites,
-                        peiTotal = peiTotal,
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 30.pxToDp)
                             .padding(horizontal = 150.pxToDp),
-                    )
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        SyncTourneeStatsBadges(
+                            totalTournees = totalTournees,
+                            tourneesTerminees = tourneesTerminees,
+                            peiVisites = peiVisites,
+                            peiTotal = peiTotal,
+                            modifier = Modifier.weight(1f),
+                        )
+
+                        Spacer(modifier = Modifier.width(12.pxToDp))
+
+                        FilledTonalButton(
+                            onClick = {
+                                viewModel.synchroniserToutesTourneesReservees(
+                                    tourneesSynchronisables.map { it.tournee.tourneeId },
+                                )
+                            },
+                            enabled = tourneesSynchronisables.isNotEmpty(),
+                            colors = ButtonDefaults.filledTonalButtonColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                            ),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Sync,
+                                contentDescription = null,
+                            )
+                            Spacer(modifier = Modifier.width(8.pxToDp))
+                            Text("Synchroniser toutes les tournées")
+                        }
+                    }
 
                     if (errorMessageSynchro != null) {
                         Box(

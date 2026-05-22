@@ -142,11 +142,12 @@ class SyncTourneeViewModel(application: Application) : AndroidViewModel(applicat
                                 _isLoading.value = false
                                 val errorMessage = workInfo.outputData.getString(WorkerRemocra.OUTPUT_ERROR_MESSAGE)
                                     ?: "Erreur inconnue"
+                                val errorMessageAvecTournee = "Tournée $tourneeId en échec: $errorMessage"
 
                                 // Ne pas écraser un message d'erreur déjà positionné par un worker précédent
                                 if (_errorMessageSynchro.value == null) {
-                                    _errorMessageSynchro.value = errorMessage
-                                    Log.e("SyncTourneeViewModel", "Erreur lors de la synchronisation: $errorMessage")
+                                    _errorMessageSynchro.value = errorMessageAvecTournee
+                                    Log.e("SyncTourneeViewModel", "Erreur lors de la synchronisation: $errorMessageAvecTournee")
                                     Toast.makeText(
                                         getApplication(),
                                         "Erreur inconnue pendant la synchronisation de la tournée",
@@ -160,6 +161,21 @@ class SyncTourneeViewModel(application: Application) : AndroidViewModel(applicat
                     }
                 }
             }
+        }
+    }
+
+    /**
+     * Lance la synchronisation de plusieurs tournees en parallèle.
+     */
+    fun synchroniserToutesTourneesReservees(tourneeIds: List<UUID>) {
+        if (tourneeIds.isEmpty()) {
+            _errorMessageSynchro.value = "Aucune tournée à synchroniser"
+            return
+        }
+
+        _errorMessageSynchro.value = null
+        tourneeIds.forEach { tourneeId ->
+            synchroniserTourneeReservee(tourneeId)
         }
     }
 }
