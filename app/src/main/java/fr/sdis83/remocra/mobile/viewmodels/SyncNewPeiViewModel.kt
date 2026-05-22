@@ -150,4 +150,16 @@ class SyncNewPeiViewModel(application: Application) : AndroidViewModel(applicati
             }
         }
     }
+
+    fun synchroniserTousNewPei(peiIds: List<UUID>) {
+        if (peiIds.isEmpty()) {
+            _errorMessageSynchro.value = "Aucun PEI à synchroniser"
+            return
+        }
+
+        _errorMessageSynchro.value = null
+        peiIds.forEach { peiId ->
+            synchroniserNewPei(peiId)
+        }
+    }
 }

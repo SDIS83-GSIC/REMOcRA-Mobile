@@ -160,7 +160,7 @@ fun SyncNewPeiScreen(navController: NavController) {
 
                         FilledTonalButton(
                             onClick = {
-                                // TODO
+                                viewModel.synchroniserTousNewPei(listeNewPeiASynchro.map { it.pei.peiId })
                             },
                             enabled = listeNewPeiASynchro.isNotEmpty(),
                             colors = ButtonDefaults.filledTonalButtonColors(
