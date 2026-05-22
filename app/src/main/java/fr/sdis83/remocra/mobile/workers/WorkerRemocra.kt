@@ -5,6 +5,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.okta.authfoundationbootstrap.CredentialBootstrap
 import fr.sdis83.remocra.mobile.authn.SessionManager
 import fr.sdis83.remocra.mobile.services.ReferentielService
@@ -17,7 +18,36 @@ abstract class WorkerRemocra(
     workerParams: WorkerParameters,
 ) : Worker(context, workerParams) {
 
+    companion object {
+        const val OUTPUT_ERROR_MESSAGE = "OUTPUT_ERROR_MESSAGE"
+        const val OUTPUT_ERROR_TYPE = "OUTPUT_ERROR_TYPE"
+    }
+
     abstract fun doExecute(): Result
+
+    protected open val workerTag: String = this::class.java.simpleName
+
+    protected fun failureWithError(message: String, throwable: Throwable? = null): Result {
+        val safeMessage = message.ifBlank { "Erreur inconnue" }
+        val contextualMessage = if (safeMessage.startsWith("[$workerTag]")) {
+            safeMessage
+        } else {
+            "[$workerTag] $safeMessage"
+        }
+        // Log le message complet pour le debug
+        Log.e(workerTag, contextualMessage)
+
+        val outputData = workDataOf(
+            OUTPUT_ERROR_MESSAGE to contextualMessage,
+            OUTPUT_ERROR_TYPE to (throwable?.javaClass?.simpleName ?: "Unknown"),
+        )
+        return Result.failure(outputData)
+    }
+
+    protected fun failureWithError(throwable: Throwable, defaultMessage: String): Result {
+        val detailedMessage = throwable.message?.takeIf { it.isNotBlank() } ?: defaultMessage
+        return failureWithError(detailedMessage, throwable)
+    }
 
     private fun isModeDeconnecte(sessionManager: SessionManager): Boolean {
         val dateDeconnexion = sessionManager.getDateDeconnexion()
@@ -25,7 +55,7 @@ abstract class WorkerRemocra(
     }
 
     private fun logModeDeconnecte() {
-        Log.w("WorkerRemocra", "Mode déconnecté, on ne fait pas l'appel au serveur ET on ne redirige pas vers le login")
+        Log.w(workerTag, "Mode déconnecté, on ne fait pas l'appel au serveur ET on ne redirige pas vers le login")
     }
 
     /**
@@ -52,7 +82,7 @@ abstract class WorkerRemocra(
                         CredentialBootstrap.defaultCredential().getValidAccessToken()
                     if (validAccessToken == null || connexion.let { it == 401 || it == 403 }) {
                         CredentialBootstrap.defaultCredential().delete()
-                        result = Result.failure()
+                        result = failureWithError("Session invalide, reconnexion requise")
                         sendLogoutBroadcast()
                     }
                 }
@@ -64,14 +94,17 @@ abstract class WorkerRemocra(
                     return@runBlocking
                 } else {
                     Log.e("WorkerRemocra", "Error executing work: " + e.message, e)
-                    result = Result.failure()
+                    result = failureWithError("Session expirée, reconnexion requise")
                 }
             }
         }
-        if (result != null) {
-            return result!!
-        }
+        result?.let { return it }
 
-        return doExecute()
+        return try {
+            doExecute()
+        } catch (e: Throwable) {
+            Log.e(workerTag, "Erreur inattendue lors de l'exécution du worker", e)
+            failureWithError(e, "Erreur inattendue lors de l'exécution du worker")
+        }
     }
 }
