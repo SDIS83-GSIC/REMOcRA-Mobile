@@ -27,7 +27,7 @@ import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneesScreen
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import fr.sdis83.remocra.mobile.viewmodels.DroitViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
-import fr.sdis83.remocra.mobile.viewmodels.SyncViewModel
+import fr.sdis83.remocra.mobile.viewmodels.StatsViewModel
 import java.util.UUID
 
 @Composable
@@ -73,7 +73,7 @@ fun NavGraph(
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
             }
-            SyncScreen(SyncViewModel(Application()), navController)
+            SyncScreen(StatsViewModel(Application()), navController)
         }
         composable(route = Screens.SyncTournee.route) {
             LaunchedEffect(Unit) {

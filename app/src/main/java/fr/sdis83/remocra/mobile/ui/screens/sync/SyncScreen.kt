@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -30,25 +31,25 @@ import fr.sdis83.remocra.mobile.navigation.Screens
 import fr.sdis83.remocra.mobile.ui.components.HeaderAppBar
 import fr.sdis83.remocra.mobile.utils.pxToDp
 import fr.sdis83.remocra.mobile.viewmodels.ChoixTourneeViewModel
-import fr.sdis83.remocra.mobile.viewmodels.SyncViewModel
+import fr.sdis83.remocra.mobile.viewmodels.StatsViewModel
 
 @Composable
-fun SyncScreen(syncViewModel: SyncViewModel, navController: NavController) {
+fun SyncScreen(statsViewModel: StatsViewModel, navController: NavController) {
     val context = LocalContext.current
 
     val choixTourneeViewModel = ChoixTourneeViewModel(context.applicationContext as Application)
 
-    val visiteCount by syncViewModel.visiteCount.observeAsState()
-    val lPeiTourneeCount by syncViewModel.lPeiTourneeCount.observeAsState()
-    val tourneeNotDoneCount by syncViewModel.tourneeNotDoneCount.observeAsState()
-    val tourneeCount by syncViewModel.tourneeCount.observeAsState()
-    val PeiCreesCount by syncViewModel.PeiCreesCount.observeAsState()
+    val visiteCount by statsViewModel.visiteCount.observeAsState()
+    val lPeiTourneeCount by statsViewModel.lPeiTourneeCount.observeAsState()
+    val tourneeNotDoneCount by statsViewModel.tourneeNotDoneCount.observeAsState()
+    val tourneeCount by statsViewModel.tourneeCount.observeAsState()
+    val PeiCreesCount by statsViewModel.PeiCreesCount.observeAsState()
 
     var showCustomDialog by remember {
         mutableStateOf(false)
     }
 
-    val isBusy by syncViewModel.isBusy.observeAsState()
+    val isBusy by statsViewModel.isBusy.collectAsState()
 
     Column(
         modifier = Modifier
@@ -121,7 +122,7 @@ fun SyncScreen(syncViewModel: SyncViewModel, navController: NavController) {
                             },
                             shape = RoundedCornerShape(50.pxToDp),
                             contentPadding = PaddingValues(10.pxToDp),
-                            enabled = !isBusy!!,
+                            enabled = !isBusy,
                         ) {
                             Text(
                                 modifier = Modifier.padding(10.pxToDp),
@@ -145,11 +146,11 @@ fun SyncScreen(syncViewModel: SyncViewModel, navController: NavController) {
                                 .padding(0.pxToDp, 20.pxToDp)
                                 .fillMaxWidth(.8f),
                             onClick = {
-                                syncViewModel.synchro(context.applicationContext as Application)
+                                navController.navigate(Screens.SyncTournee.route)
                             },
                             shape = RoundedCornerShape(50.pxToDp),
                             contentPadding = PaddingValues(10.pxToDp),
-                            enabled = !isBusy!!,
+                            enabled = !isBusy,
                         ) {
                             Text(
                                 modifier = Modifier.padding(10.pxToDp),
