@@ -1,6 +1,7 @@
 package fr.sdis83.remocra.mobile.ui.screens.sync
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +32,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -66,6 +69,12 @@ fun SyncTourneeScreen(navController: NavController) {
         viewModel.chargerTourneesASynchroniser()
     }
 
+    val totalTournees = tourneesReservees.size
+    val tourneesTerminees = tourneesReservees.count { it.progression >= 1.0f }
+    val tourneesSynchronisables = tourneesReservees.filter { it.progression >= 1.0f }
+    val peiVisites = tourneesReservees.sumOf { it.doneCount }
+    val peiTotal = tourneesReservees.sumOf { it.tournee.peiCount }
+
     androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
@@ -88,7 +97,7 @@ fun SyncTourneeScreen(navController: NavController) {
             title = stringResource(R.string.synchro_tournees),
             returnAction = {
                 navController.popBackStack(
-                    Screens.Sync.route,
+                    Screens.Tournees.route,
                     inclusive = false,
                 )
             },
@@ -137,14 +146,24 @@ fun SyncTourneeScreen(navController: NavController) {
                 }
             } else {
                 Column(modifier = Modifier.fillMaxSize()) {
+                    SyncTourneeStatsBadges(
+                        totalTournees = totalTournees,
+                        tourneesTerminees = tourneesTerminees,
+                        peiVisites = peiVisites,
+                        peiTotal = peiTotal,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 30.pxToDp)
+                            .padding(horizontal = 150.pxToDp),
+                    )
+
                     if (errorMessageSynchro != null) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(bottom = 12.pxToDp)
                                 .clip(RoundedCornerShape(8.pxToDp))
-                                .background(MaterialTheme.colorScheme.errorContainer)
-                                .padding(12.pxToDp),
+                                .background(MaterialTheme.colorScheme.errorContainer),
                         ) {
                             Text(
                                 text = errorMessageSynchro.toString(),
@@ -152,6 +171,7 @@ fun SyncTourneeScreen(navController: NavController) {
                             )
                         }
                     }
+
                     // Liste des tournées
                     LazyColumn(
                         modifier = Modifier.fillMaxSize().padding(horizontal = 150.pxToDp),
@@ -168,6 +188,68 @@ fun SyncTourneeScreen(navController: NavController) {
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun SyncTourneeStatsBadges(
+    totalTournees: Int,
+    tourneesTerminees: Int,
+    peiVisites: Int,
+    peiTotal: Int,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier.padding(horizontal = 8.pxToDp),
+        horizontalArrangement = Arrangement.spacedBy(8.pxToDp),
+    ) {
+        SyncStatBadge(
+            label = "PEI visités",
+            value = "$peiVisites / $peiTotal",
+            modifier = Modifier,
+            containerColor = Color(63, 191, 63).copy(alpha = 0.5f),
+            contentColor = Color.Black,
+        )
+        SyncStatBadge(
+            label = "Tournées terminées",
+            value = "$tourneesTerminees / $totalTournees",
+            modifier = Modifier,
+            containerColor = Color(191, 63, 191).copy(alpha = 0.5f),
+            contentColor = Color.Black,
+        )
+    }
+}
+
+@Composable
+private fun SyncStatBadge(
+    label: String,
+    value: String,
+    modifier: Modifier = Modifier,
+    containerColor: Color,
+    contentColor: Color,
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(25.pxToDp),
+        color = containerColor,
+        tonalElevation = 1.pxToDp,
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.pxToDp, vertical = 10.pxToDp),
+        ) {
+            Text(
+                text = label,
+                color = contentColor.copy(alpha = 0.9f),
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 1.5.em,
+            )
+            Text(
+                text = value,
+                color = contentColor,
+                fontWeight = FontWeight.Bold,
+                fontSize = 2.em,
+            )
         }
     }
 }
