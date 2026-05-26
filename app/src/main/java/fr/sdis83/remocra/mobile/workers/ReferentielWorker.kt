@@ -223,7 +223,7 @@ class ReferentielWorker constructor(
 
             val gestionnaireToRemove = dataInMobileGestionnaire
                 .filterNot { data ->
-                    listGestionnaire.map { it.gestionnaireId }.contains(data.gestionnaireId)
+                    listGestionnaire.map { it.gestionnaireId }.contains(data.gestionnaireId) || data.edited
                 }
 
             // /////////////////////////////////////////////////////////////////////////////////////////// FONCTION CONTACT
@@ -247,7 +247,7 @@ class ReferentielWorker constructor(
 
             val contactToRemove = dataInMobileContact
                 .filterNot { data ->
-                    listContact.map { it.contactId }.contains(data.contactId)
+                    listContact.map { it.contactId }.contains(data.contactId) || data.edited
                 }
 
             // ///////////////////////////////////////////////////////////////////////////////////////////CONTACT ROLE
