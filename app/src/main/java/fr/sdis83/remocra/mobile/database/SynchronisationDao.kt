@@ -11,6 +11,44 @@ abstract class SynchronisationDao {
     @Query("SELECT * FROM gestionnaire where edited = 1")
     abstract fun getAllGestionnaire(): List<Gestionnaire>
 
+    @Query(
+        """
+        SELECT
+            g.gestionnaireId AS gestionnaireId,
+            g.gestionnaireLibelle AS gestionnaireLibelle,
+            g.gestionnaireCode AS gestionnaireCode,
+            g.edited AS gestionnaireEdited,
+            c.contactId AS contactId,
+            c.contactCivilite AS contactCivilite,
+            c.contactNom AS contactNom,
+            c.contactPrenom AS contactPrenom,
+            c.contactTelephone AS contactTelephone,
+            c.contactEmail AS contactEmail,
+            c.contactCommuneText AS contactCommuneText,
+            c.edited AS contactEdited
+        FROM gestionnaire g
+        LEFT JOIN contact c ON c.gestionnaireId = g.gestionnaireId
+        WHERE g.edited = 1 OR c.edited = 1
+        ORDER BY g.gestionnaireLibelle, c.contactNom, c.contactPrenom
+        """,
+    )
+    abstract fun getAllGestionnaireWithContact(): List<GestionnaireWithContactRow>
+
+    data class GestionnaireWithContactRow(
+        val gestionnaireId: UUID,
+        val gestionnaireLibelle: String,
+        val gestionnaireCode: String,
+        val gestionnaireEdited: Boolean,
+        val contactId: UUID?,
+        val contactCivilite: Contact.Civilite?,
+        val contactNom: String?,
+        val contactPrenom: String?,
+        val contactTelephone: String?,
+        val contactEmail: String?,
+        val contactCommuneText: String?,
+        val contactEdited: Boolean?,
+    )
+
     @Query("SELECT * FROM contact where edited = 1")
     abstract fun getAllContacts(): List<Contact>
 
