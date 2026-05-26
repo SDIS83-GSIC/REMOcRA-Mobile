@@ -6,35 +6,41 @@ import androidx.work.WorkerParameters
 import fr.sdis83.remocra.mobile.database.RemocraDatabase
 import fr.sdis83.remocra.mobile.services.SynchronisationService
 import fr.sdis83.remocra.mobile.workers.WorkerRemocra
+import java.util.UUID
 
-class SynchroGestionnaireWorker constructor(
+class SynchroGestionnaireWorker(
     context: Context,
     workerParams: WorkerParameters,
 ) : WorkerRemocra(context, workerParams) {
     private val TAG = "SynchroGestionnaireWorker"
 
+    companion object {
+        private const val INPUT_GESTIONNAIRE_ID = "gestionnaireId"
+    }
+
     override fun doExecute(): Result = try {
         val synchronisationDao = RemocraDatabase.getInstance(applicationContext).synchronisationDao()
         val retrofitBuilder = SynchronisationService.getRetroFitInstance(applicationContext)
 
-        val gestionnaires = synchronisationDao.getAllGestionnaire()
+        val gestionnaireId = inputData.getString(INPUT_GESTIONNAIRE_ID)?.let(UUID::fromString)
+            ?: throw IllegalArgumentException("gestionnaireId est requis")
 
-        gestionnaires.forEach { gestionnaire ->
-            val res = retrofitBuilder.postGestionnaire(
-                gestionnaireId = gestionnaire.gestionnaireId,
-                gestionnaireCode = gestionnaire.gestionnaireCode,
-                gestionnaireLibelle = gestionnaire.gestionnaireLibelle,
-            ).execute()
+        val gestionnaire = synchronisationDao.getGestionnaire(gestionnaireId)
 
-            when (res.code()) {
-                200, 201, 409 -> Unit
-                else -> throw IllegalArgumentException(res.message())
-            }
+        val res = retrofitBuilder.postGestionnaire(
+            gestionnaireId = gestionnaire.gestionnaireId,
+            gestionnaireCode = gestionnaire.gestionnaireCode,
+            gestionnaireLibelle = gestionnaire.gestionnaireLibelle,
+        ).execute()
+
+        when (res.code()) {
+            200, 201, 409 -> Unit
+            else -> throw IllegalArgumentException(res.errorBody()?.string())
         }
 
         Result.success()
     } catch (e: Throwable) {
         Log.e(TAG, "Error executing work: " + e.message, e)
-        Result.failure()
+        failureWithError(e, "Erreur lors de la synchronisation du gestionnaire")
     }
 }

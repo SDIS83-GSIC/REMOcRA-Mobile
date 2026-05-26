@@ -18,8 +18,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -174,7 +176,9 @@ fun SyncGestionnaireScreen(navController: NavController) {
 
                         FilledTonalButton(
                             onClick = {
-                                // TODO
+                                viewModel.synchroniserTousGestionnaires(
+                                    groupedGestionnaires.map { it.gestionnaireId },
+                                )
                             },
                             enabled = gestionnairesWithContacts.isNotEmpty(),
                             colors = ButtonDefaults.filledTonalButtonColors(
@@ -216,7 +220,12 @@ fun SyncGestionnaireScreen(navController: NavController) {
                             items = groupedGestionnaires,
                             key = { it.gestionnaireId },
                         ) { gestionnaireRow ->
-                            GestionnaireSyncItem(gestionnaireRow)
+                            GestionnaireSyncItem(
+                                item = gestionnaireRow,
+                                onSynchroniserClick = {
+                                    viewModel.synchroniserGestionnaire(gestionnaireRow.gestionnaireId)
+                                },
+                            )
                             Spacer(modifier = Modifier.height(12.pxToDp))
                         }
                     }
@@ -273,7 +282,10 @@ private fun List<SynchronisationDao.GestionnaireWithContactRow>.toGestionnaireRo
 }
 
 @Composable
-private fun GestionnaireSyncItem(item: GestionnaireRowUi) {
+private fun GestionnaireSyncItem(
+    item: GestionnaireRowUi,
+    onSynchroniserClick: () -> Unit,
+) {
     val cardColor = MaterialTheme.colorScheme.secondaryContainer
 
     Surface(
@@ -301,6 +313,18 @@ private fun GestionnaireSyncItem(item: GestionnaireRowUi) {
                     fontSize = 2.2.em,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
+                FilledIconButton(
+                    onClick = onSynchroniserClick,
+                    colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                    ),
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Sync,
+                        contentDescription = "Synchroniser le gestionnaire",
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.pxToDp))
@@ -357,8 +381,8 @@ private fun GestionnaireSyncItem(item: GestionnaireRowUi) {
 private fun ContactRowUi.fullName(): String {
     val civilite =
         when (contactCivilite) {
-            fr.sdis83.remocra.mobile.database.Contact.Civilite.M -> "M."
-            fr.sdis83.remocra.mobile.database.Contact.Civilite.MME -> "Mme"
+            Contact.Civilite.M -> "M."
+            Contact.Civilite.MME -> "Mme"
             null -> null
         }
 

@@ -162,6 +162,12 @@ interface SynchronisationService {
         peiId: UUID,
     ): Call<ResponseBody>
 
+    @POST("synchro/incoming-gestionnaire-to-remocra/{gestionnaireId}")
+    fun incomingGestionnaireToRemocra(
+        @Path("gestionnaireId")
+        gestionnaireId: UUID,
+    ): Call<ResponseBody>
+
     @POST("synchro/synchro-photo")
     @Multipart
     fun postPhotoPei(

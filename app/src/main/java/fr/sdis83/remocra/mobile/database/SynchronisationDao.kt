@@ -8,6 +8,9 @@ import java.util.UUID
 @Dao
 abstract class SynchronisationDao {
 
+    @Query("SELECT * FROM gestionnaire where gestionnaireId = :gestionnaireId")
+    abstract fun getGestionnaire(gestionnaireId: UUID): Gestionnaire
+
     @Query("SELECT * FROM gestionnaire where edited = 1")
     abstract fun getAllGestionnaire(): List<Gestionnaire>
 
@@ -49,8 +52,14 @@ abstract class SynchronisationDao {
         val contactEdited: Boolean?,
     )
 
+    @Query("SELECT * FROM contact where edited = 1 and gestionnaireId = :gestionnaireId")
+    abstract fun getAllContactsByGestionnaire(gestionnaireId: UUID): List<Contact>
+
     @Query("SELECT * FROM contact where edited = 1")
     abstract fun getAllContacts(): List<Contact>
+
+    @Query("SELECT contactRole.* FROM contactRole join contact on contactRole.contactId = contact.contactId where contact.edited = 1 and gestionnaireId = :gestionnaireId")
+    abstract fun getAllContactsRole(gestionnaireId: UUID): List<ContactRole>
 
     @Query("SELECT contactRole.* FROM contactRole join contact on contactRole.contactId = contact.contactId where contact.edited = 1")
     abstract fun getAllContactsRole(): List<ContactRole>
@@ -168,17 +177,20 @@ abstract class SynchronisationDao {
     )
     abstract fun getAllTypeVisite(): List<TypeVisite>
 
-    @Query("DELETE FROM gestionnaire where edited = 1")
-    abstract fun deleteGestionnaireSynchronises()
+    @Query("DELETE FROM gestionnaire where gestionnaireId = :gestionnaireId")
+    abstract fun deleteGestionnaire(gestionnaireId: UUID)
 
-    @Query("DELETE FROM contact where edited = 1")
-    abstract fun deleteContactsSynchronises()
+    @Query("DELETE FROM contact where gestionnaireId = :gestionnaireId")
+    abstract fun deleteContacts(gestionnaireId: UUID)
 
     @Query(
-        "DELETE FROM contactRole where contactId in " +
-            "(SELECT  contactId from  contact where contact.edited = 1)",
+"""
+        DELETE FROM contactRole
+             where contactId
+                in (SELECT contactId FROM contact where gestionnaireId = :gestionnaireId)
+         """,
     )
-    abstract fun deleteContactsRoleSynchronises()
+    abstract fun deleteContactsRoleSynchronises(gestionnaireId: UUID)
 
     @Query("DELETE FROM pei where isNew = 1 and peiId = :peiId")
     abstract fun deleteNewPeiSynchronises(peiId: UUID)
