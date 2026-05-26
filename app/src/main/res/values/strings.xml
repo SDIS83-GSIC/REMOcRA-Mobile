@@ -8,8 +8,7 @@
 
     <string name="aucune_tournee_a_reserver">Aucune tournée à réserver</string>
     <string name="annuler">Annuler</string>
-    <string name="tournees_a_embarquer">Tournées à embarquer</string>
-    <string name="synchronisation">Synchronisation</string>
+    <string name="choisir_tournee">Choisir les tournées</string>
     <string name="derniere_synchro">Dernière synchronisation le XX/XX/XXXX à XXhXX</string>
     <string name="visites_finies">%1d / %1d visites de points d\'eau validées</string>
     <string name="pei_crees">%1d / %1d points d\'eau créés synchronisés</string>

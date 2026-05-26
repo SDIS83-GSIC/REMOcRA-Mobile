@@ -52,7 +52,7 @@ fun Layout(
     val scope = rememberCoroutineScope()
     val items = listOf(
         Screens.Tournees,
-        Screens.Sync,
+        Screens.ChoixTournees,
         Screens.SyncTournee,
         Screens.SyncNewPei,
         Screens.SyncGestionnaire,

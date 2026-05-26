@@ -14,7 +14,7 @@ import fr.sdis83.remocra.mobile.utils.pxToDp
 fun SearchInput(
     search: String,
     onChange: (String) -> Unit,
-    size: Int,
+    size: Int?,
 ) {
     Column(
         Modifier.padding(10.pxToDp),
@@ -28,6 +28,8 @@ fun SearchInput(
             singleLine = true,
         )
         Spacer(modifier = Modifier.width(16.pxToDp))
-        Text(text = "$size résultats")
+        if (size != null) {
+            Text(text = "$size résultats")
+        }
     }
 }

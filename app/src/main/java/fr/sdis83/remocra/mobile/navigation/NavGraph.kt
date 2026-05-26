@@ -20,16 +20,15 @@ import fr.sdis83.remocra.mobile.ui.screens.settings.ContactFormScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireFormScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.GestionnaireListScreen
 import fr.sdis83.remocra.mobile.ui.screens.settings.SettingScreen
+import fr.sdis83.remocra.mobile.ui.screens.sync.ChoixTourneeScreen
 import fr.sdis83.remocra.mobile.ui.screens.sync.SyncGestionnaireScreen
 import fr.sdis83.remocra.mobile.ui.screens.sync.SyncNewPeiScreen
-import fr.sdis83.remocra.mobile.ui.screens.sync.SyncScreen
 import fr.sdis83.remocra.mobile.ui.screens.sync.SyncTourneeScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneeScreen
 import fr.sdis83.remocra.mobile.ui.screens.tournees.TourneesScreen
 import fr.sdis83.remocra.mobile.utils.GlobalConstants
 import fr.sdis83.remocra.mobile.viewmodels.DroitViewModel
 import fr.sdis83.remocra.mobile.viewmodels.MapViewModel
-import fr.sdis83.remocra.mobile.viewmodels.StatsViewModel
 import java.util.UUID
 
 @Composable
@@ -41,8 +40,15 @@ fun NavGraph(
     val droitViewModel = DroitViewModel(LocalContext.current.applicationContext as Application)
     val listTypeDroit by droitViewModel.typesDroit.observeAsState()
 
-    Screens.Settings.isVisible = listTypeDroit?.firstOrNull { it.code == GlobalConstants.CREATION_PEI_MOBILE_DROIT } != null ||
-        listTypeDroit?.firstOrNull { it.code == GlobalConstants.CREATION_GESTIONNAIRE_MOBILE_DROIT } != null
+    val droitCreationPei = listTypeDroit?.any { it.code == GlobalConstants.CREATION_PEI_MOBILE_DROIT } ?: false
+    val droitCreationGestionnaire = listTypeDroit?.any { it.code == GlobalConstants.CREATION_GESTIONNAIRE_MOBILE_DROIT } ?: false
+
+    Screens.Settings.isVisible = droitCreationGestionnaire || droitCreationPei
+
+    Screens.SyncNewPei.isVisible = droitCreationPei
+
+    Screens.SyncGestionnaire.isVisible = droitCreationGestionnaire
+
     NavHost(
         navController = navController,
         startDestination = Screens.Tournees.route,
@@ -71,11 +77,11 @@ fun NavGraph(
             }
             PeiListScreen(navController, mapViewModel)
         }
-        composable(route = Screens.Sync.route) {
+        composable(route = Screens.ChoixTournees.route) {
             LaunchedEffect(Unit) {
                 mapViewState.value = MapViewState(showMapView = false, isFullscreen = false)
             }
-            SyncScreen(StatsViewModel(Application()), navController)
+            ChoixTourneeScreen(navController)
         }
         composable(route = Screens.SyncTournee.route) {
             LaunchedEffect(Unit) {

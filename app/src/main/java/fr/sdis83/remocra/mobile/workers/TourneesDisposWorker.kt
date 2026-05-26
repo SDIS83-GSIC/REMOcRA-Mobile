@@ -12,11 +12,7 @@ class TourneesDisposWorker constructor(
     workerParams: WorkerParameters,
 ) : WorkerRemocra(context, workerParams) {
 
-    companion object {
-        private const val TAG: String = "TourneesDisposWorker"
-    }
-
-    override fun doExecute(): Result {
+    override fun doExecute(): Result = try {
         val retrofitBuilder = ReferentielService.getRetroFitInstance(applicationContext)
         val tourneesDao = RemocraDatabase.getInstance(applicationContext).tourneesDao()
 
@@ -24,8 +20,9 @@ class TourneesDisposWorker constructor(
         val tourneesDisponiblesResponse = retrofitBuilder.getTourneesDisponibles().execute()
 
         if (!tourneesDisponiblesResponse.isSuccessful) {
-            Log.e(TAG, "Error executing work: " + tourneesDisponiblesResponse.errorBody().toString())
-            return Result.failure()
+            Log.e(workerTag, "Error executing work: " + tourneesDisponiblesResponse.errorBody().toString())
+            failureWithError("${tourneesDisponiblesResponse.errorBody()?.string()}")
+            Result.failure()
         }
 
         tourneesDao.truncateTourneesDispos()
@@ -38,6 +35,9 @@ class TourneesDisposWorker constructor(
             )
         }
 
-        return Result.success()
+        Result.success()
+    } catch (e: Throwable) {
+        Log.e(workerTag, "Error executing work: " + e.message, e)
+        failureWithError(e, "Erreur lors de la synchronisation des tournées disponibles")
     }
 }
