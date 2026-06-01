@@ -165,6 +165,38 @@ class MainActivity : ComponentActivity() {
             startActivity(getpermission)
         }
 
+        // En mode MDM, si l'URL API est configurée mais que Keycloak n'est pas encore initialisé,
+        // on lance l'AdministrationWorker pour récupérer la configuration Keycloak depuis le serveur.
+        if (mdm) {
+            val urlApi = preferences.getString(
+                applicationContext.resources.getString(R.string.url_api),
+                null,
+            )
+            if (!urlApi.isNullOrBlank() && authentViewModel.keycloakManager.getKeycloakUrl() == null) {
+                val administrationWorker = OneTimeWorkRequestBuilder<AdministrationWorker>().build()
+                WorkManager.getInstance(application).let { workManager ->
+                    workManager.enqueue(administrationWorker)
+                    workManager.getWorkInfoByIdLiveData(administrationWorker.id).observeForever { workInfo ->
+                        if (workInfo?.state == WorkInfo.State.SUCCEEDED) {
+                            // Le Worker a sauvegardé la config Keycloak dans les SharedPreferences,
+                            // on ré-initialise Keycloak dans le thread principal.
+                            val keycloakUrl = authentViewModel.keycloakManager.getKeycloakUrl()
+                            val keycloakClientId = authentViewModel.keycloakManager.getKeycloakClientId()
+                            if (keycloakUrl != null && keycloakClientId != null) {
+                                authentViewModel.keycloakManager.initKeycloakConf(
+                                    AuthService.KeycloakConfig(
+                                        url = keycloakUrl,
+                                        clientId = keycloakClientId,
+                                    ),
+                                    applicationContext,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         splashViewModel.goToMainActivity.observe(this) {
             buildScreen(it, dateProchaineDeconnexion, mdm)
         }

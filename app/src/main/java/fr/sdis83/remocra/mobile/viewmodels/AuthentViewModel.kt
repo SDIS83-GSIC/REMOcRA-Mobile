@@ -2,6 +2,7 @@ package fr.sdis83.remocra.mobile.viewmodels
 
 import android.app.Application
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -40,18 +41,23 @@ class AuthentViewModel(application: Application) : AndroidViewModel(application)
     val goToMainActivity = MutableLiveData(false)
 
     fun login(context: Context) {
+        Log.i(TAG, "Tentative de connexion")
         viewModelScope.launch {
             val result = CredentialBootstrap.oidcClient.createWebAuthenticationClient().login(
                 context = context,
                 redirectUrl = GlobalConstants.KEYCLOAK_LOGIN,
             )
+
+            Log.i(TAG, "$result")
             when (result) {
                 is OidcClientResult.Error -> {
                     info.value = "Impossible de se connecter"
+                    Log.i(TAG, "Erreur de connexion : ${result.exception.message} - ${result.exception.cause}")
                     sessionManager.invalidateAuthToken()
                 }
 
                 is OidcClientResult.Success -> {
+                    Log.i(TAG, "Connexion réussie")
                     val credential = CredentialBootstrap.defaultCredential()
                     credential.storeToken(token = result.result)
 
