@@ -6,16 +6,29 @@ pipeline {
   }
   agent any
   stages {
-    stage('Build Android') {
-      environment {
-        ANDROID_USER_HOME = "${env.WORKSPACE}/.android"
-      }
-      steps {
-        dockerBuildAndRemove(buildDir: '.jenkins') { imageId ->
-          gradleInsideDocker(imageId: imageId, imageName: '') {
-            sh """
+    stage('Parallèle') {
+      parallel {
+        stage('Sonar') {
+          when {
+            expression { !isGerritReview() }
+          }
+          steps {
+            sonarscanner()
+          }
+        }
+
+        stage('Build Android') {
+          environment {
+            ANDROID_USER_HOME = "${env.WORKSPACE}/.android"
+          }
+          steps {
+            dockerBuildAndRemove(buildDir: '.jenkins') { imageId ->
+              gradleInsideDocker(imageId: imageId, imageName: '') {
+                sh """
               gradle --stacktrace clean build
               """
+              }
+            }
           }
         }
       }
