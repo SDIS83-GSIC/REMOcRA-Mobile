@@ -116,14 +116,19 @@ fun VisiteScreen(
     val gestionAgents by agentViewModel.gestionAgents.observeAsState()
     val listAgent1 by agentViewModel.listAgent1.observeAsState()
     val listAgent2 by agentViewModel.listAgent2.observeAsState()
-    val visiteViewModel =
+    val visiteViewModel = remember(tourneeId, peiId, gestionAgents) {
         VisiteViewModel(context.applicationContext as Application, tourneeId, peiId, gestionAgents)
+    }
 
-    val photoPeiVisiteViewModel = PhotoPeiViewModel(context.applicationContext as Application, peiId)
+    val photoPeiVisiteViewModel = remember(peiId) {
+        PhotoPeiViewModel(context.applicationContext as Application, peiId)
+    }
 
     val photos = photoPeiVisiteViewModel.photos.observeAsState()
 
-    mapViewModel.goToPei(peiId, false)
+    LaunchedEffect(peiId) {
+        mapViewModel.goToPei(peiId, false)
+    }
     VisiteScreenInner(visiteViewModel, navController, photos.value, photoPeiVisiteViewModel, gestionAgents, listAgent1, listAgent2)
 }
 
